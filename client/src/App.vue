@@ -1,17 +1,31 @@
 <script setup lang="ts">
-const brand = 'Toyota'
-const model = 'Rav4'
-const kms = 165000
+import { ref } from 'vue'
+import MaintenanceItem from './components/MaintenanceItem.vue'
+
+const data = ref({
+  brand: 'Toyota',
+  model: 'Rav4',
+  year: 2014,
+  kms: 165000,
+  recommendedMaintenance: [{ id: 0, name: 'Oil Change', interval: 5000, unit: 'km' }],
+  pastMaintenance: []
+})
 </script>
 
 <template>
   <header></header>
   <body>
-    <ol>
-      <li>Brand: {{ brand }}</li>
-      <li>Model: {{ model }}</li>
-      <li>Mileage: {{ kms }} km</li>
-    </ol>
+    <ul>
+      <li>Brand: {{ data.brand }}</li>
+      <li>Model: {{ data.model }}</li>
+      <li>Model: {{ data.year }}</li>
+      <li>Mileage: {{ data.kms }} km</li>
+    </ul>
+    <MaintenanceItem
+      v-for="item in data.recommendedMaintenance"
+      :item="item"
+      :key="item.id"
+    ></MaintenanceItem>
   </body>
 </template>
 
