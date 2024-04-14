@@ -3,12 +3,12 @@ interface IProps {
   item: { id: number; name: string; interval: number; unit: string }
 }
 const props = defineProps<IProps>()
-console.log(props.item.name)
 </script>
 
 <template>
-  <div>
+  <ul>
     <li>{{ props.item.name }}</li>
     <li>{{ props.item.interval }} {{ props.item.unit }}</li>
-  </div>
+  </ul>
 </template>
+<style scoped></style>
