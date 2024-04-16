@@ -1,8 +1,9 @@
-export const data = {
+export const recommendedData = {
   brand: 'Toyota',
   model: 'Rav4',
   year: 2014,
   kms: 165000,
+
   recommendedMaintenance: [
     { id: 0, name: 'Oil Change', interval: 5000, unit: 'km' },
     { id: 1, name: 'Tire Change', interval: 6, unit: 'months' },
