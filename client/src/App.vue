@@ -1,21 +1,36 @@
 <script setup lang="ts">
 import { recommendedData } from './fakeData/data'
 import ListRecommended from './components/ListRecommended.vue'
+import GridRecommended from './components/GridRecommended.vue'
+
+interface IItem {
+  name: string
+  currentKms: number
+  interval: number
+  unit: string
+}
 
 function findActualList() {
   const { kms, pastMaintenance, recommendedMaintenance } = recommendedData
 
   //if pastMaintenance is empty check current mileage against all recommended maintenance
   if (pastMaintenance.length === 0) {
-    const formattedData = recommendedMaintenance.forEach((item) => {
+    const formattedData: IItem[] = []
+    recommendedMaintenance.forEach((item) => {
       console.log(item)
-      if (item.unit === 'km' && kms > item.interval) {
+      if (item.unit === 'kms' && kms > item.interval) {
         console.log('good')
-        return item
-      } else return item
+        formattedData.push({
+          name: item.name,
+          currentKms: kms,
+          interval: item.interval,
+          unit: item.unit
+        })
+      }
     })
     console.log(formattedData)
-  }
+    return formattedData || []
+  } else return []
 }
 </script>
 
@@ -41,7 +56,8 @@ function findActualList() {
     </div>
     <vue-accordion>
       <vue-accordion-tab header="Actual Maintenance List">
-        <vue-button label="Find" @click="findActualList" />
+        <!-- <vue-button label="Find" @click="findActualList" /> -->
+        <GridRecommended :list="findActualList()" />
       </vue-accordion-tab>
       <vue-accordion-tab header="Recommended Maintenance List">
         <ListRecommended :list="recommendedData.recommendedMaintenance" />
@@ -52,6 +68,9 @@ function findActualList() {
 </template>
 
 <style scoped>
+main {
+  min-width: 400px;
+}
 .top-container {
   display: grid;
   grid-template-columns: auto auto;
