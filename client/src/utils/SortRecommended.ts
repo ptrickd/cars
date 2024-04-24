@@ -36,14 +36,32 @@ interface ICurrentMaintenance {
 
 const currentMaintenance: ICurrentMaintenance[] = []
 
-const createNewEntrie = (carStats: ICarStats, recommendedItem: IRecommendedMaintenance) => {
+const createNewEntrie = (
+  carStats: ICarStats,
+  recommendedItem: IRecommendedMaintenance,
+  lastMaintenance: IPastMaintenance | number
+) => {
+  //Adding lastMaintenance Kms
+
+  let lastMaintenanceKms = 0
+  if (typeof lastMaintenance !== 'number') {
+    lastMaintenanceKms = lastMaintenance.currentKms
+  }
+
+  //Adding overdue
+
+  let overdue = false
+  if (carStats.currentMileage - lastMaintenanceKms > recommendedItem.interval) {
+    overdue = true
+  }
+
   currentMaintenance.push({
     maintenanceId: recommendedItem.id,
     name: recommendedItem.name,
-    lastMaintenanceKms: 0,
+    lastMaintenanceKms: lastMaintenanceKms,
     currentKms: carStats.currentMileage,
     interval: recommendedItem.interval,
-    overdue: true,
+    overdue: overdue,
     unit: carStats.unit,
     date: new Date()
   })
@@ -75,7 +93,7 @@ export const sortRecommended = (
     console.log(index)
     //if index  = -1 then just aadd object
     if (index === -1) {
-      createNewEntrie(carStats, recommendedItem)
+      createNewEntrie(carStats, recommendedItem, 0)
     }
     //else then remove the object with the maintenanceId  matching
     //then adding the new object
