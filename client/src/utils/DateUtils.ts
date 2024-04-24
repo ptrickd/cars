@@ -13,7 +13,7 @@ export const diffMonths = (todayDate: Date, lastMaintenanceDate: Date) => {
   const diffMonth = month2 - month1
   const diffDay = day2 - day1
 
-  const totalDiffMonths = Math.abs(12 * diffYear + diffMonth + diffDay / 32)
+  const totalDiffMonths = Math.floor(Math.abs(12 * diffYear + diffMonth + diffDay / 32))
 
   return totalDiffMonths
 }
