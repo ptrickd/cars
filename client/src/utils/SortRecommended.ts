@@ -9,6 +9,7 @@ interface IPastMaintenance {
   name: string
   maintenanceId: number
   currentKms: number
+  currentDate: Date
   interval: number
   unit: string
 }
@@ -21,6 +22,7 @@ interface ICurrentMaintenance {
   maintenanceId: number
   name: string
   lastMaintenanceKms: number
+  lastMaintenanceDate: Date | null
   currentKms: number
   interval: number
   overdue: boolean
@@ -41,25 +43,44 @@ const createNewEntrie = (
   recommendedItem: IRecommendedMaintenance,
   lastMaintenance: IPastMaintenance | number
 ) => {
+  //Handling if interval is in kms, month or years
+
   //Adding lastMaintenance Kms
-
   let lastMaintenanceKms = 0
-  if (typeof lastMaintenance !== 'number') {
-    lastMaintenanceKms = lastMaintenance.currentKms
-  }
-
+  let lastMaintenanceDate: Date | null = null
+  // const todayDate = new Date()
   //Adding overdue
-
   let overdue = false
-  if (carStats.currentMileage - lastMaintenanceKms > recommendedItem.interval) {
-    overdue = true
-  }
+  if (recommendedItem.unit === 'kms') {
+    if (typeof lastMaintenance !== 'number') {
+      lastMaintenanceKms = lastMaintenance.currentKms
+      lastMaintenanceDate = lastMaintenance.currentDate
+    }
+    if (carStats.currentMileage - lastMaintenanceKms > recommendedItem.interval) {
+      overdue = true
+    }
+  } else if (recommendedItem.unit === 'month') {
+    if (typeof lastMaintenance !== 'number') {
+      lastMaintenanceKms = lastMaintenance.currentKms
+      lastMaintenanceDate = lastMaintenance.currentDate
+    }
+    if (lastMaintenanceDate == null) {
+      lastMaintenanceDate = new Date(0)
+    }
+    // const diffTime = Math.abs((todayDate.getTime() - lastMaintenanceDate.getTime()) )
+    // const diffMonths = Math.ceil(diffTime / (*1000 * 60 * 60 * 24))
+    // if (todayDate - lastMaintenanceKms > recommendedItem.interval) {
+    //   overdue = true
+    // }
+  } else if (recommendedItem.unit === 'year') console.log('year')
 
   currentMaintenance.push({
     maintenanceId: recommendedItem.id,
     name: recommendedItem.name,
     lastMaintenanceKms: lastMaintenanceKms,
+    lastMaintenanceDate: lastMaintenanceDate,
     currentKms: carStats.currentMileage,
+
     interval: recommendedItem.interval,
     overdue: overdue,
     unit: carStats.unit,
