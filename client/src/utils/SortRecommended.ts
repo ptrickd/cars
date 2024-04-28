@@ -1,8 +1,10 @@
+import { diffMonths } from './DateUtils'
+import { MaintenanceUnit } from '@/constants/enum'
 interface IRecommendedMaintenance {
   id: number
   name: string
   interval: number
-  unit: string
+  unit: MaintenanceUnit
 }
 
 interface IPastMaintenance {
@@ -11,11 +13,11 @@ interface IPastMaintenance {
   currentKms: number
   currentDate: Date
   interval: number
-  unit: string
+  unit: MaintenanceUnit
 }
 interface ICarStats {
   currentMileage: number
-  unit: string
+  unit: MaintenanceUnit
 }
 
 interface ICurrentMaintenance {
@@ -26,15 +28,8 @@ interface ICurrentMaintenance {
   currentKms: number
   interval: number
   overdue: boolean
-  unit: string
-  date: Date
+  unit: MaintenanceUnit
 }
-
-// interface IArgs {
-//   carStats: ICarStats
-//   recommendedMaintenance: IRecommendedMaintenance[]
-//   pastMaintenance: IPastMaintenance[]
-// }
 
 const currentMaintenance: ICurrentMaintenance[] = []
 
@@ -48,10 +43,10 @@ const createNewEntrie = (
   //Adding lastMaintenance Kms
   let lastMaintenanceKms = 0
   let lastMaintenanceDate: Date | null = null
-  // const todayDate = new Date()
+  const todayDate = new Date()
   //Adding overdue
   let overdue = false
-  if (recommendedItem.unit === 'kms') {
+  if (recommendedItem.unit === MaintenanceUnit.KMS) {
     if (typeof lastMaintenance !== 'number') {
       lastMaintenanceKms = lastMaintenance.currentKms
       lastMaintenanceDate = lastMaintenance.currentDate
@@ -59,7 +54,7 @@ const createNewEntrie = (
     if (carStats.currentMileage - lastMaintenanceKms > recommendedItem.interval) {
       overdue = true
     }
-  } else if (recommendedItem.unit === 'month') {
+  } else if (recommendedItem.unit === MaintenanceUnit.MONTHS) {
     if (typeof lastMaintenance !== 'number') {
       lastMaintenanceKms = lastMaintenance.currentKms
       lastMaintenanceDate = lastMaintenance.currentDate
@@ -67,12 +62,10 @@ const createNewEntrie = (
     if (lastMaintenanceDate == null) {
       lastMaintenanceDate = new Date(0)
     }
-    // const diffTime = Math.abs((todayDate.getTime() - lastMaintenanceDate.getTime()) )
-    // const diffMonths = Math.ceil(diffTime / (*1000 * 60 * 60 * 24))
-    // if (todayDate - lastMaintenanceKms > recommendedItem.interval) {
-    //   overdue = true
-    // }
-  } else if (recommendedItem.unit === 'year') console.log('year')
+    if (diffMonths(todayDate, lastMaintenanceDate) >= recommendedItem.interval) {
+      overdue = true
+    }
+  } else if (recommendedItem.unit === MaintenanceUnit.YEARS) console.log('year')
 
   currentMaintenance.push({
     maintenanceId: recommendedItem.id,
@@ -80,11 +73,9 @@ const createNewEntrie = (
     lastMaintenanceKms: lastMaintenanceKms,
     lastMaintenanceDate: lastMaintenanceDate,
     currentKms: carStats.currentMileage,
-
     interval: recommendedItem.interval,
     overdue: overdue,
-    unit: carStats.unit,
-    date: new Date()
+    unit: carStats.unit
   })
 }
 

@@ -1,12 +1,13 @@
 import { expect, test, describe, beforeEach, afterEach, vi } from 'vitest'
-import { sortRecommended } from './SortRecommended.ts'
+import { sortRecommended } from './SortRecommended'
+import { MaintenanceUnit } from '@/constants/enum'
 
-// import { recommendedData } from './fakeData/data'
+// @ts-ignore
 import {
   PAST_MAINTENANCE_EMPTY,
   CAR_STATS,
   RECOMMENDED_MAINTENANCE_KMS_ONLY
-} from '../fakeData/sortRecommended.data.js'
+} from '../fakeData/sortRecommended'
 
 describe('SortRecommended Function Unit Testing', () => {
   beforeEach(() => {
@@ -31,8 +32,7 @@ describe('SortRecommended Function Unit Testing', () => {
         currentKms: 165000,
         interval: 5000,
         overdue: true,
-        unit: 'kms',
-        date: new Date(date.valueOf())
+        unit: MaintenanceUnit.KMS
       }
     ]
     const sorted = sortRecommended(
@@ -56,8 +56,7 @@ describe('SortRecommended Function Unit Testing', () => {
         currentKms: 165000,
         interval: 5000,
         overdue: true,
-        unit: 'kms',
-        date: new Date(date.valueOf())
+        unit: MaintenanceUnit.KMS
       },
       {
         maintenanceId: 1,
@@ -67,8 +66,7 @@ describe('SortRecommended Function Unit Testing', () => {
         currentKms: 165000,
         interval: 6,
         overdue: true,
-        unit: 'month',
-        date: new Date(date.valueOf())
+        unit: MaintenanceUnit.MONTHS
       },
       {
         maintenanceId: 2,
@@ -78,8 +76,7 @@ describe('SortRecommended Function Unit Testing', () => {
         currentKms: 165000,
         interval: 2,
         overdue: true,
-        unit: 'years',
-        date: new Date(date.valueOf())
+        unit: MaintenanceUnit.YEARS
       },
       {
         maintenanceId: 3,
@@ -89,8 +86,7 @@ describe('SortRecommended Function Unit Testing', () => {
         currentKms: 165000,
         interval: 2,
         overdue: true,
-        unit: 'years',
-        date: new Date(date.valueOf())
+        unit: MaintenanceUnit.YEARS
       }
     ]
     const sorted = sortRecommended(

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { recommendedData } from './fakeData/data'
+import { recommendedData } from './fakeData/fakeData'
 import ListRecommended from './components/ListRecommended.vue'
 import GridRecommended from './components/GridRecommended.vue'
 
@@ -18,7 +18,7 @@ function findActualList() {
     const formattedData: IItem[] = []
     recommendedMaintenance.forEach((item) => {
       console.log(item)
-      if (item.unit === 'kms' && kms > item.interval) {
+      if (item.unit === MaintenanceUnit.KMS && kms > item.interval) {
         console.log('good')
         formattedData.push({
           name: item.name,
