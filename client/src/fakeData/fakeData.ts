@@ -1,3 +1,5 @@
+import { MaintenanceUnit } from '@/constants/enum'
+
 export const recommendedData = {
   brand: 'Toyota',
   model: 'Rav4',

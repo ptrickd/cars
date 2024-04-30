@@ -2,7 +2,7 @@
 import { recommendedData } from './fakeData/fakeData'
 import ListRecommended from './components/ListRecommended.vue'
 import GridRecommended from './components/GridRecommended.vue'
-
+import { MaintenanceUnit } from './constants/enum'
 interface IItem {
   name: string
   currentKms: number
