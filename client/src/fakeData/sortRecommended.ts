@@ -38,29 +38,33 @@ export const PAST_MAINTENANCE_ONE_KMS = [
   }
 ]
 
-// const SORTED_DATA = [
-//   {
-//     id: 4,
-//     name: 'Oil Change',
-//     interval: 5000,
-//     units: 'kms'
-//   },
-//   {
-//     id: 5,
-//     name: 'Tire Change',
-//     interval: 6,
-//     units: 'months'
-//   },
-//   {
-//     id: 6,
-//     name: 'Replace Cabin Air Filter',
-//     interval: 2,
-//     units: 'years'
-//   },
-//   {
-//     id: 7,
-//     name: 'Replace Air Filter',
-//     interval: 2,
-//     units: 'years'
-//   }
-// ]
+export const PAST_MAINTENANCE_KMS_MONTHS_YEARS_OVERDUE = [
+  {
+    maintenanceId: 0,
+    name: 'Oil Change',
+    maintenanceKms: 40000,
+    maintenanceDate: new Date('2017'),
+    unit: MaintenanceUnit.KMS
+  },
+  {
+    maintenanceId: 1,
+    name: 'Tire Rotation',
+    maintenanceKms: 40000,
+    maintenanceDate: new Date('2017'),
+    unit: MaintenanceUnit.KMS
+  },
+  {
+    maintenanceId: 2,
+    name: 'Replace Cabin Air Filter',
+    maintenanceKms: 40000,
+    maintenanceDate: new Date('2017'),
+    unit: MaintenanceUnit.KMS
+  },
+  {
+    maintenanceId: 3,
+    name: 'Replace Air Filter',
+    maintenanceKms: 40000,
+    maintenanceDate: new Date('2017'),
+    unit: MaintenanceUnit.KMS
+  }
+]

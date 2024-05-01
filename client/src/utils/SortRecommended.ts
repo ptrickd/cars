@@ -46,7 +46,7 @@ const createNewEntrie = (
   //Adding overdue
   let overdue = false
   const TWO_YEAR_IN_MONTHS = 24
-  console.log(recommendedItem)
+
   switch (recommendedItem.unit) {
     case MaintenanceUnit.KMS:
       if (lastMaintenance !== null) {
@@ -67,11 +67,11 @@ const createNewEntrie = (
         lastMaintenanceKms = 0
         lastMaintenanceDate = new Date(carStats.year)
       }
-
+      console.log(diffMonths(todayDate, lastMaintenanceDate))
       if (diffMonths(todayDate, lastMaintenanceDate) >= recommendedItem.interval) {
         overdue = true
       }
-
+      console.log(overdue)
       break
     case MaintenanceUnit.YEARS:
       if (lastMaintenance !== null) {
@@ -92,7 +92,16 @@ const createNewEntrie = (
     default:
       console.log('Case not expected')
   }
-
+  console.log({
+    maintenanceId: recommendedItem.id,
+    name: recommendedItem.name,
+    lastMaintenanceKms: lastMaintenanceKms,
+    lastMaintenanceDate: lastMaintenanceDate,
+    currentKms: carStats.currentMileage,
+    interval: recommendedItem.interval,
+    overdue: overdue,
+    unit: recommendedItem.unit
+  })
   if (
     typeof recommendedItem.id === 'number' &&
     typeof recommendedItem.name === 'string' &&
