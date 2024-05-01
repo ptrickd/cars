@@ -27,10 +27,10 @@ interface ICurrentMaintenance {
   lastMaintenanceDate: Date | null
   currentKms: number
   interval: number
-  overdue: boolean
+  isOverdue: boolean
   unit: MaintenanceUnit
 }
-const deletePastEntrie = () => {}
+
 const createNewEntrie = (
   carStats: ICarStats,
   recommendedItem: IRecommendedMaintenance,
@@ -44,7 +44,7 @@ const createNewEntrie = (
 
   const todayDate = new Date()
   //Adding overdue
-  let overdue = false
+  let isOverdue = false
   const TWO_YEAR_IN_MONTHS = 24
 
   switch (recommendedItem.unit) {
@@ -56,7 +56,7 @@ const createNewEntrie = (
         lastMaintenanceKms = 0
         lastMaintenanceDate = new Date(carStats.year)
       }
-      if (carStats.currentMileage - lastMaintenanceKms > recommendedItem.interval) overdue = true
+      if (carStats.currentMileage - lastMaintenanceKms >= recommendedItem.interval) isOverdue = true
 
       break
     case MaintenanceUnit.MONTHS:
@@ -67,11 +67,11 @@ const createNewEntrie = (
         lastMaintenanceKms = 0
         lastMaintenanceDate = new Date(carStats.year)
       }
-      console.log(diffMonths(todayDate, lastMaintenanceDate))
+
       if (diffMonths(todayDate, lastMaintenanceDate) >= recommendedItem.interval) {
-        overdue = true
+        isOverdue = true
       }
-      console.log(overdue)
+
       break
     case MaintenanceUnit.YEARS:
       if (lastMaintenance !== null) {
@@ -86,22 +86,13 @@ const createNewEntrie = (
         diffMonths(todayDate, lastMaintenanceDate) >=
         recommendedItem.interval * TWO_YEAR_IN_MONTHS
       ) {
-        overdue = true
+        isOverdue = true
       }
       break
     default:
       console.log('Case not expected')
   }
-  console.log({
-    maintenanceId: recommendedItem.id,
-    name: recommendedItem.name,
-    lastMaintenanceKms: lastMaintenanceKms,
-    lastMaintenanceDate: lastMaintenanceDate,
-    currentKms: carStats.currentMileage,
-    interval: recommendedItem.interval,
-    overdue: overdue,
-    unit: recommendedItem.unit
-  })
+
   if (
     typeof recommendedItem.id === 'number' &&
     typeof recommendedItem.name === 'string' &&
@@ -109,8 +100,9 @@ const createNewEntrie = (
     typeof lastMaintenanceDate === 'object' &&
     typeof carStats.currentMileage === 'number' &&
     typeof recommendedItem.interval === 'number' &&
-    typeof overdue === 'boolean' &&
-    typeof recommendedItem.unit === 'string'
+    typeof isOverdue === 'boolean' &&
+    typeof recommendedItem.unit === 'string' &&
+    isOverdue
   ) {
     return {
       maintenanceId: recommendedItem.id,
@@ -119,7 +111,7 @@ const createNewEntrie = (
       lastMaintenanceDate: lastMaintenanceDate,
       currentKms: carStats.currentMileage,
       interval: recommendedItem.interval,
-      overdue: overdue,
+      isOverdue: isOverdue,
       unit: recommendedItem.unit
     }
   } else return null

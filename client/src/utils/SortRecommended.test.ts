@@ -7,6 +7,7 @@ import {
   PAST_MAINTENANCE_EMPTY,
   PAST_MAINTENANCE_ONE_KMS,
   PAST_MAINTENANCE_KMS_MONTHS_YEARS_OVERDUE,
+  PAST_MAINTENANCE_KMS_MONTHS_YEARS_1_OVERDUE,
   CAR_STATS,
   RECOMMENDED_MAINTENANCE_KMS_ONLY,
   RECOMMENDED_MAINTENANCE_KMS_MONTHS_YEARS
@@ -22,7 +23,7 @@ describe('SortRecommended Function Unit Testing', () => {
         lastMaintenanceDate: new Date(CAR_STATS.year),
         currentKms: 165000,
         interval: 5000,
-        overdue: true,
+        isOverdue: true,
         unit: MaintenanceUnit.KMS
       }
     ]
@@ -45,7 +46,7 @@ describe('SortRecommended Function Unit Testing', () => {
         lastMaintenanceDate: new Date(CAR_STATS.year),
         currentKms: 165000,
         interval: 5000,
-        overdue: true,
+        isOverdue: true,
         unit: MaintenanceUnit.KMS
       },
       {
@@ -55,7 +56,7 @@ describe('SortRecommended Function Unit Testing', () => {
         lastMaintenanceDate: new Date(CAR_STATS.year),
         currentKms: 165000,
         interval: 6,
-        overdue: true,
+        isOverdue: true,
         unit: MaintenanceUnit.MONTHS
       },
       {
@@ -65,7 +66,7 @@ describe('SortRecommended Function Unit Testing', () => {
         lastMaintenanceDate: new Date(CAR_STATS.year),
         currentKms: 165000,
         interval: 2,
-        overdue: true,
+        isOverdue: true,
         unit: MaintenanceUnit.YEARS
       },
       {
@@ -75,7 +76,7 @@ describe('SortRecommended Function Unit Testing', () => {
         lastMaintenanceDate: new Date(CAR_STATS.year),
         currentKms: 165000,
         interval: 2,
-        overdue: true,
+        isOverdue: true,
         unit: MaintenanceUnit.YEARS
       }
     ]
@@ -103,7 +104,7 @@ describe('SortRecommended Function Unit Testing', () => {
         lastMaintenanceDate: new Date('2017'),
         currentKms: 165000,
         interval: 5000,
-        overdue: true,
+        isOverdue: true,
         unit: MaintenanceUnit.KMS
       }
     ]
@@ -122,15 +123,7 @@ describe('SortRecommended Function Unit Testing', () => {
 
   test('pastMaintenance array has 4 entries with Recommended maintenance in kms, months and years', () => {
     //Data
-    /*
-      {
-    maintenanceId: 0,
-    name: 'Oil Change',
-    maintenanceKms: 40000,
-    maintenanceDate: new Date('2017'),
-    unit: MaintenanceUnit.KMS
-  }
-    */
+
     const EXPECTED_CURRENT_MAINTENANCE_KMS_MONTHS_YEARS = [
       {
         maintenanceId: 0,
@@ -139,7 +132,7 @@ describe('SortRecommended Function Unit Testing', () => {
         lastMaintenanceDate: new Date('2017'),
         currentKms: 165000,
         interval: 5000,
-        overdue: true,
+        isOverdue: true,
         unit: MaintenanceUnit.KMS
       },
       {
@@ -149,7 +142,7 @@ describe('SortRecommended Function Unit Testing', () => {
         lastMaintenanceDate: new Date('2017'),
         currentKms: 165000,
         interval: 6,
-        overdue: true,
+        isOverdue: true,
         unit: MaintenanceUnit.MONTHS
       },
       {
@@ -159,7 +152,7 @@ describe('SortRecommended Function Unit Testing', () => {
         lastMaintenanceDate: new Date('2017'),
         currentKms: 165000,
         interval: 2,
-        overdue: true,
+        isOverdue: true,
         unit: MaintenanceUnit.YEARS
       },
       {
@@ -169,7 +162,7 @@ describe('SortRecommended Function Unit Testing', () => {
         lastMaintenanceDate: new Date('2017'),
         currentKms: 165000,
         interval: 2,
-        overdue: true,
+        isOverdue: true,
         unit: MaintenanceUnit.YEARS
       }
     ]
@@ -183,6 +176,32 @@ describe('SortRecommended Function Unit Testing', () => {
 
     //Test output expected
 
+    expect(sorted).toStrictEqual(EXPECTED_CURRENT_MAINTENANCE_KMS_MONTHS_YEARS)
+  })
+  test('pastMaintenance array has 4 entries with Recommended maintenance in kms, months and years but some are not overdue', () => {
+    //Data
+
+    const EXPECTED_CURRENT_MAINTENANCE_KMS_MONTHS_YEARS = [
+      {
+        maintenanceId: 0,
+        name: 'Oil Change',
+        lastMaintenanceKms: 160000,
+        lastMaintenanceDate: new Date('2024'),
+        currentKms: 165000,
+        interval: 5000,
+        isOverdue: true,
+        unit: MaintenanceUnit.KMS
+      }
+    ]
+
+    //Run function
+    const sorted = sortRecommended(
+      CAR_STATS,
+      RECOMMENDED_MAINTENANCE_KMS_MONTHS_YEARS,
+      PAST_MAINTENANCE_KMS_MONTHS_YEARS_1_OVERDUE
+    )
+
+    //Test output expected
     expect(sorted).toStrictEqual(EXPECTED_CURRENT_MAINTENANCE_KMS_MONTHS_YEARS)
   })
 })
