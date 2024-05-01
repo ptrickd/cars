@@ -20,6 +20,24 @@ export const RECOMMENDED_MAINTENANCE_KMS_MONTHS_YEARS = [
   { id: 2, name: 'Replace Cabin Air Filter', interval: 2, unit: MaintenanceUnit.YEARS },
   { id: 3, name: 'Replace Air Filter', interval: 2, unit: MaintenanceUnit.YEARS }
 ]
+/*
+  maintenanceId: number
+  name: string
+  maintenanceKms: number
+  maintenanceDate: Date
+  unit: MaintenanceUnit
+*/
+
+export const PAST_MAINTENANCE_ONE_KMS = [
+  {
+    maintenanceId: 0,
+    name: 'Oil Change',
+    maintenanceKms: 40000,
+    maintenanceDate: new Date('2017'),
+    unit: MaintenanceUnit.KMS
+  }
+]
+
 // const SORTED_DATA = [
 //   {
 //     id: 4,

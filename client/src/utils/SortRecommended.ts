@@ -8,11 +8,10 @@ interface IRecommendedMaintenance {
 }
 
 interface IPastMaintenance {
-  name: string
   maintenanceId: number
-  currentKms: number
-  currentDate: Date
-  interval: number
+  name: string
+  maintenanceKms: number
+  maintenanceDate: Date
   unit: MaintenanceUnit
 }
 interface ICarStats {
@@ -31,7 +30,7 @@ interface ICurrentMaintenance {
   overdue: boolean
   unit: MaintenanceUnit
 }
-
+const deletePastEntrie = () => {}
 const createNewEntrie = (
   carStats: ICarStats,
   recommendedItem: IRecommendedMaintenance,
@@ -47,11 +46,12 @@ const createNewEntrie = (
   //Adding overdue
   let overdue = false
   const TWO_YEAR_IN_MONTHS = 24
+  console.log(recommendedItem)
   switch (recommendedItem.unit) {
     case MaintenanceUnit.KMS:
       if (lastMaintenance !== null) {
-        lastMaintenanceKms = lastMaintenance.currentKms
-        lastMaintenanceDate = lastMaintenance.currentDate
+        lastMaintenanceKms = lastMaintenance.maintenanceKms
+        lastMaintenanceDate = lastMaintenance.maintenanceDate
       } else {
         lastMaintenanceKms = 0
         lastMaintenanceDate = new Date(carStats.year)
@@ -61,8 +61,8 @@ const createNewEntrie = (
       break
     case MaintenanceUnit.MONTHS:
       if (lastMaintenance !== null) {
-        lastMaintenanceKms = lastMaintenance.currentKms
-        lastMaintenanceDate = lastMaintenance.currentDate
+        lastMaintenanceKms = lastMaintenance.maintenanceKms
+        lastMaintenanceDate = lastMaintenance.maintenanceDate
       } else {
         lastMaintenanceKms = 0
         lastMaintenanceDate = new Date(carStats.year)
@@ -75,8 +75,8 @@ const createNewEntrie = (
       break
     case MaintenanceUnit.YEARS:
       if (lastMaintenance !== null) {
-        lastMaintenanceKms = lastMaintenance.currentKms
-        lastMaintenanceDate = lastMaintenance.currentDate
+        lastMaintenanceKms = lastMaintenance.maintenanceKms
+        lastMaintenanceDate = lastMaintenance.maintenanceDate
       } else {
         lastMaintenanceKms = 0
         lastMaintenanceDate = new Date(carStats.year)
@@ -139,9 +139,10 @@ export const sortRecommended = (
       const newEntrie = createNewEntrie(carStats, recommendedItem, null)
 
       if (newEntrie) currentMaintenance.push(newEntrie)
+    } else {
+      const newEntrie = createNewEntrie(carStats, recommendedItem, pastMaintenance[index])
+      if (newEntrie) currentMaintenance.push(newEntrie)
     }
-    //else then remove the object with the maintenanceId  matching
-    //then adding the new object
   })
 
   return currentMaintenance

@@ -5,6 +5,7 @@ import { MaintenanceUnit } from '@/constants/enum'
 // @ts-ignore
 import {
   PAST_MAINTENANCE_EMPTY,
+  PAST_MAINTENANCE_ONE_KMS,
   CAR_STATS,
   RECOMMENDED_MAINTENANCE_KMS_ONLY,
   RECOMMENDED_MAINTENANCE_KMS_MONTHS_YEARS
@@ -33,7 +34,7 @@ describe('SortRecommended Function Unit Testing', () => {
     expect(sorted1).toStrictEqual(EXPECTED_CURRENT_MAINTENANCE_KMS_ONLY)
   })
 
-  test('pastMaintenance array is empty with Recommended maintenance only in kms and months', () => {
+  test('pastMaintenance array is empty with Recommended maintenance in kms, months and years', () => {
     //Data
     const EXPECTED_CURRENT_MAINTENANCE_KMS_MONTHS_YEARS = [
       {
@@ -88,5 +89,41 @@ describe('SortRecommended Function Unit Testing', () => {
     //Test output expected
 
     expect(sorted2).toStrictEqual(EXPECTED_CURRENT_MAINTENANCE_KMS_MONTHS_YEARS)
+  })
+
+  test('pastMaintenance array has one entry with Recommended maintenance in kms only', () => {
+    //Data
+    /*
+      {
+    maintenanceId: 0,
+    name: 'Oil Change',
+    maintenanceKms: 40000,
+    maintenanceDate: new Date('2017'),
+    unit: MaintenanceUnit.KMS
+  }
+    */
+    const EXPECTED_CURRENT_MAINTENANCE_KMS = [
+      {
+        maintenanceId: 0,
+        name: 'Oil Change',
+        lastMaintenanceKms: 40000,
+        lastMaintenanceDate: new Date('2017'),
+        currentKms: 165000,
+        interval: 5000,
+        overdue: true,
+        unit: MaintenanceUnit.KMS
+      }
+    ]
+
+    //Run function
+    const sorted = sortRecommended(
+      CAR_STATS,
+      RECOMMENDED_MAINTENANCE_KMS_ONLY,
+      PAST_MAINTENANCE_ONE_KMS
+    )
+
+    //Test output expected
+
+    expect(sorted).toStrictEqual(EXPECTED_CURRENT_MAINTENANCE_KMS)
   })
 })
