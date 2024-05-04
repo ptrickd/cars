@@ -8,7 +8,7 @@ const props = defineProps<IProps>()
 <template>
   <ul>
     <li>{{ props.item.name }}</li>
-    <li>{{ props.item.interval }} {{ props.item.unit }}</li>
+    <li>{{ props.item.interval }} {{ props.item.unit.toLowerCase() }}</li>
   </ul>
 </template>
 <style scoped></style>

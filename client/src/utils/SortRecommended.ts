@@ -15,7 +15,7 @@ interface IPastMaintenance {
   unit: MaintenanceUnit
 }
 interface ICarStats {
-  currentMileage: number
+  currentKms: number
   year: string
   unit: MaintenanceUnit
 }
@@ -56,7 +56,7 @@ const createNewEntrie = (
         lastMaintenanceKms = 0
         lastMaintenanceDate = new Date(carStats.year)
       }
-      if (carStats.currentMileage - lastMaintenanceKms >= recommendedItem.interval) isOverdue = true
+      if (carStats.currentKms - lastMaintenanceKms > recommendedItem.interval) isOverdue = true
 
       break
     case MaintenanceUnit.MONTHS:
@@ -68,7 +68,7 @@ const createNewEntrie = (
         lastMaintenanceDate = new Date(carStats.year)
       }
 
-      if (diffMonths(todayDate, lastMaintenanceDate) >= recommendedItem.interval) {
+      if (diffMonths(todayDate, lastMaintenanceDate) > recommendedItem.interval) {
         isOverdue = true
       }
 
@@ -83,7 +83,7 @@ const createNewEntrie = (
       }
 
       if (
-        diffMonths(todayDate, lastMaintenanceDate) >=
+        diffMonths(todayDate, lastMaintenanceDate) >
         recommendedItem.interval * TWO_YEAR_IN_MONTHS
       ) {
         isOverdue = true
@@ -98,7 +98,7 @@ const createNewEntrie = (
     typeof recommendedItem.name === 'string' &&
     typeof lastMaintenanceKms === 'number' &&
     typeof lastMaintenanceDate === 'object' &&
-    typeof carStats.currentMileage === 'number' &&
+    typeof carStats.currentKms === 'number' &&
     typeof recommendedItem.interval === 'number' &&
     typeof isOverdue === 'boolean' &&
     typeof recommendedItem.unit === 'string' &&
@@ -109,7 +109,7 @@ const createNewEntrie = (
       name: recommendedItem.name,
       lastMaintenanceKms: lastMaintenanceKms,
       lastMaintenanceDate: lastMaintenanceDate,
-      currentKms: carStats.currentMileage,
+      currentKms: carStats.currentKms,
       interval: recommendedItem.interval,
       isOverdue: isOverdue,
       unit: recommendedItem.unit

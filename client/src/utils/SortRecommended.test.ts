@@ -185,7 +185,7 @@ describe('SortRecommended Function Unit Testing', () => {
       {
         maintenanceId: 0,
         name: 'Oil Change',
-        lastMaintenanceKms: 160000,
+        lastMaintenanceKms: 159000,
         lastMaintenanceDate: new Date('2024'),
         currentKms: 165000,
         interval: 5000,
