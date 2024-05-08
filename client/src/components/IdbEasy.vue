@@ -22,7 +22,7 @@ const keyPath = ref('')
     <vue-button @click="db.createObjectStore(objectStoreName, keyPath)">Create</vue-button>
     <div>
       <h3>Delete Button</h3>
-      <vue-button @click="db.deleteDB">Delete DB</vue-button>
+      <vue-button @click="db.deleteDB()">Delete DB</vue-button>
     </div>
     <div>
       <h3>Check Support Button</h3>

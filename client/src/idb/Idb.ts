@@ -7,15 +7,23 @@ interface IObjectStoreList {
 
 export class Idb {
   dbName: string
+  db: null | IDBDatabase
   dbVersion: number
   objectStoreList: IObjectStoreList[]
+  dbState: string
+  openRequest: IDBOpenDBRequest | null
 
   constructor() {
     this.dbName = 'MaintenanceDB'
+    this.db = null
     this.dbVersion = 0
-
     this.objectStoreList = []
+    this.dbState = ''
+    this.openRequest = null
   }
+  /*
+  Upgrade the current version of the db when need to upgrade
+  */
   upgradeVersion() {
     this.dbVersion++
   }
@@ -41,8 +49,8 @@ export class Idb {
     }
     return DBOpenRequest
   }
-  deleteDB(dbName: string) {
-    const DBDeleteRequest = window.indexedDB.deleteDatabase(dbName)
+  deleteDB() {
+    const DBDeleteRequest = window.indexedDB.deleteDatabase(this.dbName)
 
     DBDeleteRequest.onerror = (event: Event) => {
       console.log(event.target)
@@ -52,8 +60,6 @@ export class Idb {
     DBDeleteRequest.onsuccess = (event: Event) => {
       console.log(event.target)
       console.log('Database deleted successfully')
-
-      // console.log(event.result) // should be undefined
     }
   }
   //
@@ -73,12 +79,21 @@ export class Idb {
 
     if (storeName.length > 1 && keyPath.length > 1) {
       console.log(this.dbVersion)
-      this.upgradeVersion()
+      if (this.dbState !== 'onupgradeneeded') this.upgradeVersion()
       console.log('upgrade version')
       console.log(this.dbVersion)
-      const DBOpenRequest = window.indexedDB.open(this.dbName, this.dbVersion)
-      // const DBOpenRequest = this.connect(this.dbVersion)
+      let DBOpenRequest: IDBOpenDBRequest | null = null
+      if (this.dbState !== 'onupgradeneeded') {
+        DBOpenRequest = window.indexedDB.open(this.dbName, this.dbVersion)
+        this.openRequest = DBOpenRequest
+      } else {
+        DBOpenRequest = this.openRequest
+        console.log(DBOpenRequest)
+      }
+      if (DBOpenRequest === null) throw new Error('DBOpenRequest null')
 
+      // const DBOpenRequest = this.connect(this.dbVersion)
+      console.log(DBOpenRequest.transaction)
       DBOpenRequest.onsuccess = (event: Event) => {
         // const { target } = event
         console.log('event on success')
@@ -93,8 +108,10 @@ export class Idb {
         console.error('Error creating new store database.')
       }
       DBOpenRequest.onupgradeneeded = (event: Event) => {
+        this.dbState = 'onupgradeneeded'
         console.log('inside oneupgrade')
         const db = (event.target as IDBOpenDBRequest).result
+        this.db = db
         console.log(db)
         db.onerror = (event: Event) => {
           console.error("Why didn't you allow my web app to use IndexedDB?!")
