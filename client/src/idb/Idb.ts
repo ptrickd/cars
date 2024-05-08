@@ -4,10 +4,6 @@ interface IObjectStoreList {
   storeName: string
   keyPath: string
 }
-interface IConnectReturn {
-  db: IDBDatabase | null
-  DBOpenRequest: IDBOpenDBRequest | null
-}
 
 export class Idb {
   dbName: string
@@ -60,6 +56,9 @@ export class Idb {
       // console.log(event.result) // should be undefined
     }
   }
+  //
+  //Console.log if the browser support indexedDb
+  //
   isIdbSupported() {
     if (!('indexedDB' in window)) {
       // Can't use IndexedDB
