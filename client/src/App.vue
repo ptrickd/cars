@@ -7,6 +7,8 @@ import {
 import { sortRecommended } from './utils/SortRecommended'
 import ListRecommended from './components/ListRecommended.vue'
 import CurrentRecommended from './components/CurrentRecommended.vue'
+
+import IdbEasy from './components/IdbEasy.vue'
 </script>
 
 <template>
@@ -46,6 +48,7 @@ import CurrentRecommended from './components/CurrentRecommended.vue'
         <vue-button label="Add" />
       </vue-accordion-tab>
     </vue-accordion>
+    <IdbEasy />
   </main>
 </template>
 

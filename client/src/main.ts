@@ -14,6 +14,7 @@ import ButtonGroup from 'primevue/buttongroup'
 import Card from 'primevue/card'
 
 import DataView from 'primevue/dataview'
+import InputText from 'primevue/inputtext'
 import MeterGroup from 'primevue/metergroup'
 
 //Import PrimeVue css
@@ -32,6 +33,7 @@ app.component('vue-button', Button)
 app.component('button-group', ButtonGroup)
 app.component('vue-card', Card)
 app.component('data-view', DataView)
+app.component('input-text', InputText)
 app.component('meter-group', MeterGroup)
 
 app.mount('#app')
