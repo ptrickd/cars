@@ -7,6 +7,10 @@ import {
 import { sortRecommended } from './utils/SortRecommended'
 import ListRecommended from './components/ListRecommended.vue'
 import CurrentRecommended from './components/CurrentRecommended.vue'
+import { db, getDoneMaintenance } from './idb/db'
+
+console.log(db)
+console.log(getDoneMaintenance().each((item) => console.log(item)))
 </script>
 
 <template>

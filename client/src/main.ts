@@ -1,5 +1,3 @@
-// import './assets/main.css'
-
 import { createApp } from 'vue'
 import App from './App.vue'
 
@@ -14,6 +12,8 @@ import ButtonGroup from 'primevue/buttongroup'
 import Card from 'primevue/card'
 
 import DataView from 'primevue/dataview'
+import Dropdown from 'primevue/dropdown'
+import FloatLabel from 'primevue/floatlabel'
 import InputText from 'primevue/inputtext'
 import MeterGroup from 'primevue/metergroup'
 
@@ -33,6 +33,8 @@ app.component('vue-button', Button)
 app.component('button-group', ButtonGroup)
 app.component('vue-card', Card)
 app.component('data-view', DataView)
+app.component('drop-down', Dropdown)
+app.component('float-label', FloatLabel)
 app.component('input-text', InputText)
 app.component('meter-group', MeterGroup)
 

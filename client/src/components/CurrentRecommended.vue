@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { MaintenanceUnit } from '@/constants/enum'
-import { Idb } from '../idb/Idb'
+import AddRecommended from './AddRecommended.vue'
 interface IItem {
   maintenanceId: number
   name: string
@@ -15,7 +15,7 @@ interface IProps {
   list: IItem[]
 }
 const props = defineProps<IProps>()
-const db = new Idb()
+
 const displayValueMeter = (currentKms: number, interval: number, lastMaintenanceKms: number) => {
   const totalSinceLastMaintenance = currentKms - lastMaintenanceKms
   const regular = (interval / totalSinceLastMaintenance) * 100
@@ -72,7 +72,7 @@ const displayValueMeter = (currentKms: number, interval: number, lastMaintenance
             />
             <vue-button
               icon="pi pi-check"
-              @click="db.connect()"
+              @click="console.log('clicked')"
               severity="success"
               raised
               rounded
@@ -81,6 +81,7 @@ const displayValueMeter = (currentKms: number, interval: number, lastMaintenance
         </div>
 
         <hr />
+        <AddRecommended />
       </div> </template
   ></data-view>
 </template>
