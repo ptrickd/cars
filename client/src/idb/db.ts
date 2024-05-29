@@ -51,19 +51,30 @@ async function addDoneMaintenance({
   isOverdue,
   unit
 }: IDone) {
-  await db.doneMaintenance.add({
-    name,
-    lastMaintenanceKms,
-    lastMaintenanceDate,
-    currentKms,
-    interval,
-    isOverdue,
-    unit
-  })
+  try {
+    await db.doneMaintenance.add({
+      name,
+      lastMaintenanceKms,
+      lastMaintenanceDate,
+      currentKms,
+      interval,
+      isOverdue,
+      unit
+    })
+  } catch (err: any) {
+    console.error(err)
+  }
 }
 
 async function addRecommendedMaintenance(name: string, interval: number, unit: MaintenanceUnit) {
-  await db.recommendedMaintenance.add({ name, interval, unit })
+  console.log(name)
+  console.log(interval)
+  console.log(unit)
+  try {
+    await db.recommendedMaintenance.add({ name, interval, unit })
+  } catch (err: any) {
+    console.error(err)
+  }
 }
 
 function getDoneMaintenance() {

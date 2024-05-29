@@ -9,7 +9,7 @@ import { addRecommendedMaintenance } from '@/idb/db'
     */
 let name = ref('')
 let interval = ref('')
-let unit = ref('')
+let unit = ref({ name: '', code: '' })
 console.log(MaintenanceUnit)
 const maintenanceUnitValues = ref([
   {
@@ -64,7 +64,8 @@ const handleClick = () => {
       />
     </float-label>
     <!--  -->
-    <vue-button @click="addRecommendedMaintenance(name, Number(interval), unit as MaintenanceUnit)"
+    <vue-button
+      @click="addRecommendedMaintenance(name, Number(interval), unit.code as MaintenanceUnit)"
       >Add</vue-button
     >
   </div>
