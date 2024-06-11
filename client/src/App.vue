@@ -1,13 +1,30 @@
 <script setup lang="ts">
+//Imports Lib
+import { ref } from 'vue'
+import { liveQuery } from 'dexie'
+import { useObservable } from '@vueuse/rxjs'
+
+//Fake data
 import {
-  CAR_STATS,
-  RECOMMENDED_MAINTENANCE_KMS_MONTHS_YEARS,
-  PAST_MAINTENANCE_KMS_MONTHS_YEARS_1_OVERDUE
+  CAR_STATS
+  // RECOMMENDED_MAINTENANCE_KMS_MONTHS_YEARS
+  // PAST_MAINTENANCE_KMS_MONTHS_YEARS_1_OVERDUE
 } from './fakeData/sortRecommended'
-import { sortRecommended } from './utils/SortRecommended'
+
+//Import Function
+// import { sortRecommended } from './utils/SortRecommended'
+
+//Components
 import ListRecommended from './components/ListRecommended.vue'
-import CurrentRecommended from './components/CurrentRecommended.vue'
+// import CurrentRecommended from './components/CurrentRecommended.vue'
+import AddRecommendedModal from './components/AddRecommendedModal.vue'
+
+//Database
 import { db, getDoneMaintenance } from './idb/db'
+
+//Variable
+
+//Functions
 
 console.log(db)
 console.log(getDoneMaintenance().each((item) => console.log(item)))
@@ -34,7 +51,7 @@ console.log(getDoneMaintenance().each((item) => console.log(item)))
       </div>
     </div>
     <vue-accordion>
-      <vue-accordion-tab header="Current Maintenance List">
+      <!-- <vue-accordion-tab header="Current Maintenance List">
         <CurrentRecommended
           :list="
             sortRecommended(
@@ -44,10 +61,11 @@ console.log(getDoneMaintenance().each((item) => console.log(item)))
             )
           "
         />
-      </vue-accordion-tab>
+      </vue-accordion-tab> -->
       <vue-accordion-tab header="Recommended Maintenance List">
-        <ListRecommended :list="RECOMMENDED_MAINTENANCE_KMS_MONTHS_YEARS" />
-        <vue-button label="Add" />
+        <ListRecommended :list="[]" />
+
+        <AddRecommendedModal />
       </vue-accordion-tab>
     </vue-accordion>
   </main>

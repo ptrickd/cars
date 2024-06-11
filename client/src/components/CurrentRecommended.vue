@@ -1,6 +1,8 @@
 <script setup lang="ts">
+//Import libs
 import { MaintenanceUnit } from '@/constants/enum'
-import AddRecommended from './AddRecommended.vue'
+
+//Types
 interface IItem {
   maintenanceId: number
   name: string
@@ -14,8 +16,10 @@ interface IItem {
 interface IProps {
   list: IItem[]
 }
+
 const props = defineProps<IProps>()
 
+//Functions
 const displayValueMeter = (currentKms: number, interval: number, lastMaintenanceKms: number) => {
   const totalSinceLastMaintenance = currentKms - lastMaintenanceKms
   const regular = (interval / totalSinceLastMaintenance) * 100
@@ -81,7 +85,6 @@ const displayValueMeter = (currentKms: number, interval: number, lastMaintenance
         </div>
 
         <hr />
-        <AddRecommended />
       </div> </template
   ></data-view>
 </template>

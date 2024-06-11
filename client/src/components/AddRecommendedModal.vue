@@ -7,10 +7,12 @@ import { addRecommendedMaintenance } from '@/idb/db'
    interval,
     unit
     */
+
+//Variables
 let name = ref('')
 let interval = ref('')
 let unit = ref({ name: '', code: '' })
-console.log(MaintenanceUnit)
+let visible = ref(false)
 const maintenanceUnitValues = ref([
   {
     name: 'kms',
@@ -25,16 +27,23 @@ const maintenanceUnitValues = ref([
     code: MaintenanceUnit.YEARS
   }
 ])
-const handleClick = () => {
-  console.log('name:' + name.value)
-  console.log('interval:' + interval.value)
-  console.log('unit:' + unit.value)
-}
+
+// const emit = defineEmits(['modalClosed'])
 </script>
 <template>
-  <div>
+  <vue-button label="Add" @click="visible = true" />
+  <vue-dialog
+    v-model:visible="visible"
+    modal
+    header="Edit Profile"
+    :pt="{
+      root: 'border-none',
+      mask: {
+        style: 'backdrop-filter: blur(2px)'
+      }
+    }"
+  >
     <h3>Adding New Recommended Maintenance</h3>
-    <h4>****************************************</h4>
     <!-- Need to add validation -->
     <!-- Need to add spaing between input to better see label -->
     <float-label
@@ -64,9 +73,10 @@ const handleClick = () => {
       />
     </float-label>
     <!--  -->
+    <vue-button @click="visible = false">Cancel</vue-button>
     <vue-button
       @click="addRecommendedMaintenance(name, Number(interval), unit.code as MaintenanceUnit)"
       >Add</vue-button
     >
-  </div>
+  </vue-dialog>
 </template>
