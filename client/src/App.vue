@@ -1,9 +1,8 @@
 <script setup lang="ts">
 //Imports Lib
-import { ref } from 'vue'
-import { liveQuery } from 'dexie'
-import { useObservable } from '@vueuse/rxjs'
-
+import { onMounted, ref } from 'vue'
+// import { liveQuery } from 'dexie'
+// import { useObservable } from '@vueuse/rxjs'
 //Fake data
 import {
   CAR_STATS
@@ -22,12 +21,22 @@ import AddRecommendedModal from './components/AddRecommendedModal.vue'
 //Database
 import { db, getDoneMaintenance } from './idb/db'
 
-//Variable
+//Types
+import type { IRecommended } from 'types/types'
 
+//Lifecycle
+onMounted(() => {
+  getList()
+})
+//Variable
+let list = ref<IRecommended[]>([])
 //Functions
 
-console.log(db)
-console.log(getDoneMaintenance().each((item) => console.log(item)))
+const getList = async () => {
+  list.value = await db.recommendedMaintenance.toArray()
+}
+
+// console.log(list())
 </script>
 
 <template>
@@ -63,7 +72,7 @@ console.log(getDoneMaintenance().each((item) => console.log(item)))
         />
       </vue-accordion-tab> -->
       <vue-accordion-tab header="Recommended Maintenance List">
-        <ListRecommended :list="[]" />
+        <ListRecommended :list="list" />
 
         <AddRecommendedModal />
       </vue-accordion-tab>
