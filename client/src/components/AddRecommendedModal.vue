@@ -12,8 +12,6 @@
     }"
   >
     <h3>Adding New Recommended Maintenance</h3>
-    <!-- Need to add validation -->
-    <!-- Need to add spaing between input to better see label -->
     <div class="input-group">
       <label for="name">Name</label>
       <input-text id="name" v-model="name" name="name" aria-describedby="name maintenance" />

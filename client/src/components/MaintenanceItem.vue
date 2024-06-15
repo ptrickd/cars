@@ -8,7 +8,13 @@
     </div>
 
     <div>
-      <vue-button class="button-delete" label="Delete" severity="danger" text />
+      <vue-button
+        class="button-delete"
+        @click="handleDeleteItem()"
+        label="Delete"
+        severity="danger"
+        text
+      />
       <vue-button class="button-update" label="Update" text />
     </div>
   </div>
@@ -33,8 +39,13 @@
 </style>
 
 <script setup lang="ts">
+import { deleteRecommendedMaintenance } from '@/idb/db'
 interface IProps {
   item: { id: number; name: string; interval: number; unit: string }
 }
 const props = defineProps<IProps>()
+
+const handleDeleteItem = () => {
+  deleteRecommendedMaintenance(props.item.id)
+}
 </script>

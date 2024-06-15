@@ -79,10 +79,26 @@ async function addRecommendedMaintenance(name: string, interval: number, unit: M
   }
 }
 
+async function deleteRecommendedMaintenance(id: number) {
+  try {
+    await db.recommendedMaintenance.delete(id)
+    return { success: true }
+  } catch (err: any) {
+    console.log(err)
+    return { error: err.message }
+  }
+}
+
 function getDoneMaintenance() {
   const collection = db.recommendedMaintenance.where('id').above(0)
   return collection
 }
 
 // export type { Friend }
-export { db, addDoneMaintenance, getDoneMaintenance, addRecommendedMaintenance }
+export {
+  db,
+  addDoneMaintenance,
+  getDoneMaintenance,
+  addRecommendedMaintenance,
+  deleteRecommendedMaintenance
+}
