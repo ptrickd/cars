@@ -84,6 +84,7 @@
 import { ref } from 'vue'
 import { MaintenanceUnit } from '@/constants/enum'
 import { addRecommendedMaintenance } from '@/idb/db'
+import { useToast } from 'primevue/usetoast'
 
 //Variables
 let name = ref('')
@@ -95,10 +96,31 @@ let intervalValidationError = ref('')
 let nameValidationError = ref('')
 let unitValidationError = ref('')
 
-const handleAddBtnClicked = () => {
-  handleValidation()
-  // addRecommendedMaintenance(name, Number(interval), unit.code as MaintenanceUnit)
+const toast = useToast()
+// toast.add({ severity: 'info', detail: 'Recommended Maintenance Saved!' })
+const handleAddBtnClicked = async () => {
+  const isValidationPassed = handleValidation()
+  if (isValidationPassed) {
+    const response = await addRecommendedMaintenance(
+      name.value,
+      parseInt(interval.value),
+      unit.value.code as MaintenanceUnit
+    )
+    console.log(response)
+    if (response.success) {
+      console.log('success')
+      //send toast confirming the maintenance has benn added
+      toast.add({ severity: 'info', detail: 'New Maintenance Saved!' })
+      visible.value = false
+      //refresh list in UI
+    } else if (response.error) {
+      toast.add({ severity: 'error', detail: 'Something Went Wrong!' })
+      visible.value = false
+    }
+  }
+  //
 }
+
 const handleValidation = () => {
   //handle validation for name
   if (name.value.length === 0) {
@@ -127,6 +149,13 @@ const handleValidation = () => {
   } else {
     unitValidationError.value = ''
   }
+  if (
+    nameValidationError.value === '' &&
+    intervalValidationError.value === '' &&
+    unitValidationError.value === ''
+  )
+    return true
+  else return false
 }
 const maintenanceUnitValues = ref([
   {

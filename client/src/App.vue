@@ -9,7 +9,7 @@ import {
   // RECOMMENDED_MAINTENANCE_KMS_MONTHS_YEARS
   // PAST_MAINTENANCE_KMS_MONTHS_YEARS_1_OVERDUE
 } from './fakeData/sortRecommended'
-
+import Toast from 'primevue/toast'
 //Import Function
 // import { sortRecommended } from './utils/SortRecommended'
 
@@ -41,6 +41,7 @@ const getList = async () => {
 
 <template>
   <main>
+    <Toast />
     <div class="top-container">
       <div class="grid-item">
         <p class="label">Brand:&nbsp;</p>

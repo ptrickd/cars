@@ -19,6 +19,9 @@ import InlineMessage from 'primevue/inlinemessage'
 import InputText from 'primevue/inputtext'
 import MeterGroup from 'primevue/metergroup'
 
+//ToastService application plugin for primevue
+import ToastService from 'primevue/toastservice'
+
 //Import PrimeVue css
 import 'primevue/resources/themes/mdc-dark-indigo/theme.css'
 import 'primevue/resources/primevue.min.css'
@@ -27,6 +30,7 @@ import 'primeicons/primeicons.css'
 const app = createApp(App)
 
 app.use(PrimeVue)
+app.use(ToastService)
 
 //Add PrimeVue Components
 app.component('vue-accordion', Accordion)

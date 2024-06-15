@@ -72,8 +72,10 @@ async function addRecommendedMaintenance(name: string, interval: number, unit: M
   console.log(unit)
   try {
     await db.recommendedMaintenance.add({ name, interval, unit })
+    return { success: true }
   } catch (err: any) {
     console.error(err)
+    return { error: err.message }
   }
 }
 
