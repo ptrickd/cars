@@ -95,7 +95,7 @@ let nameValidationError = ref('')
 let unitValidationError = ref('')
 
 const toast = useToast()
-// toast.add({ severity: 'info', detail: 'Recommended Maintenance Saved!' })
+
 const handleAddBtnClicked = async () => {
   const isValidationPassed = handleValidation()
   if (isValidationPassed) {
@@ -111,6 +111,7 @@ const handleAddBtnClicked = async () => {
       toast.add({ severity: 'info', detail: 'New Maintenance Saved!' })
       visible.value = false
       //refresh list in UI
+      emit('refreshRecommendedList')
     } else if (response.error) {
       toast.add({ severity: 'error', detail: 'Something Went Wrong!' })
       visible.value = false
@@ -151,9 +152,9 @@ const handleValidation = () => {
     nameValidationError.value === '' &&
     intervalValidationError.value === '' &&
     unitValidationError.value === ''
-  )
+  ) {
     return true
-  else return false
+  } else return false
 }
 const maintenanceUnitValues = ref([
   {
@@ -170,5 +171,5 @@ const maintenanceUnitValues = ref([
   }
 ])
 
-// const emit = defineEmits(['modalClosed'])
+const emit = defineEmits(['refreshRecommendedList'])
 </script>
