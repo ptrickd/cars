@@ -73,7 +73,7 @@ const getList = async () => {
         />
       </vue-accordion-tab> -->
       <vue-accordion-tab header="Recommended Maintenance List">
-        <ListRecommended :list="list" />
+        <ListRecommended :list="list" @refreshRecommendedList="getList()" />
 
         <AddRecommendedModal />
       </vue-accordion-tab>
