@@ -16,11 +16,13 @@
           severity="danger"
           text
         />
-        <vue-button
-          class="button-update"
-          @click="console.log('update clicked')"
-          label="Update"
-          text
+        <vue-button class="button-update" @click="toggleVisible()" label="Update" text />
+        <UpdateRecommendedModal
+          :name="item.name"
+          :interval="String(item.interval)"
+          :unit="item.unit"
+          :visible="visible"
+          @toggleVisible="toggleVisible()"
         />
       </div>
     </div>
@@ -28,6 +30,12 @@
 </template>
 
 <script setup lang="ts">
+//Import
+import { ref } from 'vue'
+import { deleteRecommendedMaintenance } from '@/idb/db'
+import UpdateRecommendedModal from './UpdateRecommendedModal.vue'
+
+//Types
 interface IRecommended {
   id: number
   name: string
@@ -38,14 +46,19 @@ interface IProps {
   list: IRecommended[]
 }
 
-import { deleteRecommendedMaintenance } from '@/idb/db'
-
+//Declarations
 const props = defineProps<IProps>()
 const emit = defineEmits(['refreshRecommendedList'])
+let visible = ref(false)
 
+//Function
 const handleDeleteItem = async (id: number) => {
   await deleteRecommendedMaintenance(id)
   emit('refreshRecommendedList')
+}
+
+const toggleVisible = () => {
+  visible.value = !visible.value
 }
 </script>
 <style scoped>
