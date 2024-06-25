@@ -22,7 +22,7 @@
     <div class="input-group">
       <label for="interval">Interval</label>
 
-      <input-text
+      <input-number
         id="interval"
         v-model="interval"
         name="interval"
@@ -86,7 +86,7 @@ import { useToast } from 'primevue/usetoast'
 
 //Variables
 let name = ref('')
-let interval = ref('')
+let interval = ref(0)
 let unit = ref({ name: '', code: '' })
 let visible = ref(false)
 
@@ -101,7 +101,7 @@ const handleAddBtnClicked = async () => {
   if (isValidationPassed) {
     const response = await addRecommendedMaintenance(
       name.value,
-      parseInt(interval.value),
+      interval.value,
       unit.value.code as MaintenanceUnit
     )
     console.log(response)
@@ -132,11 +132,11 @@ const handleValidation = () => {
   //must have a value
   //must be number
   //must be positive
-  if (interval.value.length === 0) {
+  if (interval.value === 0) {
     intervalValidationError.value = 'Must be at least 3 characters.'
-  } else if (typeof parseInt(interval.value) !== 'number') {
+  } else if (typeof interval.value !== 'number') {
     intervalValidationError.value = 'Must be a number.'
-  } else if (parseInt(interval.value) < 1) {
+  } else if (interval.value < 1) {
     intervalValidationError.value = 'Must be greater than 0.'
   } else {
     intervalValidationError.value = ''

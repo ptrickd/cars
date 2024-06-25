@@ -13,10 +13,17 @@
           class="button-delete"
           @click="handleDeleteItem(item.id)"
           label="Delete"
+          icon="pi pi-times"
           severity="danger"
           text
         />
-        <vue-button class="button-update" @click="toggleVisible()" label="Update" text />
+        <vue-button
+          class="button-update"
+          @click="toggleVisible()"
+          label="Update"
+          icon="pi pi-user-edit"
+          text
+        />
         <UpdateRecommendedModal
           :name="item.name"
           :interval="String(item.interval)"
@@ -26,6 +33,7 @@
         />
       </div>
     </div>
+    <div><vue-divider /></div>
   </span>
 </template>
 

@@ -1,10 +1,9 @@
 <template>
   <div>
     <vue-dialog
+      @update:visible="$emit('toggleVisible')"
       v-model:visible="$props.visible"
       header="Update"
-      closeOnEscape
-      closable
       v-model:showHeader="showHeader"
       :pt="{
         root: 'border-none',
