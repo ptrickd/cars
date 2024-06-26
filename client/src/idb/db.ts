@@ -66,6 +66,7 @@ async function addDoneMaintenance({
   }
 }
 
+//Create
 async function addRecommendedMaintenance(name: string, interval: number, unit: MaintenanceUnit) {
   console.log(name)
   console.log(interval)
@@ -79,6 +80,14 @@ async function addRecommendedMaintenance(name: string, interval: number, unit: M
   }
 }
 
+//Update
+async function updateRecommendedMaintenance(name: string, interval: number, unit: MaintenanceUnit) {
+  console.log(name)
+  console.log(interval)
+  console.log(unit)
+}
+
+//Delete
 async function deleteRecommendedMaintenance(id: number) {
   try {
     await db.recommendedMaintenance.delete(id)
@@ -100,5 +109,6 @@ export {
   addDoneMaintenance,
   getDoneMaintenance,
   addRecommendedMaintenance,
+  updateRecommendedMaintenance,
   deleteRecommendedMaintenance
 }

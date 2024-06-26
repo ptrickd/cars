@@ -43,8 +43,11 @@
 <style scoped>
 main {
   min-width: 400px;
+  max-width: 1000px;
+  /* display: flex; */
 }
 .top-container {
+  /* align-self: center; */
   display: grid;
 
   grid-template-columns: auto auto;

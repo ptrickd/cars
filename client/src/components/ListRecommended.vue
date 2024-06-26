@@ -26,7 +26,7 @@
         />
         <UpdateRecommendedModal
           :name="item.name"
-          :interval="String(item.interval)"
+          :interval="item.interval"
           :unit="item.unit"
           :visible="visible"
           @toggleVisible="toggleVisible()"
