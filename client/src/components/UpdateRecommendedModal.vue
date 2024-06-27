@@ -90,7 +90,7 @@
         <vue-button
           class="button"
           label="Update"
-          @click="updateRecommendedMaintenance(newName, newInterval, newUnit.code)"
+          @click="handleUpdateButtonClicked(newName, newInterval, newUnit.code)"
         />
       </div>
     </vue-dialog>
@@ -139,12 +139,13 @@
 
 <script setup lang="ts">
 //Import
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import { MaintenanceUnit } from '@/constants/enum'
 import { updateRecommendedMaintenance } from '@/idb/db'
 
 //Types
 interface IProps {
+  id: number
   name: string
   interval: number
   unit: string
@@ -183,6 +184,7 @@ let newUnit = ref({ name: props.unit, code: MaintenanceUnit.KMS })
 
 //Function
 const handleUpdateButtonClicked = (name: string, interval: number, unit: MaintenanceUnit) => {
-  updateRecommendedMaintenance(name, interval, unit)
+  updateRecommendedMaintenance(props.id, name, interval, unit)
+  emit('toggleVisible')
 }
 </script>

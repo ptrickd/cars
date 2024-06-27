@@ -81,10 +81,23 @@ async function addRecommendedMaintenance(name: string, interval: number, unit: M
 }
 
 //Update
-async function updateRecommendedMaintenance(name: string, interval: number, unit: MaintenanceUnit) {
+async function updateRecommendedMaintenance(
+  id: number,
+  name: string,
+  interval: number,
+  unit: MaintenanceUnit
+) {
   console.log(name)
   console.log(interval)
   console.log(unit)
+  try {
+    console.log('in the try')
+    await db.recommendedMaintenance.update(id, { name, interval, unit })
+    return { success: true }
+  } catch (err: any) {
+    console.log(err)
+    return { error: err.message }
+  }
 }
 
 //Delete

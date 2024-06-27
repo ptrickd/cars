@@ -25,6 +25,7 @@
           text
         />
         <UpdateRecommendedModal
+          :id="item.id"
           :name="item.name"
           :interval="item.interval"
           :unit="item.unit"
