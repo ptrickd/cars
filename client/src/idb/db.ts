@@ -68,9 +68,6 @@ async function addDoneMaintenance({
 
 //Create
 async function addRecommendedMaintenance(name: string, interval: number, unit: MaintenanceUnit) {
-  console.log(name)
-  console.log(interval)
-  console.log(unit)
   try {
     await db.recommendedMaintenance.add({ name, interval, unit })
     return { success: true }
@@ -116,7 +113,6 @@ function getDoneMaintenance() {
   return collection
 }
 
-// export type { Friend }
 export {
   db,
   addDoneMaintenance,
