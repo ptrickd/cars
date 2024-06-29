@@ -20,6 +20,14 @@ interface IRecommended {
   unit: MaintenanceUnit
 }
 
+interface IVehicle {
+  id?: number
+  brand: string
+  model: string
+  year: number
+  currentKms: number
+}
+
 const db = new Dexie('MaintenanceDB') as Dexie & {
   doneMaintenance: EntityTable<
     IDone,
@@ -27,6 +35,10 @@ const db = new Dexie('MaintenanceDB') as Dexie & {
   >
   recommendedMaintenance: EntityTable<
     IRecommended,
+    'id' // primary key "id" (for the typings only)
+  >
+  vehicle: EntityTable<
+    IVehicle,
     'id' // primary key "id" (for the typings only)
   >
 }
@@ -40,6 +52,21 @@ db.version(1).stores({
 db.version(2).stores({
   recommendedMaintenance: '++id, name, interval, unit'
 })
+
+db.version(3).stores({
+  vehicle: '++id, brand, model, year, currentKms'
+})
+//Vehicule
+async function getVehicule() {
+  try {
+    const vehicles = await db.vehicle.toArray()
+    console.log(vehicles)
+    return vehicles
+  } catch (err: any) {
+    console.error(err)
+    return { error: err.message }
+  }
+}
 
 //Done Maintenance
 async function addDoneMaintenance({
@@ -115,9 +142,11 @@ function getDoneMaintenance() {
 
 export {
   db,
+  getVehicule,
   addDoneMaintenance,
   getDoneMaintenance,
   addRecommendedMaintenance,
   updateRecommendedMaintenance,
   deleteRecommendedMaintenance
 }
+export type { IVehicle }

@@ -1,24 +1,8 @@
 <template>
   <main>
     <Toast />
-    <div class="top-container">
-      <div class="grid-item">
-        <p class="label">Brand:&nbsp;</p>
-        <p>{{ CAR_STATS.brand }}</p>
-      </div>
-      <div class="grid-item">
-        <p class="label">Model:&nbsp;</p>
-        <p>{{ CAR_STATS.model }}</p>
-      </div>
-      <div class="grid-item">
-        <p class="label">Year:&nbsp;</p>
-        <p>{{ CAR_STATS.year }}</p>
-      </div>
-      <div class="grid-item">
-        <p class="label">Mileage:&nbsp;</p>
-        <p>{{ CAR_STATS.currentKms }} kms</p>
-      </div>
-    </div>
+    <VehiculeSpecs />
+
     <vue-accordion>
       <!-- <vue-accordion-tab header="Current Maintenance List">
         <CurrentRecommended
@@ -46,42 +30,16 @@ main {
   max-width: 1000px;
   /* display: flex; */
 }
-.top-container {
-  /* align-self: center; */
-  display: grid;
-
-  grid-template-columns: auto auto;
-  grid-template-rows: auto auto;
-  gap: 10px 10px;
-  margin-left: auto;
-  margin-bottom: auto;
-}
-.grid-item {
-  min-width: 100px;
-  display: flex;
-  align-items: flex-start;
-  font-size: 110%;
-  text-align: center;
-}
-.label {
-  color: var(--blue-200);
-}
 </style>
 
 <script setup lang="ts">
 //Imports Lib
 
-//Fake data
-import { CAR_STATS } from './fakeData/sortRecommended'
 import Toast from 'primevue/toast'
 
 //Components
 import ListRecommended from './components/ListRecommended.vue'
 
 import AddRecommendedModal from './components/AddRecommendedModal.vue'
-
-//Database
-
-//Types
-import type { IRecommended } from 'types/types'
+import VehiculeSpecs from './components/VehiculeSpecs.vue'
 </script>
