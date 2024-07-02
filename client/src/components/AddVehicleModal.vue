@@ -57,6 +57,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
+import { addVehicule } from '@/idb/db'
 
 const visible = ref(false)
 const brand = ref('')
@@ -65,12 +66,8 @@ const year = ref('1900')
 const currentKms = ref(0)
 
 const handleAddBtnClicked = () => {
-  console.log(`brand: ${brand.value}`)
-  console.log(`model: ${model.value}`)
-  console.log(`year: ${year.value}`)
-  console.log(`currentKms: ${currentKms.value}`)
   if (model.value.length !== 0 && brand.value.length !== 0) {
-    console.log('add vehicle')
+    addVehicule(brand.value, model.value, year.value, currentKms.value)
   } else {
     console.log('missing value')
   }

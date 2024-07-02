@@ -24,7 +24,7 @@ interface IVehicle {
   id?: number
   brand: string
   model: string
-  year: number
+  year: string
   currentKms: number
 }
 
@@ -56,12 +56,24 @@ db.version(2).stores({
 db.version(3).stores({
   vehicle: '++id, brand, model, year, currentKms'
 })
-//Vehicule
+//Vehicule get list
 async function getVehicule() {
   try {
     const vehicles = await db.vehicle.toArray()
     console.log(vehicles)
     return vehicles
+  } catch (err: any) {
+    console.error(err)
+    return { error: err.message }
+  }
+}
+
+//Vehicle add
+async function addVehicule(brand: string, model: string, year: string, currentKms: number) {
+  try {
+    await db.vehicle.add({ brand, model, year, currentKms })
+
+    return { success: true }
   } catch (err: any) {
     console.error(err)
     return { error: err.message }
@@ -143,6 +155,7 @@ function getDoneMaintenance() {
 export {
   db,
   getVehicule,
+  addVehicule,
   addDoneMaintenance,
   getDoneMaintenance,
   addRecommendedMaintenance,
