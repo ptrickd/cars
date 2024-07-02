@@ -1,8 +1,7 @@
 <template>
   <div class="top-container">
-    <div v-if="!vehicleList.length">
+    <div v-if="Array.isArray(vehicleList) && !vehicleList.length">
       <p>No vehicle added yet!</p>
-      <vue-button>Add Vehicule</vue-button>
     </div>
 
     <div v-else>
@@ -24,6 +23,8 @@
       </div>
     </div>
   </div>
+
+  <AddVehicleModal />
 </template>
 
 <style scoped>
@@ -50,6 +51,7 @@
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
 import { CAR_STATS } from '../fakeData/sortRecommended'
+import AddVehicleModal from './AddVehicleModal.vue'
 import { getVehicule } from '@/idb/db'
 import type { IVehicle } from '@/idb/db'
 
@@ -59,11 +61,11 @@ interface IError {
 interface IList {
   value?: IVehicle[] | [] | IError
 }
-let vehicleList: IList = ref([])
+let vehicleList = ref<IList | null | IVehicle[] | IError>()
 
 onMounted(async () => {
   const response = await getVehicule()
   console.log(response)
-  vehicleList.value = response
+  if (response) vehicleList.value = response
 })
 </script>
