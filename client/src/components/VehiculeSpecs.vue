@@ -5,7 +5,7 @@
     </div>
 
     <div v-else-if="Array.isArray(vehicleList)">
-      <ul>
+      <ol>
         <li v-for="vehicle in vehicleList" :key="vehicle.id">
           <div class="grid-item">
             <p class="label">Brand:&nbsp;</p>
@@ -23,8 +23,9 @@
             <p class="label">Mileage:&nbsp;</p>
             <p>{{ vehicle.currentKms }} kms</p>
           </div>
+          <vue-button label="Go" @click="console.log('go to /id:')" />
         </li>
-      </ul>
+      </ol>
     </div>
   </div>
 

@@ -1,26 +1,16 @@
 <template>
   <main>
     <Toast />
-    <VehiculeSpecs />
+    <RouterView />
+    <!-- <VehiculeSpecs /> -->
 
-    <vue-accordion>
-      <!-- <vue-accordion-tab header="Current Maintenance List">
-        <CurrentRecommended
-          :list="
-            sortRecommended(
-              CAR_STATS,
-              RECOMMENDED_MAINTENANCE_KMS_MONTHS_YEARS,
-              PAST_MAINTENANCE_KMS_MONTHS_YEARS_1_OVERDUE
-            )
-          "
-        />
-      </vue-accordion-tab> -->
+    <!-- <vue-accordion>
       <vue-accordion-tab header="Recommended Maintenance List">
         <ListRecommended />
 
         <AddRecommendedModal />
       </vue-accordion-tab>
-    </vue-accordion>
+    </vue-accordion> -->
   </main>
 </template>
 
@@ -42,4 +32,5 @@ import ListRecommended from './components/ListRecommended.vue'
 
 import AddRecommendedModal from './components/AddRecommendedModal.vue'
 import VehiculeSpecs from './components/VehiculeSpecs.vue'
+import { RouterView } from 'vue-router'
 </script>
