@@ -65,9 +65,10 @@ const model = ref('')
 const year = ref('1900')
 const currentKms = ref(0)
 
-const handleAddBtnClicked = () => {
+const handleAddBtnClicked = async () => {
   if (model.value.length !== 0 && brand.value.length !== 0) {
-    addVehicule(brand.value, model.value, year.value, currentKms.value)
+    const response = await addVehicule(brand.value, model.value, year.value, currentKms.value)
+    if (response.success) visible.value = false
   } else {
     console.log('missing value')
   }

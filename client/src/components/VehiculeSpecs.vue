@@ -4,23 +4,27 @@
       <p>No vehicle added yet!</p>
     </div>
 
-    <div v-else>
-      <div class="grid-item">
-        <p class="label">Brand:&nbsp;</p>
-        <p>{{ CAR_STATS.brand }}</p>
-      </div>
-      <div class="grid-item">
-        <p class="label">Model:&nbsp;</p>
-        <p>{{ CAR_STATS.model }}</p>
-      </div>
-      <div class="grid-item">
-        <p class="label">Year:&nbsp;</p>
-        <p>{{ CAR_STATS.year }}</p>
-      </div>
-      <div class="grid-item">
-        <p class="label">Mileage:&nbsp;</p>
-        <p>{{ CAR_STATS.currentKms }} kms</p>
-      </div>
+    <div v-else-if="Array.isArray(vehicleList)">
+      <ul>
+        <li v-for="vehicle in vehicleList" :key="vehicle.id">
+          <div class="grid-item">
+            <p class="label">Brand:&nbsp;</p>
+            <p>{{ vehicle.brand }}</p>
+          </div>
+          <div class="grid-item">
+            <p class="label">Model:&nbsp;</p>
+            <p>{{ vehicle.model }}</p>
+          </div>
+          <div class="grid-item">
+            <p class="label">Year:&nbsp;</p>
+            <p>{{ vehicle.year }}</p>
+          </div>
+          <div class="grid-item">
+            <p class="label">Mileage:&nbsp;</p>
+            <p>{{ vehicle.currentKms }} kms</p>
+          </div>
+        </li>
+      </ul>
     </div>
   </div>
 
@@ -50,7 +54,7 @@
 </style>
 <script setup lang="ts">
 import { ref, onMounted } from 'vue'
-import { CAR_STATS } from '../fakeData/sortRecommended'
+
 import AddVehicleModal from './AddVehicleModal.vue'
 import { getVehicule } from '@/idb/db'
 import type { IVehicle } from '@/idb/db'
