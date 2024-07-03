@@ -8,6 +8,7 @@ import PrimeVue from 'primevue/config'
 //Import PrimeVue Components
 import Accordion from 'primevue/accordion'
 import AccordionTab from 'primevue/accordiontab'
+import Breadcrumb from 'primevue/breadcrumb'
 import Button from 'primevue/button'
 import ButtonGroup from 'primevue/buttongroup'
 import Card from 'primevue/card'
@@ -23,7 +24,11 @@ import InlineMessage from 'primevue/inlinemessage'
 import Inplace from 'primevue/inplace'
 import InputText from 'primevue/inputtext'
 import InputNumber from 'primevue/inputnumber'
+import Menubar from 'primevue/menubar'
 import MeterGroup from 'primevue/metergroup'
+
+//Import Router
+import { RouterLink } from 'vue-router'
 
 //ToastService application plugin for primevue
 import ToastService from 'primevue/toastservice'
@@ -43,6 +48,7 @@ app.use(router)
 //Add PrimeVue Components
 app.component('vue-accordion', Accordion)
 app.component('vue-accordion-tab', AccordionTab)
+app.component('bread-crumb', Breadcrumb)
 app.component('vue-button', Button)
 app.component('button-group', ButtonGroup)
 app.component('vue-card', Card)
@@ -57,6 +63,10 @@ app.component('inline-message', InlineMessage)
 app.component('in-place', Inplace)
 app.component('input-text', InputText)
 app.component('input-number', InputNumber)
+app.component('menu-bar', Menubar)
 app.component('meter-group', MeterGroup)
+
+//Add Router
+app.component('router-link', RouterLink)
 
 app.mount('#app')

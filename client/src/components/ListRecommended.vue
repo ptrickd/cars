@@ -34,7 +34,13 @@
         />
       </div>
     </div>
-    <div><vue-divider /></div>
+    <div v-if="maintenanceList && Boolean(maintenanceList.length)"><vue-divider /></div>
+    <div v-else>
+      <h4>Click on the button to add your for first maintenance.</h4>
+      <p>
+        You can start by a <b><i>Oil Change</i></b> Every <b><i>5000 kms</i></b>
+      </p>
+    </div>
   </span>
 </template>
 

@@ -1,6 +1,7 @@
 <template>
   <main>
     <Toast />
+    <NavBar />
     <RouterView />
   </main>
 </template>
@@ -15,4 +16,5 @@ main {
 <script setup lang="ts">
 import Toast from 'primevue/toast'
 import { RouterView } from 'vue-router'
+import NavBar from './components/NavBar.vue'
 </script>
