@@ -23,7 +23,7 @@
             <p class="label">Mileage:&nbsp;</p>
             <p>{{ vehicle.currentKms }} kms</p>
           </div>
-          <vue-button class="pi pi-arrow-right" @click="$router.push('/notfound')" />
+          <vue-button class="pi pi-arrow-right" @click="$router.push(`/vehicle/${vehicle.id}`)" />
         </li>
       </ol>
     </div>

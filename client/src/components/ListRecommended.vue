@@ -65,7 +65,13 @@ import { liveQuery } from 'dexie'
 import { useObservable } from '@vueuse/rxjs'
 import { db } from '../idb/db'
 
+interface IProps {
+  id: number
+}
+
 let visible = ref(false)
+
+const props = defineProps<IProps>()
 
 //Function
 const handleDeleteItem = async (id: number) => {
@@ -78,7 +84,7 @@ const toggleVisible = () => {
 const maintenanceList: any = useObservable(
   // @ts-ignore
   liveQuery(() => {
-    return db.recommendedMaintenance.toArray()
+    return db.recommendedMaintenance.where({ vehicleId: props.id }).toArray()
   })
 )
 </script>

@@ -3,7 +3,7 @@
   <vue-dialog
     v-model:visible="visible"
     modal
-    header="Edit Profile"
+    header="Add Maintenance"
     :pt="{
       root: 'border-none',
       mask: {
@@ -84,6 +84,12 @@ import { MaintenanceUnit } from '@/constants/enum'
 import { addRecommendedMaintenance } from '@/idb/db'
 import { useToast } from 'primevue/usetoast'
 
+interface IProps {
+  id: number
+}
+
+const props = defineProps<IProps>()
+
 //Variables
 let name = ref('')
 let interval = ref(0)
@@ -102,7 +108,8 @@ const handleAddBtnClicked = async () => {
     const response = await addRecommendedMaintenance(
       name.value,
       interval.value,
-      unit.value.code as MaintenanceUnit
+      unit.value.code as MaintenanceUnit,
+      props.id
     )
     console.log(response)
     if (response.success) {
