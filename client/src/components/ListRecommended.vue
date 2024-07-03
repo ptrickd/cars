@@ -65,23 +65,11 @@ import { liveQuery } from 'dexie'
 import { useObservable } from '@vueuse/rxjs'
 import { db } from '../idb/db'
 
-//Types
-// interface IRecommended {
-//   id: number
-//   name: string
-//   interval: number
-//   unit: string
-// }
-
-//Declarations
-
-// const emit = defineEmits(['refreshRecommendedList'])
 let visible = ref(false)
 
 //Function
 const handleDeleteItem = async (id: number) => {
   await deleteRecommendedMaintenance(id)
-  // emit('refreshRecommendedList')
 }
 
 const toggleVisible = () => {

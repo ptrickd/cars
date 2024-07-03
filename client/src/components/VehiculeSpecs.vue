@@ -23,7 +23,7 @@
             <p class="label">Mileage:&nbsp;</p>
             <p>{{ vehicle.currentKms }} kms</p>
           </div>
-          <vue-button label="Go" @click="console.log('go to /id:')" />
+          <vue-button class="pi pi-arrow-right" @click="$router.push('/notfound')" />
         </li>
       </ol>
     </div>
@@ -53,24 +53,17 @@
   color: var(--blue-200);
 }
 </style>
+
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
-
 import AddVehicleModal from './AddVehicleModal.vue'
-import { getVehicule } from '@/idb/db'
-import type { IVehicle } from '@/idb/db'
+import { db } from '@/idb/db'
+import { liveQuery } from 'dexie'
+import { useObservable } from '@vueuse/rxjs'
 
-interface IError {
-  error: string
-}
-interface IList {
-  value?: IVehicle[] | [] | IError
-}
-let vehicleList = ref<IList | null | IVehicle[] | IError>()
-
-onMounted(async () => {
-  const response = await getVehicule()
-  console.log(response)
-  if (response) vehicleList.value = response
-})
+const vehicleList: any = useObservable(
+  // @ts-ignore
+  liveQuery(() => {
+    return db.vehicle.toArray()
+  })
+)
 </script>
