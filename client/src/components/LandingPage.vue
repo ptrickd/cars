@@ -5,27 +5,10 @@
     </div>
 
     <div v-else-if="Array.isArray(vehicleList)">
-      <ol>
-        <li v-for="vehicle in vehicleList" :key="vehicle.id">
-          <div class="grid-item">
-            <p class="label">Brand:&nbsp;</p>
-            <p>{{ vehicle.brand }}</p>
-          </div>
-          <div class="grid-item">
-            <p class="label">Model:&nbsp;</p>
-            <p>{{ vehicle.model }}</p>
-          </div>
-          <div class="grid-item">
-            <p class="label">Year:&nbsp;</p>
-            <p>{{ vehicle.year }}</p>
-          </div>
-          <div class="grid-item">
-            <p class="label">Mileage:&nbsp;</p>
-            <p>{{ vehicle.currentKms }} kms</p>
-          </div>
-          <vue-button class="pi pi-arrow-right" @click="$router.push(`/vehicle/${vehicle.id}`)" />
-        </li>
-      </ol>
+      <span v-for="vehicle in vehicleList" :key="vehicle.id">
+        <VehicleSpecs :vehicle="vehicle" />
+        <vue-button class="pi pi-arrow-right" @click="$router.push(`/vehicle/${vehicle.id}`)" />
+      </span>
     </div>
   </div>
 
@@ -56,6 +39,7 @@
 
 <script setup lang="ts">
 import AddVehicleModal from './AddVehicleModal.vue'
+import VehicleSpecs from './VehicleSpecs.vue'
 import { db } from '@/idb/db'
 import { liveQuery } from 'dexie'
 import { useObservable } from '@vueuse/rxjs'

@@ -58,11 +58,22 @@ db.version(3).stores({
   vehicle: '++id, brand, model, year, currentKms'
 })
 //Vehicule get list
-async function getVehicule() {
+async function getVehicules() {
   try {
     const vehicles = await db.vehicle.toArray()
     console.log(vehicles)
     return vehicles
+  } catch (err: any) {
+    console.error(err)
+    return { error: err.message }
+  }
+}
+
+//Get vehicle by id
+async function getVehicleById(id: number) {
+  try {
+    const vehicle = await db.vehicle.get({ id: id })
+    return vehicle
   } catch (err: any) {
     console.error(err)
     return { error: err.message }
@@ -160,7 +171,8 @@ function getDoneMaintenance() {
 
 export {
   db,
-  getVehicule,
+  getVehicules,
+  getVehicleById,
   addVehicule,
   addDoneMaintenance,
   getDoneMaintenance,
