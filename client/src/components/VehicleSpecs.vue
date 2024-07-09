@@ -1,19 +1,15 @@
 <template>
   <div class="top-container">
-    <div class="grid-item">
-      <p class="label">Brand:&nbsp;</p>
+    <div class="grid-item" v-if="props.vehicle.brand">
       <p>{{ props.vehicle.brand }}</p>
     </div>
-    <div class="grid-item">
-      <p class="label">Model:&nbsp;</p>
+    <div class="grid-item" v-if="props.vehicle.model">
       <p>{{ props.vehicle.model }}</p>
     </div>
     <div class="grid-item">
-      <p class="label">Year:&nbsp;</p>
       <p>{{ props.vehicle.year }}</p>
     </div>
     <div class="grid-item">
-      <p class="label">Mileage:&nbsp;</p>
       <p>{{ props.vehicle.currentKms }} kms</p>
     </div>
   </div>
@@ -32,7 +28,8 @@
 .grid-item {
   min-width: 100px;
   display: flex;
-  align-items: flex-start;
+
+  align-items: flex-end;
   font-size: 110%;
   text-align: center;
 }
@@ -42,7 +39,12 @@
 </style>
 
 <script setup lang="ts">
-import type { IVehicle } from '@/idb/db'
+interface IVehicle {
+  brand: string | null
+  model: string | null
+  year: string
+  currentKms: number
+}
 
 interface IProps {
   vehicle: IVehicle

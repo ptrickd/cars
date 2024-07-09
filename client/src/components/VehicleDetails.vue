@@ -1,6 +1,13 @@
 <template>
   <div v-if="vehicle">
-    <h1>Vehicle Details</h1>
+    <header>
+      <h1>Vehicle Details</h1>
+      <vue-button
+        icon="pi pi-user-edit"
+        text
+        @click="console.log('edit vehivle details')"
+      ></vue-button>
+    </header>
 
     <VehiculeSpecs :vehicle="vehicle" />
     <vue-accordion>
@@ -12,6 +19,11 @@
     </vue-accordion>
   </div>
 </template>
+<style scoped>
+header {
+  display: flex;
+}
+</style>
 <script setup lang="ts">
 import { ref } from 'vue'
 import { getVehicleById, type IVehicle } from '@/idb/db'

@@ -4,36 +4,60 @@
       <p>No vehicle added yet!</p>
     </div>
 
-    <div v-else-if="Array.isArray(vehicleList)">
+    <div class="card-container" v-else-if="Array.isArray(vehicleList)">
       <span v-for="vehicle in vehicleList" :key="vehicle.id">
-        <VehicleSpecs :vehicle="vehicle" />
-        <vue-button class="pi pi-arrow-right" @click="$router.push(`/vehicle/${vehicle.id}`)" />
+        <vue-card class="vehicle-card">
+          <template #title
+            ><span>{{ vehicle.brand }}&nbsp;{{ vehicle.model }}</span></template
+          >
+          <template #content>
+            <span>
+              <VehicleSpecs
+                :vehicle="{
+                  brand: null,
+                  model: null,
+                  year: vehicle.year,
+                  currentKms: vehicle.currentKms
+                }"
+                @click="$router.push(`/vehicle/${vehicle.id}`)"
+              />
+            </span>
+          </template>
+        </vue-card>
       </span>
     </div>
-  </div>
 
-  <AddVehicleModal />
+    <span class="button">
+      <AddVehicleModal />
+    </span>
+  </div>
 </template>
 
 <style scoped>
 .top-container {
-  display: grid;
+  max-width: 800px;
+  /* display: flex;
+  flex-direction: column;
+  justify-content: center; */
+}
+.card-container {
+  display: flex;
+  flex-wrap: wrap;
 
-  grid-template-columns: auto auto;
-  grid-template-rows: auto auto;
-  gap: 10px 10px;
+  justify-content: center;
   margin-left: auto;
   margin-bottom: auto;
 }
-.grid-item {
-  min-width: 100px;
-  display: flex;
-  align-items: flex-start;
-  font-size: 110%;
-  text-align: center;
+
+.vehicle-card {
+  margin: 1rem 1rem;
 }
-.label {
-  color: var(--blue-200);
+.vehicle-card:hover {
+  cursor: pointer;
+  font-size: 1.3rem;
+}
+.button {
+  margin: 0rem 1rem;
 }
 </style>
 
