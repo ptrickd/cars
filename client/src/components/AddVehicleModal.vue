@@ -11,8 +11,15 @@
         <input-text id="model" v-model="model" name="model" aria-describedby="model" />
       </div>
       <div class="input-group">
-        <label for="year">Year</label>
-        <input-text id="year" v-model="year" name="year" aria-describedby="year" />
+        <label for="year">Testing</label>
+        <drop-down
+          id="year"
+          v-model="chosenYear"
+          :options="yearsOptions"
+          name="testingInput"
+          aria-describedby="testingInput"
+          placeholder="Select a year"
+        />
       </div>
       <div class="input-group">
         <label for="currentKms">Current Mileage</label>
@@ -23,6 +30,7 @@
           aria-describedby="currentKms"
         />
       </div>
+
       <div class="buttons">
         <vue-button class="button" @click="visible = false" label="Cancel" severity="danger" />
         <vue-button class="button" label="Add" @click="handleAddBtnClicked()" />
@@ -59,15 +67,26 @@
 import { ref } from 'vue'
 import { addVehicule } from '@/idb/db'
 
+const createYears = () => {
+  const arrayOfYears = []
+  for (let i = 2024; i >= 1900; i--) arrayOfYears.push(String(i))
+  return arrayOfYears
+}
+const arrayOfYears = createYears()
+
+const date = new Date()
+const currentYear = date.getFullYear()
+
 const visible = ref(false)
 const brand = ref('')
 const model = ref('')
-const year = ref('1900')
+const chosenYear = ref(String(currentYear))
 const currentKms = ref(0)
+const yearsOptions = ref(arrayOfYears)
 
 const handleAddBtnClicked = async () => {
   if (model.value.length !== 0 && brand.value.length !== 0) {
-    const response = await addVehicule(brand.value, model.value, year.value, currentKms.value)
+    const response = await addVehicule(brand.value, model.value, chosenYear.value, currentKms.value)
     if (response.success) visible.value = false
   } else {
     console.log('missing value')

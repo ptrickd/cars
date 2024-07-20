@@ -2,11 +2,7 @@
   <div v-if="vehicle">
     <header>
       <h1>Vehicle Details</h1>
-      <vue-button
-        icon="pi pi-user-edit"
-        text
-        @click="console.log('edit vehivle details')"
-      ></vue-button>
+      <vue-button icon="pi pi-user-edit" text @click="handleUpdateClicked()"></vue-button>
     </header>
 
     <VehiculeSpecs :vehicle="vehicle" />
@@ -32,7 +28,9 @@ import ListRecommended from './ListRecommended.vue'
 import AddRecommendedModal from './AddRecommendedModal.vue'
 import VehiculeSpecs from './VehicleSpecs.vue'
 import { useRoute } from 'vue-router'
+import { useToast } from 'primevue/usetoast'
 
+const toast = useToast()
 const route = useRoute()
 const vehicleId = Number(route.params.id)
 const vehicle = ref<IVehicle | null>(null)
@@ -43,4 +41,8 @@ const vehicleFound = async () => {
   }
 }
 vehicleFound()
+
+const handleUpdateClicked = () => {
+  toast.add({ severity: 'info', detail: 'Feature coming soon' })
+}
 </script>
