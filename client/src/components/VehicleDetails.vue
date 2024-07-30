@@ -14,6 +14,7 @@
       </vue-accordion-tab>
     </vue-accordion>
   </div>
+  <UpdateVehicleDetailsModal />
 </template>
 <style scoped>
 header {
@@ -27,6 +28,7 @@ import { getVehicleById, type IVehicle } from '@/idb/db'
 import ListRecommended from './ListRecommended.vue'
 import AddRecommendedModal from './AddRecommendedModal.vue'
 import VehiculeSpecs from './VehicleSpecs.vue'
+import UpdateVehicleDetailsModal from './UpdateVehicleDetailsModal.vue'
 import { useRoute } from 'vue-router'
 import { useToast } from 'primevue/usetoast'
 

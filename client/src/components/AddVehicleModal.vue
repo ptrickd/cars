@@ -11,13 +11,13 @@
         <input-text id="model" v-model="model" name="model" aria-describedby="model" />
       </div>
       <div class="input-group">
-        <label for="year">Testing</label>
+        <label for="year">Year</label>
         <drop-down
           id="year"
           v-model="chosenYear"
           :options="yearsOptions"
-          name="testingInput"
-          aria-describedby="testingInput"
+          name="year"
+          aria-describedby="year"
           placeholder="Select a year"
         />
       </div>
@@ -29,6 +29,22 @@
           name="currentKms"
           aria-describedby="currentKms"
         />
+      </div>
+      <div class="input-group">
+        <label for="unit">Unit</label>
+
+        <drop-down
+          id="unit"
+          :options="maintenanceUnitValues"
+          optionLabel="name"
+          v-model="unit"
+          name="unit"
+          aria-describedby="interval maintenance"
+          placeholder="Select a Unit"
+        />
+        <!-- <inline-message v-if="unitValidationError.length !== 0" severity="error">{{
+          unitValidationError
+        }}</inline-message> -->
       </div>
 
       <div class="buttons">
@@ -66,6 +82,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { addVehicule } from '@/idb/db'
+import { MaintenanceUnit } from '@/constants/enum'
 
 const createYears = () => {
   const arrayOfYears = []
@@ -83,13 +100,33 @@ const model = ref('')
 const chosenYear = ref(String(currentYear))
 const currentKms = ref(0)
 const yearsOptions = ref(arrayOfYears)
-
+let unit = ref({ name: '', code: '' })
 const handleAddBtnClicked = async () => {
-  if (model.value.length !== 0 && brand.value.length !== 0) {
+  if (model.value.length !== 0 && brand.value.length !== 0 && unit.value.name.length !== 0) {
     const response = await addVehicule(brand.value, model.value, chosenYear.value, currentKms.value)
-    if (response.success) visible.value = false
+    if (response.success) {
+      visible.value = false
+      brand.value = ''
+      model.value = ''
+      chosenYear.value = String(currentYear)
+      currentKms.value = 0
+    }
   } else {
     console.log('missing value')
   }
 }
+const maintenanceUnitValues = ref([
+  {
+    name: 'kms',
+    code: MaintenanceUnit.KMS
+  },
+  {
+    name: 'months',
+    code: MaintenanceUnit.MONTHS
+  },
+  {
+    name: 'years',
+    code: MaintenanceUnit.YEARS
+  }
+])
 </script>
