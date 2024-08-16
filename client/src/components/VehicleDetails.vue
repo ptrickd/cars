@@ -14,7 +14,7 @@
       </vue-accordion-tab>
     </vue-accordion>
   </div>
-  <UpdateVehicleDetailsModal />
+  <UpdateVehicleDetailsModal :visible="visible" :vehicle="vehicle" />
 </template>
 <style scoped>
 header {
@@ -36,6 +36,7 @@ const toast = useToast()
 const route = useRoute()
 const vehicleId = Number(route.params.id)
 const vehicle = ref<IVehicle | null>(null)
+const visible = ref(false)
 const vehicleFound = async () => {
   const response = await getVehicleById(vehicleId)
   if (response && !('error' in response)) {
@@ -45,6 +46,7 @@ const vehicleFound = async () => {
 vehicleFound()
 
 const handleUpdateClicked = () => {
+  visible.value = true
   toast.add({ severity: 'info', detail: 'Feature coming soon' })
 }
 </script>

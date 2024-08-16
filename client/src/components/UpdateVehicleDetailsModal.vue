@@ -1,6 +1,6 @@
 <template>
   <vue-dialog
-    v-model:visible="visible"
+    v-model:visible="isVisible"
     modal
     header="Update Vehicle Information"
     :pt="{
@@ -19,13 +19,13 @@
         <input-text id="model" v-model="model" name="model" aria-describedby="model" />
       </div>
       <div class="input-group">
-        <label for="year">Testing</label>
+        <label for="year">Year</label>
         <drop-down
           id="year"
           v-model="chosenYear"
           :options="yearsOptions"
-          name="testingInput"
-          aria-describedby="testingInput"
+          name="year"
+          aria-describedby="year"
           placeholder="Select a year"
         />
       </div>
@@ -40,7 +40,7 @@
       </div>
 
       <div class="buttons">
-        <vue-button class="button" @click="visible = false" label="Cancel" severity="danger" />
+        <vue-button class="button" @click="handleCancelClicked" label="Cancel" severity="danger" />
         <vue-button class="button" label="Add" @click="handleUpdateBtnClicked()" />
       </div></div
   ></vue-dialog>
@@ -68,24 +68,37 @@
 </style>
 <script setup lang="ts">
 import { ref } from 'vue'
+
+interface IVehicle {
+  brand: string
+  model: string
+  year: string
+  currentKms: number
+}
+
+interface IProps {
+  vehicle: IVehicle | null
+  visible: boolean
+}
+
+const props = defineProps<IProps>()
+
 const createYears = () => {
   const arrayOfYears = []
   for (let i = 2024; i >= 1900; i--) arrayOfYears.push(String(i))
   return arrayOfYears
 }
 const arrayOfYears = createYears()
-
-const date = new Date()
-const currentYear = date.getFullYear()
-
-const visible = ref(true)
-const brand = ref('')
-const model = ref('')
-const chosenYear = ref(String(currentYear))
-const currentKms = ref(0)
+const isVisible = ref(props.visible)
+const brand = ref(props?.vehicle?.brand || '')
+const model = ref(props?.vehicle?.model || '')
+const chosenYear = ref(props?.vehicle?.year || '')
+const currentKms = ref(props?.vehicle?.currentKms || 0)
 const yearsOptions = ref(arrayOfYears)
 
 const handleUpdateBtnClicked = () => {
   console.log('handle button clicked')
 }
+
+const handleCancelClicked = () => console.log('Cancel has been clicked')
 </script>

@@ -35,7 +35,7 @@
 
         <drop-down
           id="unit"
-          :options="maintenanceUnitValues"
+          :options="distanceUnitValues"
           optionLabel="name"
           v-model="unit"
           name="unit"
@@ -115,18 +115,10 @@ const handleAddBtnClicked = async () => {
     console.log('missing value')
   }
 }
-const maintenanceUnitValues = ref([
+const distanceUnitValues = ref([
   {
     name: 'kms',
     code: MaintenanceUnit.KMS
-  },
-  {
-    name: 'months',
-    code: MaintenanceUnit.MONTHS
-  },
-  {
-    name: 'years',
-    code: MaintenanceUnit.YEARS
   }
 ])
 </script>
