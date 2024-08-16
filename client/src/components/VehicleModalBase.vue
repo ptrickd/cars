@@ -1,7 +1,7 @@
 <template>
   <div>
     <vue-dialog
-      v-model:visible="visible"
+      v-model:visible="$props.visible"
       modal
       :pt="{
         root: 'border-none',
@@ -11,7 +11,7 @@
       }"
       ><template #container="{ closeCallback }"
         ><section class="main">
-          <h3 class="title">{{ modalTitle }}</h3>
+          <h2 class="title">{{ modalTitle }}</h2>
           <div class="input-group">
             <label for="brand" class="input-label">Brand</label>
             <input-text
@@ -54,19 +54,29 @@
               class="input-value"
             />
           </div>
+
           <div class="input-group">
-            <label for="mileageUnit" class="input-label">Mileage Unit</label>
-            <input-text
-              id="mileageUnit"
-              v-model="mileageUnit"
-              name="mileageUnit"
-              aria-describedby="mileage unit"
+            <label for="unit" class="input-label">Mileage Unit</label>
+
+            <drop-down
+              id="unit"
+              :options="mileageValues"
+              optionLabel="name"
+              mileageUnit
+              name="unit"
+              aria-describedby="interval maintenance"
+              placeholder="Select a Unit"
               class="input-value"
             />
           </div>
           <div class="buttons">
-            <vue-button class="button" @click="closeCallback" label="Cancel" severity="danger" />
-            <vue-button class="button" label="Add" @click="closeCallback" />
+            <vue-button
+              class="button"
+              @click="$emit('close', true)"
+              label="Cancel"
+              severity="danger"
+            />
+            <vue-button class="button" label="${buttonActionText}" @click="closeCallback" />
           </div>
         </section> </template
     ></vue-dialog>
@@ -79,18 +89,21 @@
 
 .title {
   width: 100%;
+  text-align: center;
 }
 
 .input-label {
   padding-right: 10px;
+  width: 35%;
 }
 
 .input-value {
-  width: 70%;
+  width: 65%;
 }
 
 .input-group {
   width: 100%;
+
   padding: 5px;
   display: flex;
   justify-content: space-between;
@@ -98,6 +111,7 @@
 }
 
 .buttons {
+  margin-top: 10px;
   display: flex;
   justify-content: flex-end;
 }
@@ -109,7 +123,12 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 
-const visible = ref(true)
+interface IProps {
+  visible: boolean
+}
+const props = defineProps<IProps>()
+
+const emit = defineEmits<{ close: [close: boolean] }>()
 
 const createYears = () => {
   const arrayOfYears = []
@@ -123,7 +142,19 @@ const model = ref('Camry')
 const chosenYear = ref('2014')
 const currentKms = ref(165000)
 const yearsOptions = ref(arrayOfYears)
-const mileageUnit = ref('kms')
 
 const modalTitle = ref('This a modal test')
+
+let mileageValues = ref([
+  {
+    name: 'kms',
+    code: 'kms'
+  },
+  {
+    name: 'miles',
+    code: 'miles'
+  }
+])
+
+const buttonActionText = ref('Add')
 </script>
