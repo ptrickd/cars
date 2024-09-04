@@ -1,85 +1,54 @@
-<template class="main">
-  <vue-button label="Add Vehicule" @click="visible = true" />
-  <vue-dialog v-model:visible="visible" modal header="Add a new vehicle" :style="{ width: '25rem' }"
-    ><div>
-      <div class="input-group">
-        <label for="brand">Brand</label>
-        <input-text id="brand" v-model="brand" name="brand" aria-describedby="brand" />
-      </div>
-      <div class="input-group">
-        <label for="model">Model</label>
-        <input-text id="model" v-model="model" name="model" aria-describedby="model" />
-      </div>
-      <div class="input-group">
-        <label for="year">Year</label>
-        <drop-down
-          id="year"
-          v-model="chosenYear"
-          :options="yearsOptions"
-          name="year"
-          aria-describedby="year"
-          placeholder="Select a year"
-        />
-      </div>
-      <div class="input-group">
-        <label for="currentKms">Current Mileage</label>
-        <input-number
-          id="currentKms"
-          v-model="currentKms"
-          name="currentKms"
-          aria-describedby="currentKms"
-        />
-      </div>
-      <div class="input-group">
-        <label for="unit">Unit</label>
-
-        <drop-down
-          id="unit"
-          :options="distanceUnitValues"
-          optionLabel="name"
-          v-model="unit"
-          name="unit"
-          aria-describedby="interval maintenance"
-          placeholder="Select a Unit"
-        />
-        <!-- <inline-message v-if="unitValidationError.length !== 0" severity="error">{{
-          unitValidationError
-        }}</inline-message> -->
-      </div>
-
-      <div class="buttons">
-        <vue-button class="button" @click="visible = false" label="Cancel" severity="danger" />
-        <vue-button class="button" label="Add" @click="handleAddBtnClicked()" />
-      </div></div
-  ></vue-dialog>
+<template>
+  <vue-button @click="visible = true">Add Vehicle</vue-button>
+  <VehicleModalBase :visible="visible" :title="title" :buttonActionLabel="label" :actionOnClick="handleAddBtnClicked"
+    @toggleVisible="visible = false" :errorValidation="errorValidation" />
 </template>
-<!-- - Brand
-- Model
-- Year
-- Mileage  -->
-<style scoped>
-.main {
-  padding: 10px;
-}
-.input-group {
-  margin-top: 10px;
-  display: flex;
-  flex-direction: column;
+<script setup lang="ts">
+import { ref } from 'vue'
+import VehicleModalBase from './VehicleModalBase.vue'
 
-  label {
-    margin-bottom: 5px;
+import { addVehicule } from '@/idb/db'
+
+const visible = ref(false)
+const title = ref('Add New Vehicle')
+const label = ref('Add')
+
+const errorValidation = { brand: '', model: '', year: '', currentMileage: '', mileageUnit: '' }
+
+const handleAddBtnClicked = async (
+  model: string,
+  brand: string,
+  chosenYear: string,
+  currentKms: number,
+  selectedUnit: string
+
+) => {
+  console.log(model,
+    brand,
+    chosenYear,
+    currentKms,
+    selectedUnit)
+  if (model.length !== 0 && brand.length !== 0 && selectedUnit.length !== 0) {
+    const response = await addVehicule(brand, model, chosenYear, currentKms, selectedUnit)
+
+    if (response.success) {
+      visible.value = false
+      brand = ''
+      model = ''
+      chosenYear = String(chosenYear)
+      currentKms = 0
+    } else {
+      console.log('error saving')
+      console.log(response)
+    }
+  } else {
+    console.log('missing value')
+    console.log('error')
   }
 }
-.buttons {
-  display: flex;
-  justify-content: flex-end;
-}
-.button {
-  margin: 5px;
-}
-</style>
+</script>
 
-<script setup lang="ts">
+<!-- <script setup lang="ts">
 import { ref } from 'vue'
 import { addVehicule } from '@/idb/db'
 import { MaintenanceUnit } from '@/constants/enum'
@@ -102,7 +71,7 @@ const currentKms = ref(0)
 const yearsOptions = ref(arrayOfYears)
 let unit = ref({ name: '', code: '' })
 const handleAddBtnClicked = async () => {
-  if (model.value.length !== 0 && brand.value.length !== 0 && unit.value.name.length !== 0) {
+  if (model.length !== 0 && brand.length !== 0 && unit.name.length !== 0) {
     const response = await addVehicule(brand.value, model.value, chosenYear.value, currentKms.value)
     if (response.success) {
       visible.value = false
@@ -121,4 +90,4 @@ const distanceUnitValues = ref([
     code: MaintenanceUnit.KMS
   }
 ])
-</script>
+</script> -->
