@@ -1,5 +1,5 @@
 <template>
-  <vue-button @click="$props.visible">Add Vehicle</vue-button>
+  <!-- <vue-button @click="$props.visible">Add Vehicle</vue-button> -->
   <VehicleModalBase
     :visible="visible"
     :title="title"
@@ -38,6 +38,7 @@ const handleUpdateBtnClicked = async (
   currentKms: number,
   selectedUnit: string
 ) => {
+  console.log('btn update clicked')
   if (model.length !== 0 && brand.length !== 0 && selectedUnit.length !== 0) {
     const response = await updateVehicle(
       props.vehicle.id || -1,

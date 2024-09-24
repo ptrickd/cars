@@ -27,31 +27,30 @@ header {
 }
 </style>
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
-import { getVehicleById, type IVehicle } from '@/idb/db'
+import { ref } from 'vue'
+import { db } from '@/idb/db'
 //add components list
 import ListRecommended from './ListRecommended.vue'
 import AddRecommendedModal from './AddRecommendedModal.vue'
 import VehiculeSpecs from './VehicleSpecs.vue'
 import UpdateVehicleDetailsModal from './UpdateVehicleDetailsModal.vue'
 import { useRoute } from 'vue-router'
-import { useToast } from 'primevue/usetoast'
 
-const toast = useToast()
+import { liveQuery } from 'dexie'
+import { useObservable } from '@vueuse/rxjs'
+
 const route = useRoute()
 const vehicleId = Number(route.params.id)
-const vehicle = ref<IVehicle | null>(null)
+
 const visible = ref(false)
-const vehicleFound = async () => {
-  const response = await getVehicleById(vehicleId)
-  console.log(response)
-  if (response && !('error' in response)) {
-    vehicle.value = response
-  }
-}
 
-vehicleFound()
-
+const vehicle: any = useObservable(
+  // @ts-ignore
+  liveQuery(() => {
+    console.log(db.vehicle.where('id').equals(vehicleId).first())
+    return db.vehicle.where('id').equals(vehicleId).first()
+  })
+)
 const handleUpdateClicked = () => {
   visible.value = true
 
