@@ -10,7 +10,7 @@
       <p>{{ props.vehicle.year }}</p>
     </div>
     <div class="grid-item">
-      <p>{{ props.vehicle.currentKms }} kms</p>
+      <p>{{ props.vehicle.currentKms }} {{ props.vehicle.selectedUnit }}</p>
     </div>
   </div>
 </template>
@@ -39,11 +39,14 @@
 </style>
 
 <script setup lang="ts">
+import { onMounted } from 'vue'
+
 interface IVehicle {
   brand: string | null
   model: string | null
   year: string
   currentKms: number
+  selectedUnit: string
 }
 
 interface IProps {
@@ -51,5 +54,7 @@ interface IProps {
 }
 
 const props = defineProps<IProps>()
-console.log(props.vehicle)
+onMounted(() => {
+  console.log(props.vehicle)
+})
 </script>

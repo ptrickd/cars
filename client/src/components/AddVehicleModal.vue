@@ -23,11 +23,7 @@ const handleAddBtnClicked = async (
   selectedUnit: string
 
 ) => {
-  console.log(model,
-    brand,
-    chosenYear,
-    currentKms,
-    selectedUnit)
+
   if (model.length !== 0 && brand.length !== 0 && selectedUnit.length !== 0) {
     const response = await addVehicule(brand, model, chosenYear, currentKms, selectedUnit)
 

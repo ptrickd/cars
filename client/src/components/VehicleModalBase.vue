@@ -1,48 +1,90 @@
 <template>
   <div>
-    <vue-dialog :visible="$props.visible" modal :pt="{
-      root: 'border-none',
-      mask: {
-        style: 'backdrop-filter: blur(2px)'
-      }
-    }"><template #container="{}">
+    <vue-dialog
+      :visible="$props.visible"
+      modal
+      :pt="{
+        root: 'border-none',
+        mask: {
+          style: 'backdrop-filter: blur(2px)'
+        }
+      }"
+      ><template #container="{}">
         <section class="main">
           <h2 class="title">{{ $props.title }}</h2>
           <div class="input-group">
             <label for="brand" class="input-label">Brand</label>
-            <input-text id="brand" v-model="brand" name="brand" aria-describedby="brand" class="input-value" />
+            <input-text
+              id="brand"
+              v-model="brand"
+              name="brand"
+              aria-describedby="brand"
+              class="input-value"
+            />
           </div>
           <div class="input-group">
             <label for="model" class="input-label">Model</label>
-            <input-text id="model" v-model="model" name="model" aria-describedby="model" class="input-value" />
+            <input-text
+              id="model"
+              v-model="model"
+              name="model"
+              aria-describedby="model"
+              class="input-value"
+            />
           </div>
           <div class="input-group">
             <label for="year" class="input-label">Year</label>
-            <drop-down id="year" v-model="chosenYear" :options="yearsOptions" name="year" aria-describedby="year"
-              placeholder="Select a year" class="input-value" />
+            <drop-down
+              id="year"
+              v-model="chosenYear"
+              :options="yearsOptions"
+              name="year"
+              aria-describedby="year"
+              placeholder="Select a year"
+              class="input-value"
+            />
           </div>
           <div class="input-group">
             <label for="currentKms" class="input-label">Current Mileage</label>
-            <input-number id="currentKms" v-model="currentKms" name="currentKms" aria-describedby="currentKms"
-              class="input-value" />
+            <input-number
+              id="currentKms"
+              v-model="currentKms"
+              name="currentKms"
+              aria-describedby="currentKms"
+              class="input-value"
+            />
           </div>
 
           <div class="input-group">
             <label for="unit" class="input-label">Mileage Unit</label>
 
-            <drop-down id="unit" :options="intervalValues" optionLabel="name" v-model="selectedUnit" name="unit"
-              aria-describedby="interval maintenance" placeholder="Select a Unit" class="input-value" />
+            <drop-down
+              id="unit"
+              :options="intervalValues"
+              optionLabel="name"
+              v-model="selectedUnit"
+              name="unit"
+              aria-describedby="interval maintenance"
+              placeholder="Select a Unit"
+              class="input-value"
+            />
           </div>
           <div class="buttons">
-            <vue-button class="button" @click="$emit('toggleVisible')" label="Cancel" severity="danger" />
-            <vue-button class="button" @click="actionOnClick(model,
-              brand,
-              chosenYear,
-              currentKms,
-              selectedUnit.name)">{{ buttonActionLabel }}</vue-button>
+            <vue-button
+              class="button"
+              @click="$emit('toggleVisible')"
+              label="Cancel"
+              severity="danger"
+            />
+            <vue-button
+              class="button"
+              @click="actionOnClick(model, brand, chosenYear, currentKms, selectedUnit.name)"
+              >{{ buttonActionLabel }}</vue-button
+            >
           </div>
         </section>
-      </template></vue-dialog>
+      </template></vue-dialog
+    >
   </div>
 </template>
 <style scoped>
@@ -85,25 +127,29 @@
 </style>
 <script setup lang="ts">
 import { ref } from 'vue'
+import { type IVehicle } from '@/idb/db'
 
 interface IErrorValidation {
-  brand: string, model: string, year: string, currentMileage: string, mileageUnit: string
+  brand: string
+  model: string
+  year: string
+  currentMileage: string
+  mileageUnit: string
 }
-
-
 
 interface IProps {
   visible: boolean
   title: string
   buttonActionLabel: string
-
+  vehicle?: IVehicle
   actionOnClick: (
     model: string,
     brand: string,
 
     chosenYear: string,
     currentKms: number,
-    selectedUnit: string) => Promise<void>
+    selectedUnit: string
+  ) => Promise<void>
 
   errorValidation: IErrorValidation
 }
@@ -121,12 +167,22 @@ const arrayOfYears = createYears()
 const date = new Date()
 const currentYear = date.getFullYear()
 
+const id = ref(-1)
 const brand = ref('')
 const model = ref('')
 const chosenYear = ref(String(currentYear))
 const currentKms = ref(0)
 const selectedUnit = ref()
 const yearsOptions = ref(arrayOfYears)
+
+if (props?.vehicle?.id) {
+  id.value = props.vehicle.id
+  brand.value = props.vehicle.brand
+  model.value = props.vehicle.model
+  chosenYear.value = props.vehicle.year
+  currentKms.value = props.vehicle.currentKms
+  selectedUnit.value = props.vehicle.selectedUnit
+}
 
 let intervalValues = ref([
   {

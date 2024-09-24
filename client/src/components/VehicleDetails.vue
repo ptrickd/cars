@@ -14,7 +14,12 @@
       </vue-accordion-tab>
     </vue-accordion>
   </div>
-  <UpdateVehicleDetailsModal :visible="visible" :vehicle="vehicle" />
+  <UpdateVehicleDetailsModal
+    v-if="vehicle"
+    :visible="visible"
+    :vehicle="vehicle"
+    @toggle-visible="visible = false"
+  />
 </template>
 <style scoped>
 header {
@@ -22,7 +27,7 @@ header {
 }
 </style>
 <script setup lang="ts">
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
 import { getVehicleById, type IVehicle } from '@/idb/db'
 //add components list
 import ListRecommended from './ListRecommended.vue'
@@ -39,14 +44,17 @@ const vehicle = ref<IVehicle | null>(null)
 const visible = ref(false)
 const vehicleFound = async () => {
   const response = await getVehicleById(vehicleId)
+  console.log(response)
   if (response && !('error' in response)) {
     vehicle.value = response
   }
 }
+
 vehicleFound()
 
 const handleUpdateClicked = () => {
   visible.value = true
-  toast.add({ severity: 'info', detail: 'Feature coming soon' })
+
+  // toast.add({ severity: 'info', detail: 'Feature coming soon' })
 }
 </script>

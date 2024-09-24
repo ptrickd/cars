@@ -27,7 +27,7 @@ interface IVehicle {
   model: string
   year: string
   currentKms: number
-  intervalUnit: string
+  selectedUnit: string
 }
 
 const db = new Dexie('MaintenanceDB') as Dexie & {
@@ -56,7 +56,7 @@ db.version(2).stores({
 })
 
 db.version(3).stores({
-  vehicle: '++id, brand, model, year, currentKms, intervalUnit'
+  vehicle: '++id, brand, model, year, currentKms, selectedUnit'
 })
 //Vehicule get list
 async function getVehicules() {
@@ -87,10 +87,29 @@ async function addVehicule(
   model: string,
   year: string,
   currentKms: number,
-  intervalUnit: string
+  selectedUnit: string
 ) {
   try {
-    await db.vehicle.add({ brand, model, year, currentKms, intervalUnit })
+    await db.vehicle.add({ brand, model, year, currentKms, selectedUnit })
+
+    return { success: true }
+  } catch (err: any) {
+    console.error(err)
+    return { error: err.message }
+  }
+}
+
+//Vehcile update
+async function updateVehicle(
+  id: number,
+  brand: string,
+  model: string,
+  year: string,
+  currentKms: number,
+  selectedUnit: string
+) {
+  try {
+    await db.vehicle.update(id, { brand, model, year, currentKms, selectedUnit })
 
     return { success: true }
   } catch (err: any) {
@@ -181,6 +200,7 @@ export {
   getVehicules,
   getVehicleById,
   addVehicule,
+  updateVehicle,
   addDoneMaintenance,
   getDoneMaintenance,
   addRecommendedMaintenance,

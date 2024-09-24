@@ -14,10 +14,11 @@
             <span>
               <VehicleSpecs
                 :vehicle="{
-                  brand: null,
-                  model: null,
+                  brand: vehicle.brand,
+                  model: vehicle.model,
                   year: vehicle.year,
-                  currentKms: vehicle.currentKms
+                  currentKms: vehicle.currentKms,
+                  selectedUnit: vehicle.selectedUnit
                 }"
                 @click="$router.push(`/vehicle/${vehicle.id}`)"
               />
@@ -71,6 +72,7 @@ import { useObservable } from '@vueuse/rxjs'
 const vehicleList: any = useObservable(
   // @ts-ignore
   liveQuery(() => {
+    console.log(db.vehicle.toArray())
     return db.vehicle.toArray()
   })
 )
