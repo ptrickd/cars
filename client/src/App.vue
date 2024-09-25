@@ -11,12 +11,13 @@
 .container {
   min-width: 400px;
   max-width: 900px;
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
 }
+
 .footer {
-  position: fixed;
-  left: 0;
-  bottom: 0;
-  width: 100%;
+  margin-top: auto;
 }
 </style>
 

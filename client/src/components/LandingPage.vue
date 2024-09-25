@@ -36,7 +36,8 @@
 
 <style scoped>
 .top-container {
-  max-width: 800px;
+  /* max-width: 800px; */
+  max-width: 100%;
   /* display: flex;
   flex-direction: column;
   justify-content: center; */
