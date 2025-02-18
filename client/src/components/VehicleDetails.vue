@@ -6,13 +6,14 @@
     </header>
 
     <VehiculeSpecs :vehicle="vehicle" />
-    <vue-accordion>
+    <!-- <vue-accordion>
       <vue-accordion-tab header="Recommended Maintenance List">
         <ListRecommended :id="Number($route.params.id)" />
 
         <AddRecommendedModal :id="Number($route.params.id)" />
       </vue-accordion-tab>
     </vue-accordion>
+     -->
   </div>
   <UpdateVehicleDetailsModal
     v-if="vehicle"

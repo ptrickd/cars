@@ -4,9 +4,10 @@ import App from './App.vue'
 import { router } from './utils/Router'
 
 import PrimeVue from 'primevue/config'
+import Aura from '@primevue/themes/aura'
 
 //Import PrimeVue Components
-import Accordion from 'primevue/accordion'
+// import Accordion from 'primevue/accordion'
 import AccordionTab from 'primevue/accordiontab'
 import Breadcrumb from 'primevue/breadcrumb'
 import Button from 'primevue/button'
@@ -17,10 +18,10 @@ import DataView from 'primevue/dataview'
 
 import Dialog from 'primevue/dialog'
 import Divider from 'primevue/divider'
-import Dropdown from 'primevue/dropdown'
+// import Dropdown from 'primevue/dropdown'
 import FloatLabel from 'primevue/floatlabel'
 
-import InlineMessage from 'primevue/inlinemessage'
+// import InlineMessage from 'primevue/inlinemessage'
 import Inplace from 'primevue/inplace'
 import InputText from 'primevue/inputtext'
 import InputNumber from 'primevue/inputnumber'
@@ -35,18 +36,18 @@ import ToastService from 'primevue/toastservice'
 
 //Import PrimeVue css
 
-import 'primevue/resources/themes/lara-dark-cyan/theme.css'
-import 'primevue/resources/primevue.min.css'
+// import 'primevue/resources/themes/lara-dark-cyan/theme.css'
+// import 'primevue/resources/primevue.min.css'
 import 'primeicons/primeicons.css'
 
 const app = createApp(App)
 
-app.use(PrimeVue)
+app.use(PrimeVue, { theme: { preset: Aura } })
 app.use(ToastService)
 app.use(router)
 
 //Add PrimeVue Components
-app.component('vue-accordion', Accordion)
+// app.component('vue-accordion', Accordion)
 app.component('vue-accordion-tab', AccordionTab)
 app.component('bread-crumb', Breadcrumb)
 app.component('vue-button', Button)
@@ -56,10 +57,10 @@ app.component('vue-card', Card)
 app.component('data-view', DataView)
 app.component('vue-divider', Divider)
 app.component('vue-dialog', Dialog)
-app.component('drop-down', Dropdown)
+// app.component('drop-down', Dropdown)
 app.component('float-label', FloatLabel)
 
-app.component('inline-message', InlineMessage)
+// app.component('inline-message', InlineMessage)
 app.component('in-place', Inplace)
 app.component('input-text', InputText)
 app.component('input-number', InputNumber)

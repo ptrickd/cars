@@ -15,9 +15,9 @@
     <div class="input-group">
       <label for="name">Name</label>
       <input-text id="name" v-model="name" name="name" aria-describedby="name maintenance" />
-      <inline-message v-if="nameValidationError.length !== 0" severity="error">{{
-        nameValidationError
-      }}</inline-message>
+      <!-- <inline-message v-if="nameValidationError.length !== 0" severity="error">{{
+        nameValidationError -->
+      <!-- }}</inline-message> -->
     </div>
     <div class="input-group">
       <label for="interval">Interval</label>
@@ -28,9 +28,9 @@
         name="interval"
         aria-describedby="interval maintenance"
       />
-      <inline-message v-if="intervalValidationError.length !== 0" severity="error">{{
+      <!-- <inline-message v-if="intervalValidationError.length !== 0" severity="error">{{
         intervalValidationError
-      }}</inline-message>
+      }}</inline-message> -->
     </div>
     <div class="input-group">
       <label for="unit">Unit</label>
@@ -44,9 +44,9 @@
         aria-describedby="interval maintenance"
         placeholder="Select a Unit"
       />
-      <inline-message v-if="unitValidationError.length !== 0" severity="error">{{
+      <!-- <inline-message v-if="unitValidationError.length !== 0" severity="error">{{
         unitValidationError
-      }}</inline-message>
+      }}</inline-message> -->
     </div>
     <!--  -->
     <div class="buttons">

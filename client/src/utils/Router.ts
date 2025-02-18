@@ -3,7 +3,7 @@ import { createWebHistory, createRouter } from 'vue-router'
 import LandingPage from '../components/LandingPage.vue'
 import VehicleDetails from '../components/VehicleDetails.vue'
 import PageNotFound from '../components/PageNotFound.vue'
-import VehicleModalBase from '../components/VehicleModalBase.vue'
+// import VehicleModalBase from '../components/VehicleModalBase.vue'
 import TestingPage from '../components/TestingPage.vue'
 
 const routes = [
