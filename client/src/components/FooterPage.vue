@@ -1,9 +1,9 @@
 <template>
   <div class="container">
-    <vue-divider class="divider" />
+    <v-divider class="divider" />
     <div class="info">
       <div class="line"><p>2025</p></div>
-      <div class="line"><vue-button class="pi pi-github" text></vue-button></div>
+      <div class="line"><v-button icon="pi pi-github" text></v-button></div>
       <div class="line"><p>GPLv3</p></div>
     </div>
   </div>

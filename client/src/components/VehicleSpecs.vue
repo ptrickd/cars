@@ -42,6 +42,7 @@
 import { onMounted } from 'vue'
 
 interface IVehicle {
+  id?: number
   brand: string | null
   model: string | null
   year: string

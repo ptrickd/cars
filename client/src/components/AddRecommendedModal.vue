@@ -1,6 +1,6 @@
 <template class="main">
-  <vue-button label="Add" @click="visible = true" />
-  <vue-dialog
+  <v-button label="Add" @click="visible = true" />
+  <v-dialog
     v-model:visible="visible"
     modal
     header="Add Maintenance"
@@ -15,9 +15,9 @@
     <div class="input-group">
       <label for="name">Name</label>
       <input-text id="name" v-model="name" name="name" aria-describedby="name maintenance" />
-      <!-- <inline-message v-if="nameValidationError.length !== 0" severity="error">{{
-        nameValidationError -->
-      <!-- }}</inline-message> -->
+      <v-message v-if="nameValidationError.length !== 0" severity="error">{{
+        nameValidationError
+      }}</v-message>
     </div>
     <div class="input-group">
       <label for="interval">Interval</label>
@@ -28,14 +28,14 @@
         name="interval"
         aria-describedby="interval maintenance"
       />
-      <!-- <inline-message v-if="intervalValidationError.length !== 0" severity="error">{{
+      <v-message v-if="intervalValidationError.length !== 0" severity="error">{{
         intervalValidationError
-      }}</inline-message> -->
+      }}</v-message>
     </div>
     <div class="input-group">
       <label for="unit">Unit</label>
 
-      <drop-down
+      <v-select
         id="unit"
         :options="maintenanceUnitValues"
         optionLabel="name"
@@ -44,16 +44,16 @@
         aria-describedby="interval maintenance"
         placeholder="Select a Unit"
       />
-      <!-- <inline-message v-if="unitValidationError.length !== 0" severity="error">{{
+      <v-message v-if="unitValidationError.length !== 0" severity="error">{{
         unitValidationError
-      }}</inline-message> -->
+      }}</v-message>
     </div>
     <!--  -->
     <div class="buttons">
-      <vue-button class="button" @click="visible = false" label="Cancel" severity="danger" />
-      <vue-button class="button" label="Add" @click="handleAddBtnClicked()" />
+      <v-button class="button" @click="visible = false" label="Cancel" severity="danger" />
+      <v-button class="button" label="Add" @click="handleAddBtnClicked()" />
     </div>
-  </vue-dialog>
+  </v-dialog>
 </template>
 
 <style scoped>

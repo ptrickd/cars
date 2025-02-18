@@ -6,7 +6,7 @@
 
     <div class="card-container" v-else-if="Array.isArray(vehicleList)">
       <span v-for="vehicle in vehicleList" :key="vehicle.id">
-        <vue-card class="vehicle-card">
+        <v-card class="vehicle-card">
           <template #title
             ><span>{{ vehicle.brand }}&nbsp;{{ vehicle.model }}</span></template
           >
@@ -24,7 +24,7 @@
               />
             </span>
           </template>
-        </vue-card>
+        </v-card>
       </span>
     </div>
 

@@ -1,6 +1,6 @@
 <template>
   <div>
-    <vue-dialog
+    <v-dialog
       @update:visible="$emit('toggleVisible')"
       v-model:visible="$props.visible"
       header="Update"
@@ -30,9 +30,9 @@
                   name="name"
                   aria-describedby="name maintenance"
                 />
-                <!-- <inline-message v-if="nameValidationError.length !== 0" severity="error">{{
-        nameValidationError
-      }}</inline-message> -->
+                <!-- <v-message v-if="nameValidationError.length !== 0" severity="error">{{
+                  nameValidationError
+                }}</v-message> -->
               </div></template
             ></in-place
           >
@@ -56,14 +56,14 @@
                   name="interval"
                   aria-describedby="interval maintenance"
                 />
-                <!-- <inline-message v-if="intervalValidationError.length !== 0" severity="error">{{
-        intervalValidationError
-      }}</inline-message> -->
+                <!-- <v-message v-if="intervalValidationError.length !== 0" severity="error">{{
+                  intervalValidationError
+                }}</v-message> -->
               </div>
               <div class="input-group">
                 <label for="unit">Unit</label>
 
-                <drop-down
+                <v-select
                   id="unit"
                   :options="maintenanceUnitValues"
                   optionLabel="name"
@@ -72,28 +72,23 @@
                   aria-describedby="interval maintenance"
                   placeholder="Select a Unit"
                 />
-                <!-- <inline-message v-if="unitValidationError.length !== 0" severity="error">{{
-        unitValidationError
-      }}</inline-message> -->
+                <!-- <v-message v-if="unitValidationError.length !== 0" severity="error">{{
+                  unitValidationError
+                }}</v-message> -->
               </div></template
             >
           </in-place>
         </div>
       </div>
       <div class="buttons">
-        <vue-button
-          class="button"
-          @click="$emit('toggleVisible')"
-          label="Cancel"
-          severity="danger"
-        />
-        <vue-button
+        <v-button class="button" @click="$emit('toggleVisible')" label="Cancel" severity="danger" />
+        <v-button
           class="button"
           label="Update"
           @click="handleUpdateButtonClicked(newName, newInterval, newUnit.code)"
         />
       </div>
-    </vue-dialog>
+    </v-dialog>
   </div>
 </template>
 

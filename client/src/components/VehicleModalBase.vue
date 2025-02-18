@@ -1,6 +1,6 @@
 <template>
   <div>
-    <vue-dialog
+    <v-dialog
       :visible="$props.visible"
       modal
       :pt="{
@@ -34,7 +34,7 @@
           </div>
           <div class="input-group">
             <label for="year" class="input-label">Year</label>
-            <drop-down
+            <v-select
               id="year"
               v-model="chosenYear"
               :options="yearsOptions"
@@ -58,7 +58,7 @@
           <div class="input-group">
             <label for="unit" class="input-label">Mileage Unit</label>
 
-            <drop-down
+            <v-select
               id="unit"
               :options="intervalValues"
               optionLabel="name"
@@ -70,20 +70,20 @@
             />
           </div>
           <div class="buttons">
-            <vue-button
+            <v-button
               class="button"
               @click="$emit('toggleVisible')"
               label="Cancel"
               severity="danger"
             />
-            <vue-button
+            <v-button
               class="button"
               @click="actionOnClick(model, brand, chosenYear, currentKms, selectedUnit.name)"
-              >{{ buttonActionLabel }}</vue-button
+              >{{ buttonActionLabel }}</v-button
             >
           </div>
         </section>
-      </template></vue-dialog
+      </template></v-dialog
     >
   </div>
 </template>

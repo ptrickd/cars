@@ -67,14 +67,9 @@ const displayValueMeter = (currentKms: number, interval: number, lastMaintenance
             />
           </div>
           <button-group>
-            <vue-button
-              icon="pi pi-times"
-              @click="console.log('clicked')"
-              severity="danger"
-              raised
-              rounded
-            />
-            <vue-button
+            -button icon="pi pi-times" @click="console.log('clicked')" severity="danger" raised
+            rounded />
+            <v-button
               icon="pi pi-check"
               @click="console.log('clicked')"
               severity="success"

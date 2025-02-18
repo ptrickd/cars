@@ -1,5 +1,5 @@
 <template>
-  <!-- <vue-button @click="$props.visible">Add Vehicle</vue-button> -->
+  <!-- <v-button @click="$props.visible">Add Vehicle</v-button> -->
   <VehicleModalBase
     :visible="visible"
     :title="title"

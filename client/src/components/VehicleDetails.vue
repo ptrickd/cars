@@ -2,18 +2,19 @@
   <div v-if="vehicle">
     <header>
       <h1>Vehicle Details</h1>
-      <vue-button icon="pi pi-user-edit" text @click="handleUpdateClicked()"></vue-button>
+      <v-button icon="pi pi-user-edit" text @click="handleUpdateClicked()"></v-button>
     </header>
 
     <VehiculeSpecs :vehicle="vehicle" />
-    <!-- <vue-accordion>
-      <vue-accordion-tab header="Recommended Maintenance List">
-        <ListRecommended :id="Number($route.params.id)" />
+    <v-accordion>
+      <v-accordion-panel value="vehicle.id">
+        <v-accordion-content header="Recommended Maintenance List">
+          <ListRecommended :id="Number($route.params.id)" />
 
-        <AddRecommendedModal :id="Number($route.params.id)" />
-      </vue-accordion-tab>
-    </vue-accordion>
-     -->
+          <AddRecommendedModal :id="Number($route.params.id)" />
+        </v-accordion-content>
+      </v-accordion-panel>
+    </v-accordion>
   </div>
   <UpdateVehicleDetailsModal
     v-if="vehicle"

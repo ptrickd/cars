@@ -9,7 +9,7 @@
       </div>
 
       <div>
-        <vue-button
+        <v-button
           class="button-delete"
           @click="handleDeleteItem(item.id)"
           label="Delete"
@@ -17,7 +17,7 @@
           severity="danger"
           text
         />
-        <vue-button
+        <v-button
           class="button-update"
           @click="toggleVisible()"
           label="Update"
@@ -34,7 +34,7 @@
         />
       </div>
     </div>
-    <div v-if="maintenanceList && Boolean(maintenanceList.length)"><vue-divider /></div>
+    <div v-if="maintenanceList && Boolean(maintenanceList.length)"><v-divider /></div>
     <div v-else>
       <h4>Click on the button to add your for first maintenance.</h4>
       <p>

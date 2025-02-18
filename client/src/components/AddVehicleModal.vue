@@ -1,7 +1,13 @@
 <template>
-  <vue-button @click="visible = true">Add Vehicle</vue-button>
-  <VehicleModalBase :visible="visible" :title="title" :buttonActionLabel="label" :actionOnClick="handleAddBtnClicked"
-    @toggleVisible="visible = false" :errorValidation="errorValidation" />
+  <v-button @click="visible = true">Add Vehicle</v-button>
+  <VehicleModalBase
+    :visible="visible"
+    :title="title"
+    :buttonActionLabel="label"
+    :actionOnClick="handleAddBtnClicked"
+    @toggleVisible="visible = false"
+    :errorValidation="errorValidation"
+  />
 </template>
 <script setup lang="ts">
 import { ref } from 'vue'
@@ -21,9 +27,7 @@ const handleAddBtnClicked = async (
   chosenYear: string,
   currentKms: number,
   selectedUnit: string
-
 ) => {
-
   if (model.length !== 0 && brand.length !== 0 && selectedUnit.length !== 0) {
     const response = await addVehicule(brand, model, chosenYear, currentKms, selectedUnit)
 
