@@ -27,7 +27,6 @@
         </v-card>
       </span>
     </div>
-
     <span class="button">
       <AddVehicleModal />
     </span>
@@ -36,13 +35,9 @@
 
 <style scoped>
 .top-container {
-  /* max-width: 800px; */
-  max-width: 100%;
   height: '100%';
-  /* display: flex;
-  flex-direction: column;
-  justify-content: center; */
 }
+
 .card-container {
   display: flex;
   flex-wrap: wrap;
@@ -60,7 +55,9 @@
   font-size: 1.3rem;
 }
 .button {
-  margin: 0rem 1rem;
+  /* float: left; */
+  margin-left: 20%;
+  padding: auto;
 }
 </style>
 

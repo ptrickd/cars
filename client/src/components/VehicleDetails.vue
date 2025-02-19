@@ -3,6 +3,11 @@
     <header>
       <h1>Vehicle Details</h1>
       <v-button icon="pi pi-user-edit" text @click="handleUpdateClicked()"></v-button>
+      <v-button
+        icon="pi pi-trash"
+        text
+        @click="handleDeleteClicked(Number($route.params.id))"
+      ></v-button>
     </header>
 
     <VehiculeSpecs :vehicle="vehicle" />
@@ -30,18 +35,26 @@ header {
 </style>
 <script setup lang="ts">
 import { ref } from 'vue'
-import { db } from '@/idb/db'
+import { db, deleteVehicle } from '@/idb/db'
+import { useRoute, useRouter } from 'vue-router'
+
+//Primevue
+import { useToast } from 'primevue'
+
 //add components list
 import ListRecommended from './ListRecommended.vue'
 import AddRecommendedModal from './AddRecommendedModal.vue'
 import VehiculeSpecs from './VehicleSpecs.vue'
 import UpdateVehicleDetailsModal from './UpdateVehicleDetailsModal.vue'
-import { useRoute } from 'vue-router'
 
+//Dexie
 import { liveQuery } from 'dexie'
 import { useObservable } from '@vueuse/rxjs'
 
 const route = useRoute()
+const router = useRouter()
+const toast = useToast()
+
 const vehicleId = Number(route.params.id)
 
 const visible = ref(false)
@@ -55,7 +68,18 @@ const vehicle: any = useObservable(
 )
 const handleUpdateClicked = () => {
   visible.value = true
+}
 
-  // toast.add({ severity: 'info', detail: 'Feature coming soon' })
+const handleDeleteClicked = async (id: number) => {
+  const response = await deleteVehicle(id)
+  console.log(response)
+  if (response.success) router.push('/')
+  else if (response.error) {
+    toast.add({
+      severity: 'error',
+      detail: 'Oups. Error',
+      life: 3000
+    })
+  }
 }
 </script>

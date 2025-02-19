@@ -2,22 +2,29 @@
   <main class="container">
     <NavBar />
     <Toast />
-    <RouterView />
+    <div class="main"><RouterView /></div>
+
     <FooterPage class="footer" />
   </main>
 </template>
 
 <style scoped>
 .container {
+  margin: 0;
+  padding: 0;
   min-width: 400px;
-  max-width: 900px;
-  height: 100vh;
+  height: 98vh;
   display: flex;
   flex-direction: column;
+  justify-content: center;
+}
+
+.main {
+  height: 100vh;
 }
 
 .footer {
-  margin-top: auto;
+  width: 100%;
 }
 </style>
 

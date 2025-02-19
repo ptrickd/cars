@@ -45,6 +45,10 @@ const db = new Dexie('MaintenanceDB') as Dexie & {
   >
 }
 
+/**/
+/************  SCHEMA  ****************/
+/**/
+
 // Schema declaration:
 db.version(1).stores({
   doneMaintenance:
@@ -58,6 +62,11 @@ db.version(2).stores({
 db.version(3).stores({
   vehicle: '++id, brand, model, year, currentKms, selectedUnit'
 })
+
+/**/
+/************  VEHICLE  ****************/
+/**/
+
 //Vehicule get list
 async function getVehicules() {
   try {
@@ -117,6 +126,23 @@ async function updateVehicle(
     return { error: err.message }
   }
 }
+
+//Vehicle Delete
+async function deleteVehicle(id: number) {
+  try {
+    const vehicle = await db.vehicle.where('id').equals(id).delete()
+
+    console.log(vehicle)
+    return { success: true }
+  } catch (err: any) {
+    console.error(err)
+    return { error: err.message }
+  }
+}
+
+/**/
+/************  MAINTENANCE  ****************/
+/**/
 
 //Done Maintenance
 async function addDoneMaintenance({
@@ -195,12 +221,17 @@ function getDoneMaintenance() {
   return collection
 }
 
+/**/
+/************  EXPORT  ****************/
+/**/
+
 export {
   db,
   getVehicules,
   getVehicleById,
   addVehicule,
   updateVehicle,
+  deleteVehicle,
   addDoneMaintenance,
   getDoneMaintenance,
   addRecommendedMaintenance,

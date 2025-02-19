@@ -1,5 +1,5 @@
 <template>
-  <div class="container">
+  <div>
     <v-divider class="divider" />
     <div class="info">
       <div class="line"><p>2025</p></div>
@@ -9,22 +9,14 @@
   </div>
 </template>
 <style scoped>
-.container {
-  height: 50px;
-  /* margin-bottom: 20px; */
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
 .info {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   margin-left: 15%;
   margin-right: 15%;
+  justify-items: center;
 }
 .line {
-  display: flex;
-  align-items: center;
+  justify-items: center;
 }
 </style>
