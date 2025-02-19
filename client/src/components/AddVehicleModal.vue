@@ -32,11 +32,11 @@ const handleAddBtnClicked = async (
     const response = await addVehicule(brand, model, chosenYear, currentKms, selectedUnit)
 
     if (response.success) {
-      visible.value = false
       brand = ''
       model = ''
-      chosenYear = String(chosenYear)
+      chosenYear = ''
       currentKms = 0
+      visible.value = false
     } else {
       console.log('error saving')
       console.log(response)

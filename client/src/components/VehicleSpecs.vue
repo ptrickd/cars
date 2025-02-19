@@ -1,11 +1,9 @@
 <template>
   <div class="top-container">
     <div class="grid-item" v-if="props.vehicle.brand">
-      <p>{{ props.vehicle.brand }}</p>
+      <p>{{ props.vehicle.brand }} {{ props.vehicle.model }}</p>
     </div>
-    <div class="grid-item" v-if="props.vehicle.model">
-      <p>{{ props.vehicle.model }}</p>
-    </div>
+
     <div class="grid-item">
       <p>{{ props.vehicle.year }}</p>
     </div>
@@ -19,7 +17,7 @@
 .top-container {
   display: grid;
 
-  grid-template-columns: auto auto;
+  grid-template-columns: auto;
   grid-template-rows: auto auto;
   gap: 10px 10px;
   margin-left: auto;
