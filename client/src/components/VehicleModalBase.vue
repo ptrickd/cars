@@ -5,6 +5,8 @@
       modal
       :pt="{
         root: 'border-none',
+        margin: 0,
+        padding: 0,
         mask: {
           style: 'backdrop-filter: blur(2px)'
         }

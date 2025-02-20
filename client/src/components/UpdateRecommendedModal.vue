@@ -12,14 +12,16 @@
         }
       }"
     >
-      <div>
+      <div class="main">
         <h3>Update Maintenance</h3>
         <div>
           <in-place
             ><template #display
               ><div class="display-group">
-                <p>{{ newName }}</p>
-                <i pi class="pi pi-user-edit"></i></div
+                <span class="display-item"
+                  ><p>{{ newName }}</p></span
+                >
+                <span class="display-item"><i pi class="pi pi-user-edit"></i></span></div
             ></template>
             <template #content>
               <div class="input-group">
@@ -42,8 +44,8 @@
           <in-place
             ><template #display>
               <div class="display-group">
-                <p>{{ newInterval }}&nbsp; {{ newUnit.code.toLowerCase() }}</p>
-                <i pi class="pi pi-user-edit"></i>
+                <p class="display-item">{{ newInterval }}&nbsp; {{ newUnit.code.toLowerCase() }}</p>
+                <i pi class="pi pi-user-edit display-item`"></i>
               </div>
             </template>
             <template #content>
@@ -94,26 +96,34 @@
 
 <style scoped>
 .main {
+  width: 100%;
   padding: 10px;
+  text-align: center;
 }
+
 .display-group {
   height: 2rem;
   width: 100%;
-
-  padding: 1.5rem 2rem 1.5rem 1.5rem;
+  padding: 1.5rem 2.5rem 1.5rem 2.5rem;
 
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
   align-items: center;
-  text-justify: center;
+  gap: 10px;
 
   border: 1px solid var(--highlight-bg);
-
   border-radius: 6px;
 }
+
 .display-group:hover {
   border: 2px solid var(--primary-color);
 }
+
+.display-item {
+  align-self: center;
+  flex-grow: 1;
+}
+
 .input-group {
   margin-top: 10px;
   display: flex;
@@ -123,10 +133,12 @@
     margin-bottom: 5px;
   }
 }
+
 .buttons {
   display: flex;
-  /* justify-content: flex-end; */
+  justify-content: center;
 }
+
 .button {
   margin: 5px;
 }

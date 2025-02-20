@@ -35,10 +35,17 @@
       </div>
     </div>
     <div v-if="maintenanceList && Boolean(maintenanceList.length)"><v-divider /></div>
-    <div v-else>
-      <h4>Click on the button to add your for first maintenance.</h4>
+    <div v-else class="empty-list">
+      <h3>Click on the button to add your first maintenance.</h3>
       <p>
-        You can start by a <b><i>Oil Change</i></b> Every <b><i>5000 kms</i></b>
+        You can start by a
+        <b
+          ><i><u>Oil Change</u></i></b
+        >
+        Every
+        <b
+          ><i><u>5000 kms</u></i></b
+        >.
       </p>
     </div>
   </span>
@@ -48,17 +55,21 @@
 .main {
   width: '100%';
   display: flex;
+  margin: 0;
   justify-content: space-between;
 }
 .list {
   width: '50%';
   margin-right: 10px;
-  height: 100px;
+  /* height: 100px; */
 }
 .buttons {
   display: flex;
   justify-content: flex-end;
   flex-direction: column;
+}
+.empty-list {
+  padding: 1rem;
 }
 </style>
 

@@ -93,7 +93,7 @@ app.component('v-message', Message)
 app.component('in-place', Inplace)
 app.component('input-text', InputText)
 app.component('input-number', InputNumber)
-app.component('menu-bar', Menubar)
+app.component('v-menubar', Menubar)
 app.component('meter-group', MeterGroup)
 
 //Add Router

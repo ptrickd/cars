@@ -13,7 +13,10 @@
     <VehiculeSpecs :vehicle="vehicle" />
     <v-accordion>
       <v-accordion-panel value="vehicle.id">
-        <v-accordion-content header="Recommended Maintenance List">
+        <v-accordion-header class="accordion-header"
+          >Recommended Maintenance List</v-accordion-header
+        >
+        <v-accordion-content>
           <ListRecommended :id="Number($route.params.id)" />
 
           <AddRecommendedModal :id="Number($route.params.id)" />
@@ -31,6 +34,9 @@
 <style scoped>
 header {
   display: flex;
+}
+.accordion-header {
+  font-size: 1.5rem;
 }
 </style>
 <script setup lang="ts">
