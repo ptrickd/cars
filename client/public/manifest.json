@@ -28,13 +28,12 @@
       "type": "image/png"
     },
     {
-      "src": "./favicon512x512.png",
-      "sizes": "512x512",
-      "type": "image/png"
+      "src": "./favicon.svg",
+      "sizes": "257x257",
+      "type": "image/svg+xml"
     }
   ],
   "start_url": "http://localhost:5173/",
   "display": "standalone",
-  "theme_color": "#000000",
-  "background_color": "#ffffff"
+  "background_color": "peachpuff"
 }
