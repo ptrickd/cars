@@ -1,4 +1,5 @@
 <template class="main">
+  <h4>Add a new recommended maintenance to the list.</h4>
   <v-button label="Add" @click="visible = true" />
   <v-dialog
     v-model:visible="visible"
@@ -115,12 +116,12 @@ const handleAddBtnClicked = async () => {
     if (response.success) {
       console.log('success')
       //send toast confirming the maintenance has benn added
-      toast.add({ severity: 'info', detail: 'New Maintenance Saved!' })
+      toast.add({ severity: 'info', detail: 'New Maintenance Saved!', life: 3000 })
       visible.value = false
       //refresh list in UI
       emit('refreshRecommendedList')
     } else if (response.error) {
-      toast.add({ severity: 'error', detail: 'Something Went Wrong!' })
+      toast.add({ severity: 'error', detail: 'Something Went Wrong!', life: 3000 })
       visible.value = false
     }
   }

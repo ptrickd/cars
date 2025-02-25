@@ -10,6 +10,23 @@
 
       <div>
         <v-button
+          @click="toggleDoneVisible()"
+          label="Done"
+          icon="pi pi-check-circle"
+          severity="primary"
+          text
+        />
+
+        <v-button
+          class="button-update"
+          @click="toggleUpdateVisible()"
+          label="Update"
+          icon="pi pi-user-edit"
+          severity="secondary"
+          text
+        />
+
+        <v-button
           class="button-delete"
           @click="handleDeleteItem(item.id)"
           label="Delete"
@@ -17,23 +34,25 @@
           severity="danger"
           text
         />
-        <v-button
-          class="button-update"
-          @click="toggleVisible()"
-          label="Update"
-          icon="pi pi-user-edit"
-          text
-        />
         <UpdateRecommendedModal
           :id="item.id"
           :name="item.name"
           :interval="item.interval"
           :unit="item.unit"
-          :visible="visible"
-          @toggleVisible="toggleVisible()"
+          :visible="updateVisible"
+          @toggleVisible="toggleUpdateVisible()"
+        />
+        <DoneRecommendedModal
+          :id="item.id"
+          :name="item.name"
+          :interval="item.interval"
+          :unit="item.unit"
+          :visible="doneVisible"
+          @toggleVisible="toggleDoneVisible()"
         />
       </div>
     </div>
+
     <div v-if="maintenanceList && Boolean(maintenanceList.length)"><v-divider /></div>
     <div v-else class="empty-list">
       <h3>Click on the button to add your first maintenance.</h3>
@@ -78,6 +97,7 @@
 import { ref } from 'vue'
 import { deleteRecommendedMaintenance } from '@/idb/db'
 import UpdateRecommendedModal from './UpdateRecommendedModal.vue'
+import DoneRecommendedModal from './DoneRecommendedModal.vue'
 import { liveQuery } from 'dexie'
 import { useObservable } from '@vueuse/rxjs'
 import { db } from '../idb/db'
@@ -86,7 +106,8 @@ interface IProps {
   id: number
 }
 
-let visible = ref(false)
+let doneVisible = ref(false)
+let updateVisible = ref(false)
 
 const props = defineProps<IProps>()
 
@@ -95,8 +116,11 @@ const handleDeleteItem = async (id: number) => {
   await deleteRecommendedMaintenance(id)
 }
 
-const toggleVisible = () => {
-  visible.value = !visible.value
+const toggleDoneVisible = () => {
+  doneVisible.value = !doneVisible.value
+}
+const toggleUpdateVisible = () => {
+  updateVisible.value = !updateVisible.value
 }
 const maintenanceList: any = useObservable(
   // @ts-ignore
