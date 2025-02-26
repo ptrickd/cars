@@ -86,11 +86,16 @@
 </style>
 
 <script setup lang="ts">
-import AddVehicleModal from './AddVehicleModal.vue'
-import VehicleSpecs from './VehicleSpecs.vue'
+//Vue
+import { useObservable } from '@vueuse/rxjs'
+
+//Idb
 import { db } from '@/idb/db'
 import { liveQuery } from 'dexie'
-import { useObservable } from '@vueuse/rxjs'
+
+//Component
+import AddVehicleModal from './AddVehicleModal.vue'
+import VehicleSpecs from './VehicleSpecs.vue'
 
 /*
  * Persistent storage for indexed db

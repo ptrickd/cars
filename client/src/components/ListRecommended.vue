@@ -42,14 +42,14 @@
           :visible="updateVisible"
           @toggleVisible="toggleUpdateVisible()"
         />
-        <DoneRecommendedModal
+        <!-- <DoneRecommendedModal
           :id="item.id"
           :name="item.name"
           :interval="item.interval"
           :unit="item.unit"
           :visible="doneVisible"
           @toggleVisible="toggleDoneVisible()"
-        />
+        /> -->
       </div>
     </div>
 

@@ -3,18 +3,16 @@ import Dexie, { type EntityTable } from 'dexie'
 import { MaintenanceUnit } from '@/constants/enum'
 
 interface IDone {
-  id: number
+  id?: number
   name: string
-  lastMaintenanceKms: number
-  lastMaintenanceDate: Date | null
   currentKms: number
   interval: number
-  isOverdue: boolean
   unit: MaintenanceUnit
+  date: Date
 }
 
 interface IRecommended {
-  id: number
+  id?: number
   name: string
   interval: number
   unit: MaintenanceUnit
@@ -30,6 +28,13 @@ interface IVehicle {
   selectedUnit: string
 }
 
+interface IVehicleData {
+  id?: number
+  vehicleId: number
+  selectedUnit: string
+  updatedKms: number
+}
+
 const db = new Dexie('MaintenanceDB') as Dexie & {
   doneMaintenance: EntityTable<
     IDone,
@@ -43,6 +48,7 @@ const db = new Dexie('MaintenanceDB') as Dexie & {
     IVehicle,
     'id' // primary key "id" (for the typings only)
   >
+  vehicleData: EntityTable<IVehicleData, 'id'>
 }
 
 /**/
@@ -51,8 +57,7 @@ const db = new Dexie('MaintenanceDB') as Dexie & {
 
 // Schema declaration:
 db.version(1).stores({
-  doneMaintenance:
-    '++id, name, lastMaintenanceKms, lastMaintenanceDate, currentKms, interval, isOverdue, unit' // primary key "id" (for the runtime!)
+  doneMaintenance: '++id, name, currentKms, interval, unit, date' // primary key "id" (for the runtime!)
 })
 
 db.version(2).stores({
@@ -60,7 +65,11 @@ db.version(2).stores({
 })
 
 db.version(3).stores({
-  vehicle: '++id, brand, model, year, currentKms, selectedUnit'
+  vehicle: '++id, brand, model, year, kms, selectedUnit'
+})
+
+db.version(4).stores({
+  vehicleData: '++id, vehicleId, selectedUnit, updatedKms'
 })
 
 /**/
@@ -99,9 +108,9 @@ async function addVehicule(
   selectedUnit: string
 ) {
   try {
-    await db.vehicle.add({ brand, model, year, currentKms, selectedUnit })
+    const id = await db.vehicle.add({ brand, model, year, currentKms, selectedUnit })
 
-    return { success: true }
+    return { success: true, id }
   } catch (err: any) {
     console.error(err)
     return { error: err.message }
@@ -141,32 +150,32 @@ async function deleteVehicle(id: number) {
 }
 
 /**/
-/************  MAINTENANCE  ****************/
+/************  DONE MAINTENANCE  ****************/
 /**/
 
-//Done Maintenance
-async function addDoneMaintenance({
-  name,
-  lastMaintenanceKms,
-  lastMaintenanceDate,
-  currentKms,
-  interval,
-  isOverdue,
-  unit
-}: IDone) {
+//Create Done Maintenance
+async function addDoneMaintenance({ name, currentKms, interval, unit, date }: IDone) {
   try {
     await db.doneMaintenance.add({
       name,
-      lastMaintenanceKms,
-      lastMaintenanceDate,
       currentKms,
       interval,
-      isOverdue,
-      unit
+      unit,
+      date
     })
   } catch (err: any) {
     console.error(err)
   }
+}
+
+/**/
+/************  RECOMMENDED MAINTENANCE  ****************/
+/**/
+
+// Get done maintenance
+function getDoneMaintenance() {
+  const collection = db.recommendedMaintenance.where('id').above(0)
+  return collection
 }
 
 //Create
@@ -216,9 +225,34 @@ async function deleteRecommendedMaintenance(id: number) {
   }
 }
 
-function getDoneMaintenance() {
-  const collection = db.recommendedMaintenance.where('id').above(0)
-  return collection
+/**/
+/************  VEHICLES DATA  ****************/
+/*  This is the data that will change with time.   */
+/*  The kms will change has the vehicle age.   */
+/*  The kms will be updated every time a maintenance is done on the vehicle */
+/*  The maintenance unit is specific to the vehicle. It will probably not change but give the possibility anyway */
+/**/
+
+// Get
+async function getVehicleDataById(id: number) {
+  const vehicleData = db.vehicleData.where('id').equals(id)
+  return vehicleData
+}
+
+async function getAllVehicleData() {
+  const vehicleData = db.vehicleData.toArray()
+  return vehicleData
+}
+
+// Create
+async function addVehicleData(vehicleId: number, selectedUnit: string, updatedKms: number) {
+  try {
+    await db.vehicleData.add({ vehicleId, selectedUnit, updatedKms })
+    return { success: true }
+  } catch (err: any) {
+    console.error(err)
+    return { error: err.message }
+  }
 }
 
 /**/
@@ -236,6 +270,9 @@ export {
   getDoneMaintenance,
   addRecommendedMaintenance,
   updateRecommendedMaintenance,
-  deleteRecommendedMaintenance
+  deleteRecommendedMaintenance,
+  getVehicleDataById,
+  getAllVehicleData,
+  addVehicleData
 }
 export type { IVehicle }

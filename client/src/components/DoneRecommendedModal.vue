@@ -22,11 +22,10 @@
         <label>Date:</label>&emsp;
         <p>{{ `${dateInString}` }}</p>
       </div>
-
-      <!-- <span
-        ><label></label>
-        <p>d</p></span
-      > -->
+      <div class="info">
+        <label>Next will be in: </label>&emsp;
+        <p>{{ currentKms + 5000 }} {{ unitKms }}</p>
+      </div>
     </div>
     <div class="buttons">
       <v-button class="button" @click="$emit('toggleVisible')" label="Cancel" severity="danger" />

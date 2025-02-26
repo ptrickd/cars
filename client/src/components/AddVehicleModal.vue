@@ -10,10 +10,15 @@
   />
 </template>
 <script setup lang="ts">
+//Vue
 import { ref } from 'vue'
+
+//Component
 import VehicleModalBase from './VehicleModalBase.vue'
 
-import { addVehicule } from '@/idb/db'
+//Db
+import { addVehicule, addVehicleData } from '@/idb/db'
+import { store } from '@/store/store'
 
 const visible = ref(false)
 const title = ref('Add New Vehicle')
@@ -29,65 +34,28 @@ const handleAddBtnClicked = async (
   selectedUnit: string
 ) => {
   if (model.length !== 0 && brand.length !== 0 && selectedUnit.length !== 0) {
-    const response = await addVehicule(brand, model, chosenYear, currentKms, selectedUnit)
+    const vehicleResponse = await addVehicule(brand, model, chosenYear, currentKms, selectedUnit)
 
-    if (response.success) {
-      brand = ''
-      model = ''
-      chosenYear = ''
-      currentKms = 0
-      visible.value = false
+    if (vehicleResponse.id) {
+      const dataResponse = await addVehicleData(vehicleResponse.id, selectedUnit, currentKms)
+      if (dataResponse.success) {
+        store.addVehicleData(vehicleResponse.id, currentKms, selectedUnit)
+        brand = ''
+        model = ''
+        chosenYear = ''
+        currentKms = 0
+        visible.value = false
+      } else {
+        console.error('error saving')
+        console.error(dataResponse)
+      }
     } else {
-      console.log('error saving')
-      console.log(response)
+      console.error('error saving')
+      console.error(vehicleResponse)
     }
   } else {
-    console.log('missing value')
-    console.log('error')
+    console.error('missing value')
+    console.error('error')
   }
 }
 </script>
-
-<!-- <script setup lang="ts">
-import { ref } from 'vue'
-import { addVehicule } from '@/idb/db'
-import { MaintenanceUnit } from '@/constants/enum'
-
-const createYears = () => {
-  const arrayOfYears = []
-  for (let i = 2024; i >= 1900; i--) arrayOfYears.push(String(i))
-  return arrayOfYears
-}
-const arrayOfYears = createYears()
-
-const date = new Date()
-const currentYear = date.getFullYear()
-
-const visible = ref(false)
-const brand = ref('')
-const model = ref('')
-const chosenYear = ref(String(currentYear))
-const currentKms = ref(0)
-const yearsOptions = ref(arrayOfYears)
-let unit = ref({ name: '', code: '' })
-const handleAddBtnClicked = async () => {
-  if (model.length !== 0 && brand.length !== 0 && unit.name.length !== 0) {
-    const response = await addVehicule(brand.value, model.value, chosenYear.value, currentKms.value)
-    if (response.success) {
-      visible.value = false
-      brand.value = ''
-      model.value = ''
-      chosenYear.value = String(currentYear)
-      currentKms.value = 0
-    }
-  } else {
-    console.log('missing value')
-  }
-}
-const distanceUnitValues = ref([
-  {
-    name: 'kms',
-    code: MaintenanceUnit.KMS
-  }
-])
-</script> -->

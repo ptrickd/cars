@@ -29,8 +29,30 @@
 </style>
 
 <script setup lang="ts">
-import Toast from 'primevue/toast'
+//Vue
 import { RouterView } from 'vue-router'
+
+//Primevue
+import Toast from 'primevue/toast'
+
+//State
+import { store } from './store/store'
+
+//Idb
+import { db } from '@/idb/db'
+import { getAllVehicleData } from '@/idb/db'
+
+//Component
 import NavBar from './components/NavBar.vue'
 import FooterPage from './components/FooterPage.vue'
+
+//Updating state
+const getVehicleData = async () => {
+  const data = await getAllVehicleData()
+  console.log(data)
+
+  console.log(store)
+}
+
+getVehicleData()
 </script>
