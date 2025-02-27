@@ -1,12 +1,13 @@
 import Dexie, { type EntityTable } from 'dexie'
 
-import { MaintenanceUnit } from '@/constants/enum'
+import { MaintenanceUnit, DistanceUnit } from '@/constants/enum'
+import { convertKmToMiles, convertMilesToKm } from '@/utils/converter'
 
 interface IDone {
   id?: number
   name: string
   currentKms: number
-  interval: number
+  intervalKms: number
   unit: MaintenanceUnit
   date: Date
 }
@@ -14,7 +15,7 @@ interface IDone {
 interface IRecommended {
   id?: number
   name: string
-  interval: number
+  intervalKms: number
   unit: MaintenanceUnit
   vehicleId: number
 }
@@ -61,7 +62,7 @@ db.version(1).stores({
 })
 
 db.version(2).stores({
-  recommendedMaintenance: '++id, name, interval, unit, vehicleId'
+  recommendedMaintenance: '++id, name, intervalKms, unit, vehicleId'
 })
 
 db.version(3).stores({
@@ -77,11 +78,18 @@ db.version(4).stores({
 /**/
 
 //Vehicule get list
-async function getVehicules() {
+async function getVehicles() {
   try {
     const vehicles = await db.vehicle.toArray()
+    const newVehicles = vehicles.map((vehicle) => {
+      console.log(vehicle)
+      if (vehicle.selectedUnit === DistanceUnit.MILES) {
+        const inMiles = convertKmToMiles(vehicle.currentKms)
+        return { ...vehicle, currentKms: inMiles }
+      } else return vehicle
+    })
     console.log(vehicles)
-    return vehicles
+    return newVehicles
   } catch (err: any) {
     console.error(err)
     return { error: err.message }
@@ -92,6 +100,11 @@ async function getVehicules() {
 async function getVehicleById(id: number) {
   try {
     const vehicle = await db.vehicle.get({ id: id })
+
+    if (vehicle && vehicle.selectedUnit === DistanceUnit.MILES) {
+      const inMiles = convertKmToMiles(vehicle.currentKms)
+      return { ...vehicle, currentKms: inMiles }
+    } else return vehicle
     return vehicle
   } catch (err: any) {
     console.error(err)
@@ -100,7 +113,7 @@ async function getVehicleById(id: number) {
 }
 
 //Vehicle add
-async function addVehicule(
+async function addVehicle(
   brand: string,
   model: string,
   year: string,
@@ -108,7 +121,17 @@ async function addVehicule(
   selectedUnit: string
 ) {
   try {
-    const id = await db.vehicle.add({ brand, model, year, currentKms, selectedUnit })
+    let convertedIfNeededKms = 0
+    if (selectedUnit === DistanceUnit.MILES) convertedIfNeededKms = convertMilesToKm(currentKms)
+    else convertedIfNeededKms = currentKms
+
+    const id = await db.vehicle.add({
+      brand,
+      model,
+      year,
+      currentKms: convertedIfNeededKms,
+      selectedUnit
+    })
 
     return { success: true, id }
   } catch (err: any) {
@@ -127,7 +150,17 @@ async function updateVehicle(
   selectedUnit: string
 ) {
   try {
-    await db.vehicle.update(id, { brand, model, year, currentKms, selectedUnit })
+    let convertedIfNeededKms = 0
+    if (selectedUnit === DistanceUnit.MILES) convertedIfNeededKms = convertMilesToKm(currentKms)
+    else convertedIfNeededKms = currentKms
+
+    await db.vehicle.update(id, {
+      brand,
+      model,
+      year,
+      currentKms: convertedIfNeededKms,
+      selectedUnit
+    })
 
     return { success: true }
   } catch (err: any) {
@@ -153,13 +186,33 @@ async function deleteVehicle(id: number) {
 /************  DONE MAINTENANCE  ****************/
 /**/
 
+// Get done maintenance
+async function getDoneMaintenance() {
+  let formattedCollection: [] | IDone[] = []
+  const collection = await db.doneMaintenance.toArray()
+  if (collection) {
+    formattedCollection = collection.map((maintenance) => {
+      console.log(maintenance)
+      if (maintenance.unit === DistanceUnit.MILES) {
+        return { ...maintenance, currentKms: convertKmToMiles(maintenance.currentKms) }
+      } else return maintenance
+    })
+  }
+
+  return formattedCollection
+}
+
 //Create Done Maintenance
-async function addDoneMaintenance({ name, currentKms, interval, unit, date }: IDone) {
+async function addDoneMaintenance({ name, currentKms, intervalKms, unit, date }: IDone) {
   try {
+    let convertedIfNeededKms = 0
+    if (unit === DistanceUnit.MILES) convertedIfNeededKms = convertMilesToKm(currentKms)
+    else convertedIfNeededKms = currentKms
+
     await db.doneMaintenance.add({
       name,
-      currentKms,
-      interval,
+      currentKms: convertedIfNeededKms,
+      intervalKms,
       unit,
       date
     })
@@ -172,21 +225,15 @@ async function addDoneMaintenance({ name, currentKms, interval, unit, date }: ID
 /************  RECOMMENDED MAINTENANCE  ****************/
 /**/
 
-// Get done maintenance
-function getDoneMaintenance() {
-  const collection = db.recommendedMaintenance.where('id').above(0)
-  return collection
-}
-
 //Create
 async function addRecommendedMaintenance(
   name: string,
-  interval: number,
+  intervalKms: number,
   unit: MaintenanceUnit,
   vehicleId: number
 ) {
   try {
-    await db.recommendedMaintenance.add({ name, interval, unit, vehicleId })
+    await db.recommendedMaintenance.add({ name, intervalKms, unit, vehicleId })
     return { success: true }
   } catch (err: any) {
     console.error(err)
@@ -198,15 +245,15 @@ async function addRecommendedMaintenance(
 async function updateRecommendedMaintenance(
   id: number,
   name: string,
-  interval: number,
+  intervalKms: number,
   unit: MaintenanceUnit
 ) {
   console.log(name)
-  console.log(interval)
+  console.log(intervalKms)
   console.log(unit)
   try {
     console.log('in the try')
-    await db.recommendedMaintenance.update(id, { name, interval, unit })
+    await db.recommendedMaintenance.update(id, { name, intervalKms, unit })
     return { success: true }
   } catch (err: any) {
     console.log(err)
@@ -235,19 +282,38 @@ async function deleteRecommendedMaintenance(id: number) {
 
 // Get
 async function getVehicleDataById(id: number) {
-  const vehicleData = db.vehicleData.where('id').equals(id)
+  const vehicleData = await db.vehicleData.where('id').equals(id).first()
+
+  console.log(vehicleData)
+  if (vehicleData?.selectedUnit === DistanceUnit.MILES) {
+    const miles = convertKmToMiles(vehicleData.updatedKms)
+    return { ...vehicleData, updatedKms: miles }
+  }
   return vehicleData
 }
 
 async function getAllVehicleData() {
-  const vehicleData = db.vehicleData.toArray()
-  return vehicleData
+  const vehicleData = await db.vehicleData.toArray()
+  const formattedData = vehicleData.map((vehicle) => {
+    if (vehicle.selectedUnit === DistanceUnit.MILES) {
+      const miles = convertKmToMiles(vehicle.updatedKms)
+      return { ...vehicle, updatedKms: miles }
+    } else return vehicle
+  })
+
+  return formattedData
 }
 
 // Create
 async function addVehicleData(vehicleId: number, selectedUnit: string, updatedKms: number) {
   try {
-    await db.vehicleData.add({ vehicleId, selectedUnit, updatedKms })
+    if (selectedUnit === DistanceUnit.MILES) {
+      await db.vehicleData.add({
+        vehicleId,
+        selectedUnit,
+        updatedKms: convertMilesToKm(updatedKms)
+      })
+    } else await db.vehicleData.add({ vehicleId, selectedUnit, updatedKms })
     return { success: true }
   } catch (err: any) {
     console.error(err)
@@ -261,9 +327,9 @@ async function addVehicleData(vehicleId: number, selectedUnit: string, updatedKm
 
 export {
   db,
-  getVehicules,
+  getVehicles,
   getVehicleById,
-  addVehicule,
+  addVehicle,
   updateVehicle,
   deleteVehicle,
   addDoneMaintenance,

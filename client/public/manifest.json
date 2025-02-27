@@ -35,5 +35,5 @@
   ],
   "start_url": "http://localhost:5173/",
   "display": "standalone",
-  "background_color": "peachpuff"
+  "background_color": "LightSlateGray"
 }

@@ -17,7 +17,7 @@ import { ref } from 'vue'
 import VehicleModalBase from './VehicleModalBase.vue'
 
 //Db
-import { addVehicule, addVehicleData } from '@/idb/db'
+import { addVehicle, addVehicleData } from '@/idb/db'
 import { store } from '@/store/store'
 
 const visible = ref(false)
@@ -34,7 +34,7 @@ const handleAddBtnClicked = async (
   selectedUnit: string
 ) => {
   if (model.length !== 0 && brand.length !== 0 && selectedUnit.length !== 0) {
-    const vehicleResponse = await addVehicule(brand, model, chosenYear, currentKms, selectedUnit)
+    const vehicleResponse = await addVehicle(brand, model, chosenYear, currentKms, selectedUnit)
 
     if (vehicleResponse.id) {
       const dataResponse = await addVehicleData(vehicleResponse.id, selectedUnit, currentKms)
