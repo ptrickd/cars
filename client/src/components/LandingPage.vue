@@ -90,7 +90,7 @@
 import { useObservable } from '@vueuse/rxjs'
 
 //Idb
-import { db, getVehicles, getDoneMaintenance, getVehicleDataById } from '@/idb/db'
+import { db, getVehicles, getDoneMaintenance } from '@/idb/db'
 import { liveQuery } from 'dexie'
 
 //Component
@@ -114,6 +114,7 @@ const vehicleList: any = useObservable(
   // @ts-ignore
   liveQuery(() => {
     console.log(db.vehicle.toArray())
+
     return db.vehicle.toArray()
   })
 )

@@ -17,22 +17,25 @@ import AccordionContent from 'primevue/accordioncontent'
 import Breadcrumb from 'primevue/breadcrumb'
 import Button from 'primevue/button'
 import ButtonGroup from 'primevue/buttongroup'
+
 import Card from 'primevue/card'
 
 import DataView from 'primevue/dataview'
-
+import DatePicker from 'primevue/datepicker'
 import Dialog from 'primevue/dialog'
 import Divider from 'primevue/divider'
-import Select from 'primevue/select'
+
 import FloatLabel from 'primevue/floatlabel'
 
-import Message from 'primevue/message'
 import Inplace from 'primevue/inplace'
-
 import InputText from 'primevue/inputtext'
 import InputNumber from 'primevue/inputnumber'
+
+import Message from 'primevue/message'
 import Menubar from 'primevue/menubar'
 import MeterGroup from 'primevue/metergroup'
+
+import Select from 'primevue/select'
 
 //Import Router
 import { RouterLink } from 'vue-router'
@@ -81,20 +84,25 @@ app.component('v-accordion-content', AccordionContent)
 app.component('bread-crumb', Breadcrumb)
 app.component('v-button', Button)
 app.component('button-group', ButtonGroup)
+
 app.component('v-card', Card)
 
 app.component('data-view', DataView)
-app.component('v-divider', Divider)
+app.component('v-datepicker', DatePicker)
 app.component('v-dialog', Dialog)
-app.component('v-select', Select)
+app.component('v-divider', Divider)
+
 app.component('float-label', FloatLabel)
 
-app.component('v-message', Message)
 app.component('in-place', Inplace)
 app.component('input-text', InputText)
 app.component('input-number', InputNumber)
+
+app.component('v-message', Message)
 app.component('v-menubar', Menubar)
 app.component('meter-group', MeterGroup)
+
+app.component('v-select', Select)
 
 //Add Router
 app.component('router-link', RouterLink)

@@ -42,14 +42,14 @@
           :visible="updateVisible"
           @toggleVisible="toggleUpdateVisible()"
         />
-        <!-- <DoneRecommendedModal
+        <DoneRecommendedModal
           :id="item.id"
           :name="item.name"
           :interval="item.interval"
           :unit="item.unit"
           :visible="doneVisible"
           @toggleVisible="toggleDoneVisible()"
-        /> -->
+        />
       </div>
     </div>
 
@@ -93,14 +93,17 @@
 </style>
 
 <script setup lang="ts">
-//Import
+//Vue
 import { ref } from 'vue'
-import { deleteRecommendedMaintenance } from '@/idb/db'
-import UpdateRecommendedModal from './UpdateRecommendedModal.vue'
-import DoneRecommendedModal from './DoneRecommendedModal.vue'
+
+//Idb
+import { db, deleteRecommendedMaintenance } from '@/idb/db'
 import { liveQuery } from 'dexie'
 import { useObservable } from '@vueuse/rxjs'
-import { db } from '../idb/db'
+
+//Component
+import UpdateRecommendedModal from './UpdateRecommendedModal.vue'
+import DoneRecommendedModal from './DoneRecommendedModal.vue'
 
 interface IProps {
   id: number
