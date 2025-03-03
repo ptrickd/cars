@@ -5,19 +5,20 @@ import { convertKmToMiles, convertMilesToKm } from '@/utils/converter'
 
 interface IDone {
   id?: number
+  recommendedMaintenanceId: number
   name: string
   currentKms: number
   intervalKms: number
   unit: MaintenanceUnit
-  date: Date
+  dateOfMaintenanceDone: Date
 }
 
 interface IRecommended {
   id?: number
+  vehicleId: number
   name: string
   intervalKms: number
   unit: MaintenanceUnit
-  vehicleId: number
 }
 
 interface IVehicle {
@@ -34,6 +35,7 @@ interface IVehicleData {
   vehicleId: number
   selectedUnit: string
   updatedKms: number
+  lastUpdatedKmsDate: Date
 }
 
 const db = new Dexie('MaintenanceDB') as Dexie & {
@@ -58,7 +60,8 @@ const db = new Dexie('MaintenanceDB') as Dexie & {
 
 // Schema declaration:
 db.version(1).stores({
-  doneMaintenance: '++id, name, currentKms, interval, unit, date' // primary key "id" (for the runtime!)
+  doneMaintenance:
+    '++id, recommendedMaintenanceId, name, currentKms, intervalKms, unit, dateOfMaintenanceDone' // primary key "id" (for the runtime!)
 })
 
 db.version(2).stores({
@@ -189,7 +192,9 @@ async function deleteVehicle(id: number) {
 // Get done maintenance
 async function getDoneMaintenance() {
   let formattedCollection: [] | IDone[] = []
+
   const collection = await db.doneMaintenance.toArray()
+
   if (collection) {
     formattedCollection = collection.map((maintenance) => {
       console.log(maintenance)
@@ -203,18 +208,26 @@ async function getDoneMaintenance() {
 }
 
 //Create Done Maintenance
-async function addDoneMaintenance({ name, currentKms, intervalKms, unit, date }: IDone) {
+async function addDoneMaintenance({
+  recommendedMaintenanceId,
+  name,
+  currentKms,
+  intervalKms,
+  unit,
+  dateOfMaintenanceDone
+}: IDone) {
   try {
     let convertedIfNeededKms = 0
     if (unit === DistanceUnit.MILES) convertedIfNeededKms = convertMilesToKm(currentKms)
     else convertedIfNeededKms = currentKms
 
     await db.doneMaintenance.add({
+      recommendedMaintenanceId,
       name,
       currentKms: convertedIfNeededKms,
       intervalKms,
       unit,
-      date
+      dateOfMaintenanceDone
     })
   } catch (err: any) {
     console.error(err)
@@ -248,11 +261,7 @@ async function updateRecommendedMaintenance(
   intervalKms: number,
   unit: MaintenanceUnit
 ) {
-  console.log(name)
-  console.log(intervalKms)
-  console.log(unit)
   try {
-    console.log('in the try')
     await db.recommendedMaintenance.update(id, { name, intervalKms, unit })
     return { success: true }
   } catch (err: any) {
@@ -305,15 +314,21 @@ async function getAllVehicleData() {
 }
 
 // Create
-async function addVehicleData(vehicleId: number, selectedUnit: string, updatedKms: number) {
+async function addVehicleData(
+  vehicleId: number,
+  selectedUnit: string,
+  updatedKms: number,
+  lastUpdatedKmsDate: Date
+) {
   try {
     if (selectedUnit === DistanceUnit.MILES) {
       await db.vehicleData.add({
         vehicleId,
         selectedUnit,
-        updatedKms: convertMilesToKm(updatedKms)
+        updatedKms: convertMilesToKm(updatedKms),
+        lastUpdatedKmsDate
       })
-    } else await db.vehicleData.add({ vehicleId, selectedUnit, updatedKms })
+    } else await db.vehicleData.add({ vehicleId, selectedUnit, updatedKms, lastUpdatedKmsDate })
     return { success: true }
   } catch (err: any) {
     console.error(err)

@@ -37,7 +37,9 @@ const handleAddBtnClicked = async (
     const vehicleResponse = await addVehicle(brand, model, chosenYear, currentKms, selectedUnit)
 
     if (vehicleResponse.id) {
-      const dataResponse = await addVehicleData(vehicleResponse.id, selectedUnit, currentKms)
+      const today = new Date()
+      today.setHours(0, 0, 0, 0)
+      const dataResponse = await addVehicleData(vehicleResponse.id, selectedUnit, currentKms, today)
       if (dataResponse.success) {
         store.addVehicleData(vehicleResponse.id, currentKms, selectedUnit)
         brand = ''

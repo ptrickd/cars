@@ -84,7 +84,13 @@ label {
 }
 </style>
 <script setup lang="ts">
+//Vue
 import { ref } from 'vue'
+
+//Db
+import { addDoneMaintenance } from '@/idb/db'
+import { interval } from 'rxjs'
+import type { MaintenanceUnit } from '@/constants/enum'
 
 //Constants
 const dateObj = new Date()
@@ -119,7 +125,7 @@ interface IProps {
 const props = defineProps<IProps>()
 const emit = defineEmits(['toggleVisible'])
 
-const handleClickedDone = () => {
+const handleClickedDone = async () => {
   /*
   add timestamp/date when creating a maintenance done 
   
@@ -135,5 +141,18 @@ const handleClickedDone = () => {
     currentKmsInvalidMessage.value = 'Mandatory!'
   }
   console.log(dateInvalidMessage.value)
+  console.log(date)
+  console.log(currentKms)
+
+  const response = await addDoneMaintenance({
+    recommendedMaintenanceId: props.id,
+    name: props.name,
+    currentKms: 0,
+    intervalKms: props.interval,
+    unit: props.unit as MaintenanceUnit,
+    dateOfMaintenanceDone: date.value
+  })
+
+  emit('toggleVisible')
 }
 </script>

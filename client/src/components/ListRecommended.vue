@@ -37,7 +37,7 @@
         <UpdateRecommendedModal
           :id="item.id"
           :name="item.name"
-          :interval="item.interval"
+          :interval="item.intervalKms"
           :unit="item.unit"
           :visible="updateVisible"
           @toggleVisible="toggleUpdateVisible()"
@@ -45,7 +45,7 @@
         <DoneRecommendedModal
           :id="item.id"
           :name="item.name"
-          :interval="item.interval"
+          :interval="item.intervalKms"
           :unit="item.unit"
           :visible="doneVisible"
           @toggleVisible="toggleDoneVisible()"
