@@ -23,7 +23,7 @@
       <div class="group-info">
         <div class="info">
           <label>Current mileage({{ unitKms }}):</label>&emsp;
-          <input-number v-model="currentKms" />
+          <v-inputnumber v-model="currentKms" />
           <span v-if="isIconWarningShow" class="pi pi-times-circle icon-warning"></span>
         </div>
 

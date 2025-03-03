@@ -14,7 +14,6 @@ import AccordionPanel from 'primevue/accordionpanel'
 import AccordionHeader from 'primevue/accordionheader'
 import AccordionContent from 'primevue/accordioncontent'
 
-import Breadcrumb from 'primevue/breadcrumb'
 import Button from 'primevue/button'
 import ButtonGroup from 'primevue/buttongroup'
 
@@ -24,8 +23,6 @@ import DataView from 'primevue/dataview'
 import DatePicker from 'primevue/datepicker'
 import Dialog from 'primevue/dialog'
 import Divider from 'primevue/divider'
-
-import FloatLabel from 'primevue/floatlabel'
 
 import Inplace from 'primevue/inplace'
 import InputText from 'primevue/inputtext'
@@ -81,26 +78,23 @@ app.component('v-accordion-panel', AccordionPanel)
 app.component('v-accordion-header', AccordionHeader)
 app.component('v-accordion-content', AccordionContent)
 
-app.component('bread-crumb', Breadcrumb)
 app.component('v-button', Button)
-app.component('button-group', ButtonGroup)
+app.component('v-buttongroup', ButtonGroup)
 
 app.component('v-card', Card)
 
-app.component('data-view', DataView)
+app.component('v-dataview', DataView)
 app.component('v-datepicker', DatePicker)
 app.component('v-dialog', Dialog)
 app.component('v-divider', Divider)
 
-app.component('float-label', FloatLabel)
-
-app.component('in-place', Inplace)
-app.component('input-text', InputText)
-app.component('input-number', InputNumber)
+app.component('v-inplace', Inplace)
+app.component('v-inputtext', InputText)
+app.component('v-inputnumber', InputNumber)
 
 app.component('v-message', Message)
 app.component('v-menubar', Menubar)
-app.component('meter-group', MeterGroup)
+app.component('v-metergroup', MeterGroup)
 
 app.component('v-select', Select)
 

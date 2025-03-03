@@ -16,7 +16,7 @@
           <h2 class="title">{{ $props.title }}</h2>
           <div class="input-group">
             <label for="brand" class="input-label">Brand</label>
-            <input-text
+            <v-inputtext
               id="brand"
               v-model="brand"
               name="brand"
@@ -26,7 +26,7 @@
           </div>
           <div class="input-group">
             <label for="model" class="input-label">Model</label>
-            <input-text
+            <v-inputtext
               id="model"
               v-model="model"
               name="model"
@@ -48,7 +48,7 @@
           </div>
           <div class="input-group">
             <label for="currentKms" class="input-label">Current Mileage</label>
-            <input-number
+            <v-inputnumber
               id="currentKms"
               v-model="currentKms"
               name="currentKms"

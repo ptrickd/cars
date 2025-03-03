@@ -15,7 +15,7 @@
     <h3>Adding New Recommended Maintenance</h3>
     <div class="input-group">
       <label for="name">Name</label>
-      <input-text id="name" v-model="name" name="name" aria-describedby="name maintenance" />
+      <v-inputtext id="name" v-model="name" name="name" aria-describedby="name maintenance" />
       <v-message v-if="nameValidationError.length !== 0" severity="error">{{
         nameValidationError
       }}</v-message>
@@ -23,7 +23,7 @@
     <div class="input-group">
       <label for="interval">Interval</label>
 
-      <input-number
+      <v-inputnumber
         id="interval"
         v-model="interval"
         name="interval"

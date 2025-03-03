@@ -15,7 +15,7 @@
       <div class="main">
         <h3>Update Maintenance</h3>
         <div>
-          <in-place
+          <v-inplace
             ><template #display
               ><div class="display-group">
                 <span class="display-item"
@@ -26,7 +26,7 @@
             <template #content>
               <div class="input-group">
                 <label for="name">Name</label>
-                <input-text
+                <v-inputtext
                   id="name"
                   v-model="newName"
                   name="name"
@@ -36,12 +36,12 @@
                   nameValidationError
                 }}</v-message> -->
               </div></template
-            ></in-place
+            ></v-inplace
           >
         </div>
 
         <div>
-          <in-place
+          <v-inplace
             ><template #display>
               <div class="display-group">
                 <p class="display-item">{{ newInterval }}&nbsp; {{ newUnit.code.toLowerCase() }}</p>
@@ -52,7 +52,7 @@
               <div class="input-group">
                 <label for="interval">Interval</label>
 
-                <input-number
+                <v-inputnumber
                   id="interval"
                   v-model="newInterval"
                   name="interval"
@@ -79,7 +79,7 @@
                 }}</v-message> -->
               </div></template
             >
-          </in-place>
+          </v-inplace>
         </div>
       </div>
       <div class="buttons">

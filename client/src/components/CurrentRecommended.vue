@@ -37,7 +37,7 @@ const displayValueMeter = (currentKms: number, interval: number, lastMaintenance
 -->
 
 <template>
-  <data-view :value="props.list" :dataKey="undefined"
+  <v-dataview :value="props.list" :dataKey="undefined"
     ><template #list="slotProps: { items: IItem[] }">
       <div v-for="item in slotProps.items" :key="item.name">
         <div class="main-container">
@@ -62,11 +62,11 @@ const displayValueMeter = (currentKms: number, interval: number, lastMaintenance
           <div class="grid-item"></div>
 
           <div class="grid-meter">
-            <meter-group
+            <v-metergroup
               :value="displayValueMeter(item.currentKms, item.interval, item.lastMaintenanceKms)"
             />
           </div>
-          <button-group>
+          <v-buttongroup>
             -button icon="pi pi-times" @click="console.log('clicked')" severity="danger" raised
             rounded />
             <v-button
@@ -76,12 +76,12 @@ const displayValueMeter = (currentKms: number, interval: number, lastMaintenance
               raised
               rounded
             />
-          </button-group>
+          </v-buttongroup>
         </div>
 
         <hr />
       </div> </template
-  ></data-view>
+  ></v-dataview>
 </template>
 
 <style scoped>
