@@ -10,7 +10,7 @@
       ></v-button>
     </header>
 
-    <VehiculeSpecs :vehicle="vehicle" />
+    <VehiculeSpecs v-if="vehicle" :vehicle="vehicle" />
     <v-accordion>
       <v-accordion-panel value="vehicle.id">
         <v-accordion-header class="accordion-header"
@@ -40,8 +40,8 @@ header {
 }
 </style>
 <script setup lang="ts">
-import { ref } from 'vue'
-import { db, deleteVehicle } from '@/idb/db'
+import { onUnmounted, ref, type Ref } from 'vue'
+import { db, deleteVehicle, type IVehicle } from '@/idb/db'
 import { useRoute, useRouter } from 'vue-router'
 
 //Primevue
@@ -55,23 +55,48 @@ import UpdateVehicleDetailsModal from './UpdateVehicleDetailsModal.vue'
 
 //Dexie
 import { liveQuery } from 'dexie'
-import { useObservable } from '@vueuse/rxjs'
+
+import { DistanceUnit } from '@/constants/enum'
+import { convertKmToMiles } from '@/utils/converter'
+
+/*
+ * Lifecycle
+ */
+onUnmounted(() => {
+  subscription.unsubscribe()
+})
+
+/*
+ * Observable
+ */
 
 const route = useRoute()
 const router = useRouter()
 const toast = useToast()
 
 const vehicleId = Number(route.params.id)
-
 const visible = ref(false)
 
-const vehicle: any = useObservable(
-  // @ts-ignore
-  liveQuery(() => {
-    console.log(db.vehicle.where('id').equals(vehicleId).first())
-    return db.vehicle.where('id').equals(vehicleId).first()
-  })
-)
+const vehicle: Ref<IVehicle | undefined> = ref(undefined)
+
+const vehicleObservable = liveQuery(() => {
+  console.log(db.vehicle.where('id').equals(vehicleId).first())
+  const response = db.vehicle.where('id').equals(vehicleId).first()
+  if (!response) throw Error('Vehicle do not exist')
+  return response
+})
+
+const formattedVehicle = (vehicle: IVehicle | undefined) => {
+  if (vehicle?.selectedUnit === DistanceUnit.MILES)
+    return { ...vehicle, currentKms: convertKmToMiles(vehicle.currentKms) }
+  else return vehicle
+}
+
+const subscription = vehicleObservable.subscribe({
+  next: (ogVehicle) => (vehicle.value = formattedVehicle(ogVehicle)),
+  error: (error) => console.error(error)
+})
+
 const handleUpdateClicked = () => {
   visible.value = true
 }

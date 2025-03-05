@@ -87,15 +87,19 @@
 
 <script setup lang="ts">
 //Vue
-import { useObservable } from '@vueuse/rxjs'
+import { ref, onUnmounted } from 'vue'
+import type { Ref } from 'vue'
 
 //Idb
-import { db, getVehicles, getDoneMaintenance } from '@/idb/db'
+import { db } from '@/idb/db'
+import type { IVehicle } from '@/idb/db'
 import { liveQuery } from 'dexie'
 
 //Component
 import AddVehicleModal from './AddVehicleModal.vue'
 import VehicleSpecs from './VehicleSpecs.vue'
+import { DistanceUnit } from '@/constants/enum'
+import { convertKmToMiles } from '@/utils/converter'
 
 /*
  * Persistent storage for indexed db
@@ -110,21 +114,36 @@ if (navigator.storage && navigator.storage.persist) {
   })
 }
 
-const vehicleList: any = useObservable(
-  // @ts-ignore
-  liveQuery(() => {
-    console.log(db.vehicle.toArray())
+/*
+ * Lifecycle
+ */
+onUnmounted(() => {
+  subscription.unsubscribe()
+})
 
-    return db.vehicle.toArray()
+/*
+ * Observable
+ */
+const vehicleObservable = liveQuery(() => {
+  console.log(db.vehicle.toArray())
+
+  return db.vehicle.toArray()
+})
+
+const vehicleList: Ref<IVehicle[] | []> = ref([])
+
+const formattedVehicleList = (vehicles: IVehicle[] | []) => {
+  const newVehicles = vehicles.map((vehicle) => {
+    if (vehicle.selectedUnit === DistanceUnit.MILES)
+      return { ...vehicle, currentKms: convertKmToMiles(vehicle.currentKms) }
+    else return vehicle
   })
-)
 
-const workOnIt = async () => {
-  const listVehicles = await getVehicles()
-  console.log(listVehicles)
-
-  const maintenance = await getDoneMaintenance()
-  console.log(maintenance)
+  return newVehicles
 }
-workOnIt()
+
+const subscription = vehicleObservable.subscribe({
+  next: (vehicles) => (vehicleList.value = formattedVehicleList(vehicles)),
+  error: (error) => console.error(error)
+})
 </script>

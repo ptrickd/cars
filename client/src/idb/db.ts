@@ -356,4 +356,4 @@ export {
   getAllVehicleData,
   addVehicleData
 }
-export type { IVehicle }
+export type { IVehicle, IRecommended }

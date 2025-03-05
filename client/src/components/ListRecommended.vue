@@ -4,7 +4,7 @@
       <div class="list">
         <ul>
           <li>{{ item.name }}</li>
-          <li>{{ item.interval }} {{ item.unit.toLowerCase() }}</li>
+          <li>{{ item.intervalKms }} {{ item.unit.toLowerCase() }}</li>
         </ul>
       </div>
 
@@ -27,6 +27,7 @@
         />
 
         <v-button
+          v-if="item.id"
           class="button-delete"
           @click="handleDeleteItem(item.id)"
           label="Delete"
@@ -35,6 +36,7 @@
           text
         />
         <UpdateRecommendedModal
+          v-if="item.id"
           :id="item.id"
           :name="item.name"
           :interval="item.intervalKms"
@@ -43,6 +45,7 @@
           @toggleVisible="toggleUpdateVisible()"
         />
         <DoneRecommendedModal
+          v-if="item.id"
           :id="item.id"
           :name="item.name"
           :interval="item.intervalKms"
@@ -94,23 +97,44 @@
 
 <script setup lang="ts">
 //Vue
-import { ref } from 'vue'
+import { onUnmounted, ref } from 'vue'
+import type { Ref } from 'vue'
 
 //Idb
 import { db, deleteRecommendedMaintenance } from '@/idb/db'
+import type { IRecommended } from '@/idb/db'
 import { liveQuery } from 'dexie'
 import { useObservable } from '@vueuse/rxjs'
 
 //Component
 import UpdateRecommendedModal from './UpdateRecommendedModal.vue'
 import DoneRecommendedModal from './DoneRecommendedModal.vue'
+import { MaintenanceUnit } from '@/constants/enum'
+import { convertKmToMiles } from '@/utils/converter'
 
 interface IProps {
   id: number
 }
 
+/*
+ * Lifecycle
+ *
+ */
+
+onUnmounted(() => {
+  subscription.unsubscribe()
+})
+
+/*
+ * Observable
+ */
+const maintenanceObservable = liveQuery(() => {
+  return db.recommendedMaintenance.where({ vehicleId: props.id }).toArray()
+})
+
 let doneVisible = ref(false)
 let updateVisible = ref(false)
+const maintenanceList: Ref<IRecommended[] | []> = ref([])
 
 const props = defineProps<IProps>()
 
@@ -125,10 +149,18 @@ const toggleDoneVisible = () => {
 const toggleUpdateVisible = () => {
   updateVisible.value = !updateVisible.value
 }
-const maintenanceList: any = useObservable(
-  // @ts-ignore
-  liveQuery(() => {
-    return db.recommendedMaintenance.where({ vehicleId: props.id }).toArray()
+
+const formattedMaintenanceList = (maintenances: IRecommended[] | []) => {
+  const newMaintenances = maintenances.map((maintenance) => {
+    if (maintenance.unit === MaintenanceUnit.MILES) {
+      return { ...maintenance, intervalKms: convertKmToMiles(maintenance.intervalKms) }
+    } else return maintenance
   })
-)
+  return newMaintenances
+}
+
+const subscription = maintenanceObservable.subscribe({
+  next: (maintenances) => (maintenanceList.value = formattedMaintenanceList(maintenances)),
+  error: (error) => console.error(error)
+})
 </script>
