@@ -32,6 +32,8 @@ import Message from 'primevue/message'
 import Menubar from 'primevue/menubar'
 import MeterGroup from 'primevue/metergroup'
 
+import Panel from 'primevue/panel'
+
 import Select from 'primevue/select'
 
 //Import Router
@@ -95,6 +97,8 @@ app.component('v-inputnumber', InputNumber)
 app.component('v-message', Message)
 app.component('v-menubar', Menubar)
 app.component('v-metergroup', MeterGroup)
+
+app.component('v-panel', Panel)
 
 app.component('v-select', Select)
 

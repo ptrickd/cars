@@ -11,10 +11,17 @@ const router = useRouter()
 
 const items = ref([
   {
-    lable: 'Home',
+    label: 'Home',
     icon: 'pi pi-home',
     command: () => {
       router.push('/')
+    }
+  },
+  {
+    label: 'About',
+    icon: 'pi pi-info-circle',
+    command: () => {
+      router.push('/about')
     }
   }
 ])
