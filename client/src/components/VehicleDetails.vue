@@ -56,7 +56,7 @@ import UpdateVehicleDetailsModal from './UpdateVehicleDetailsModal.vue'
 //Dexie
 import { liveQuery } from 'dexie'
 
-import { DistanceUnit } from '@/constants/enum'
+import { DistanceUnit } from '@/constants/constants'
 import { convertKmToMiles } from '@/utils/converter'
 
 /*

@@ -90,7 +90,7 @@ import { ref } from 'vue'
 //Db
 import { addDoneMaintenance } from '@/idb/db'
 import { interval } from 'rxjs'
-import type { MaintenanceUnit } from '@/constants/enum'
+import type { MaintenanceUnit } from '@/constants/constants'
 
 //Constants
 const dateObj = new Date()
@@ -149,7 +149,7 @@ const handleClickedDone = async () => {
     name: props.name,
     currentKms: 0,
     intervalKms: props.interval,
-    unit: props.unit as MaintenanceUnit,
+    unit: props.unit,
     dateOfMaintenanceDone: date.value
   })
 

@@ -1,4 +1,4 @@
-import { MaintenanceUnit } from '@/constants/enum'
+import { MaintenanceUnit } from '@/constants/constants'
 
 export const PAST_MAINTENANCE_EMPTY = []
 export const CAR_STATS = {

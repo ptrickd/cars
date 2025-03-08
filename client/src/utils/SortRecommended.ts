@@ -1,10 +1,10 @@
 import { diffMonths } from './DateUtils'
-import { MaintenanceUnit } from '@/constants/enum'
+import { MaintenanceUnit } from '@/constants/constants'
 interface IRecommendedMaintenance {
   id: number
   name: string
   interval: number
-  unit: MaintenanceUnit
+  unit: string
 }
 
 interface IPastMaintenance {
@@ -12,12 +12,12 @@ interface IPastMaintenance {
   name: string
   maintenanceKms: number
   maintenanceDate: Date
-  unit: MaintenanceUnit
+  unit: string
 }
 interface ICarStats {
   currentKms: number
   year: string
-  unit: MaintenanceUnit
+  unit: string
 }
 
 interface ICurrentMaintenance {
@@ -28,7 +28,7 @@ interface ICurrentMaintenance {
   currentKms: number
   interval: number
   isOverdue: boolean
-  unit: MaintenanceUnit
+  unit: string
 }
 
 const createNewEntrie = (

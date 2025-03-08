@@ -6,6 +6,7 @@
         <div class="version">
           <h4>Version: {{ version }}</h4>
         </div>
+        <!-- <div>date of last update</div> -->
         <div class="license"><h4>License: GPL-3.0</h4></div>
         <div class="description">
           <p>{{ description }}</p>
@@ -15,7 +16,7 @@
           <h4>Website: <a href="https://github.com/ptrickd/cars">Github</a></h4>
         </div>
         <div class="icon">
-          <v-image src="../../public/favicon.svg" alt="Icon of car app" width="150" />
+          <v-image src="/favicon.svg" alt="Icon of car app" width="150" />
         </div>
       </div>
     </v-panel>

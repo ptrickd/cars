@@ -1,6 +1,6 @@
 import { expect, test, describe } from 'vitest'
 import { sortRecommended } from './SortRecommended'
-import { MaintenanceUnit } from '@/constants/enum'
+import { MaintenanceUnit } from '@/constants/constants'
 
 // @ts-ignore
 import {

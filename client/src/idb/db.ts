@@ -1,6 +1,6 @@
 import Dexie, { type EntityTable } from 'dexie'
 
-import { MaintenanceUnit, DistanceUnit } from '@/constants/enum'
+import { MaintenanceUnit, DistanceUnit } from '@/constants/constants'
 import { convertKmToMiles, convertMilesToKm } from '@/utils/converter'
 
 interface IDone {
@@ -9,7 +9,7 @@ interface IDone {
   name: string
   currentKms: number
   intervalKms: number
-  unit: MaintenanceUnit
+  unit: string
   dateOfMaintenanceDone: Date
 }
 
@@ -18,7 +18,7 @@ interface IRecommended {
   vehicleId: number
   name: string
   intervalKms: number
-  unit: MaintenanceUnit
+  unit: string
 }
 
 interface IVehicle {
@@ -242,7 +242,7 @@ async function addDoneMaintenance({
 async function addRecommendedMaintenance(
   name: string,
   intervalKms: number,
-  unit: MaintenanceUnit,
+  unit: string,
   vehicleId: number
 ) {
   try {
@@ -259,7 +259,7 @@ async function updateRecommendedMaintenance(
   id: number,
   name: string,
   intervalKms: number,
-  unit: MaintenanceUnit
+  unit: string
 ) {
   try {
     await db.recommendedMaintenance.update(id, { name, intervalKms, unit })

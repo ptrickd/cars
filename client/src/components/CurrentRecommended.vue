@@ -1,6 +1,6 @@
 <script setup lang="ts">
 //Import libs
-import { MaintenanceUnit } from '@/constants/enum'
+import { MaintenanceUnit } from '@/constants/constants'
 
 //Types
 interface IItem {
@@ -11,7 +11,7 @@ interface IItem {
   currentKms: number
   interval: number
   isOverdue: boolean
-  unit: MaintenanceUnit
+  unit: string
 }
 interface IProps {
   list: IItem[]

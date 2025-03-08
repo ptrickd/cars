@@ -98,7 +98,7 @@ import { liveQuery } from 'dexie'
 //Component
 import AddVehicleModal from './AddVehicleModal.vue'
 import VehicleSpecs from './VehicleSpecs.vue'
-import { DistanceUnit } from '@/constants/enum'
+import { DistanceUnit } from '@/constants/constants'
 import { convertKmToMiles } from '@/utils/converter'
 
 /*

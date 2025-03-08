@@ -109,7 +109,7 @@ import { useObservable } from '@vueuse/rxjs'
 //Component
 import UpdateRecommendedModal from './UpdateRecommendedModal.vue'
 import DoneRecommendedModal from './DoneRecommendedModal.vue'
-import { MaintenanceUnit } from '@/constants/enum'
+import { MaintenanceUnit } from '@/constants/constants'
 import { convertKmToMiles } from '@/utils/converter'
 
 interface IProps {

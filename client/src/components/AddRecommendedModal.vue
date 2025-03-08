@@ -81,7 +81,7 @@
 
 <script setup lang="ts">
 import { ref } from 'vue'
-import { MaintenanceUnit } from '@/constants/enum'
+import { MaintenanceUnit } from '@/constants/constants'
 import { addRecommendedMaintenance } from '@/idb/db'
 import { useToast } from 'primevue/usetoast'
 
@@ -109,7 +109,7 @@ const handleAddBtnClicked = async () => {
     const response = await addRecommendedMaintenance(
       name.value,
       interval.value,
-      unit.value.code as MaintenanceUnit,
+      unit.value.code,
       props.id
     )
     console.log(response)

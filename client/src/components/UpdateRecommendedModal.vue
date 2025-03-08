@@ -147,7 +147,7 @@
 <script setup lang="ts">
 //Import
 import { ref } from 'vue'
-import { MaintenanceUnit } from '@/constants/enum'
+import { MaintenanceUnit } from '@/constants/constants'
 import { updateRecommendedMaintenance } from '@/idb/db'
 
 //Types
@@ -190,7 +190,7 @@ let newUnit = ref({ name: props.unit, code: MaintenanceUnit.KMS })
 // let newInterval = onMounted(() => {})
 
 //Function
-const handleUpdateButtonClicked = (name: string, interval: number, unit: MaintenanceUnit) => {
+const handleUpdateButtonClicked = (name: string, interval: number, unit: string) => {
   updateRecommendedMaintenance(props.id, name, interval, unit)
   emit('toggleVisible')
 }
