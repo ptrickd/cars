@@ -1,6 +1,6 @@
 <template>
   <nav>
-    <v-menubar :model="items"></v-menubar>
+    <v-menubar :model="items" breakpoint="400px"></v-menubar>
   </nav>
 </template>
 <script setup lang="ts">

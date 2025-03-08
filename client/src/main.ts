@@ -27,6 +27,7 @@ import Divider from 'primevue/divider'
 import Inplace from 'primevue/inplace'
 import InputText from 'primevue/inputtext'
 import InputNumber from 'primevue/inputnumber'
+import Image from 'primevue/image'
 
 import Message from 'primevue/message'
 import Menubar from 'primevue/menubar'
@@ -93,6 +94,7 @@ app.component('v-divider', Divider)
 app.component('v-inplace', Inplace)
 app.component('v-inputtext', InputText)
 app.component('v-inputnumber', InputNumber)
+app.component('v-image', Image)
 
 app.component('v-message', Message)
 app.component('v-menubar', Menubar)

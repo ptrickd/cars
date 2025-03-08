@@ -14,6 +14,9 @@
         <div class="website">
           <h4>Website: <a href="https://github.com/ptrickd/cars">Github</a></h4>
         </div>
+        <div class="icon">
+          <v-image src="../../public/favicon.svg" alt="Icon of car app" width="150" />
+        </div>
       </div>
     </v-panel>
   </div>
@@ -23,6 +26,7 @@
 h1 {
   text-align: center;
 }
+
 p {
   text-align: center;
 }
@@ -34,18 +38,20 @@ p {
   flex-direction: row;
   justify-content: center;
 }
+
 .panel {
   max-height: calc(80vh-120px);
   max-width: 700px;
   margin-top: 2rem;
   padding: 1.5rem 1.5rem;
 }
+
 .grid-layout {
   display: grid;
   grid-template-areas:
-    'version license'
-    'description description'
-    'website .';
+    'icon version license'
+    'icon description description'
+    'icon website .';
   grid-template-rows: 1fr 2fr 1fr;
   grid-template-columns: 1fr 1fr;
   row-gap: 20px;
@@ -71,10 +77,19 @@ p {
   grid-area: website;
   text-align: center;
 }
+
+.icon {
+  grid-area: icon;
+  display: flex;
+  @media (max-width: 360px) {
+    display: none;
+  }
+}
 </style>
 
 <script setup lang="ts">
 import { version } from '../../package.json'
+
 const description =
   'Car is an app to track the regular maintenances and repairs\
    made on your vehicle. It is free and open source.'
