@@ -17,7 +17,7 @@ interface IRecommended {
   id?: number
   vehicleId: number
   name: string
-  intervalKms: number
+  interval: number
   unit: string
 }
 
@@ -65,7 +65,7 @@ db.version(1).stores({
 })
 
 db.version(2).stores({
-  recommendedMaintenance: '++id, name, intervalKms, unit, vehicleId'
+  recommendedMaintenance: '++id, name, interval, unit, vehicleId'
 })
 
 db.version(3).stores({
@@ -241,12 +241,12 @@ async function addDoneMaintenance({
 //Create
 async function addRecommendedMaintenance(
   name: string,
-  intervalKms: number,
+  interval: number,
   unit: string,
   vehicleId: number
 ) {
   try {
-    await db.recommendedMaintenance.add({ name, intervalKms, unit, vehicleId })
+    await db.recommendedMaintenance.add({ name, interval, unit, vehicleId })
     return { success: true }
   } catch (err: any) {
     console.error(err)
@@ -258,11 +258,11 @@ async function addRecommendedMaintenance(
 async function updateRecommendedMaintenance(
   id: number,
   name: string,
-  intervalKms: number,
+  interval: number,
   unit: string
 ) {
   try {
-    await db.recommendedMaintenance.update(id, { name, intervalKms, unit })
+    await db.recommendedMaintenance.update(id, { name, interval, unit })
     return { success: true }
   } catch (err: any) {
     console.log(err)

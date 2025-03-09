@@ -20,6 +20,10 @@
           <ListRecommended :id="Number($route.params.id)" />
 
           <AddRecommendedModal :id="Number($route.params.id)" />
+          <div v-if="!hasRecommendedMaintenance">
+            <h3>Or auto generate some for a easy start!</h3>
+            <v-button @click="handleGenerateRecommended()">Auto Generate</v-button>
+          </div>
         </v-accordion-content>
       </v-accordion-panel>
     </v-accordion>
@@ -40,7 +44,7 @@ header {
 }
 </style>
 <script setup lang="ts">
-import { onUnmounted, ref, type Ref } from 'vue'
+import { onMounted, onUnmounted, ref, type Ref } from 'vue'
 import { db, deleteVehicle, type IVehicle } from '@/idb/db'
 import { useRoute, useRouter } from 'vue-router'
 
@@ -55,9 +59,13 @@ import UpdateVehicleDetailsModal from './UpdateVehicleDetailsModal.vue'
 
 //Dexie
 import { liveQuery } from 'dexie'
+import { DistanceUnit, RECOMMENDED_MAINTENANCES_AUTO_GENERATED } from '@/constants/constants'
 
-import { DistanceUnit } from '@/constants/constants'
+//Function
 import { convertKmToMiles } from '@/utils/converter'
+
+//Db
+import { addRecommendedMaintenance } from '@/idb/db'
 
 /*
  * Lifecycle
@@ -65,6 +73,8 @@ import { convertKmToMiles } from '@/utils/converter'
 onUnmounted(() => {
   subscription.unsubscribe()
 })
+
+// onMounted(() => {})
 
 /*
  * Observable
@@ -76,6 +86,7 @@ const toast = useToast()
 
 const vehicleId = Number(route.params.id)
 const visible = ref(false)
+const hasRecommendedMaintenance = ref(false)
 
 const vehicle: Ref<IVehicle | undefined> = ref(undefined)
 
@@ -112,5 +123,15 @@ const handleDeleteClicked = async (id: number) => {
       life: 3000
     })
   }
+}
+
+const handleGenerateRecommended = () => {
+  RECOMMENDED_MAINTENANCES_AUTO_GENERATED.forEach(async (maintenance) => {
+    const { name, interval, unit } = maintenance
+    const id = route.params.id
+
+    await addRecommendedMaintenance(name, interval, unit, Number(id))
+    hasRecommendedMaintenance.value = true
+  })
 }
 </script>

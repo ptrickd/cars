@@ -89,7 +89,7 @@ import { ref } from 'vue'
 
 //Db
 import { addDoneMaintenance } from '@/idb/db'
-import { interval } from 'rxjs'
+
 import type { MaintenanceUnit } from '@/constants/constants'
 
 //Constants

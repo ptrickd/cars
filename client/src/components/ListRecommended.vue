@@ -4,7 +4,7 @@
       <div class="list">
         <ul>
           <li>{{ item.name }}</li>
-          <li>{{ item.intervalKms }} {{ item.unit.toLowerCase() }}</li>
+          <li>{{ item.interval }} {{ item.unit.toLowerCase() }}</li>
         </ul>
       </div>
 
@@ -39,7 +39,7 @@
           v-if="item.id"
           :id="item.id"
           :name="item.name"
-          :interval="item.intervalKms"
+          :interval="item.interval"
           :unit="item.unit"
           :visible="updateVisible"
           @toggleVisible="toggleUpdateVisible()"
@@ -48,7 +48,7 @@
           v-if="item.id"
           :id="item.id"
           :name="item.name"
-          :interval="item.intervalKms"
+          :interval="item.interval"
           :unit="item.unit"
           :visible="doneVisible"
           @toggleVisible="toggleDoneVisible()"
@@ -153,7 +153,7 @@ const toggleUpdateVisible = () => {
 const formattedMaintenanceList = (maintenances: IRecommended[] | []) => {
   const newMaintenances = maintenances.map((maintenance) => {
     if (maintenance.unit === MaintenanceUnit.MILES) {
-      return { ...maintenance, intervalKms: convertKmToMiles(maintenance.intervalKms) }
+      return { ...maintenance, intervalKms: convertKmToMiles(maintenance.interval) }
     } else return maintenance
   })
   return newMaintenances
