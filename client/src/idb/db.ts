@@ -238,6 +238,17 @@ async function addDoneMaintenance({
 /************  RECOMMENDED MAINTENANCE  ****************/
 /**/
 
+//Get By Id
+async function getRecommendedMaintenanceByVehicleId(id: number) {
+  try {
+    const response = await db.recommendedMaintenance.where('vehicleId').equals(id).toArray()
+    return response
+  } catch (err: any) {
+    console.log(err)
+    return { error: err.message }
+  }
+}
+
 //Create
 async function addRecommendedMaintenance(
   name: string,
@@ -349,6 +360,7 @@ export {
   deleteVehicle,
   addDoneMaintenance,
   getDoneMaintenance,
+  getRecommendedMaintenanceByVehicleId,
   addRecommendedMaintenance,
   updateRecommendedMaintenance,
   deleteRecommendedMaintenance,

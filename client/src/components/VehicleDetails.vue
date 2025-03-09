@@ -3,11 +3,7 @@
     <header>
       <h1>Vehicle Details</h1>
       <v-button icon="pi pi-user-edit" text @click="handleUpdateClicked()"></v-button>
-      <v-button
-        icon="pi pi-trash"
-        text
-        @click="handleDeleteClicked(Number($route.params.id))"
-      ></v-button>
+      <v-button icon="pi pi-trash" text @click="handleDeleteClicked(vehicleId)"></v-button>
     </header>
 
     <VehiculeSpecs v-if="vehicle" :vehicle="vehicle" />
@@ -17,9 +13,9 @@
           >Recommended Maintenance List</v-accordion-header
         >
         <v-accordion-content>
-          <ListRecommended :id="Number($route.params.id)" />
+          <ListRecommended :id="vehicleId" />
 
-          <AddRecommendedModal :id="Number($route.params.id)" />
+          <AddRecommendedModal :id="vehicleId" />
           <div v-if="!hasRecommendedMaintenance">
             <h3>Or auto generate some for a easy start!</h3>
             <v-button @click="handleGenerateRecommended()">Auto Generate</v-button>
@@ -65,7 +61,15 @@ import { DistanceUnit, RECOMMENDED_MAINTENANCES_AUTO_GENERATED } from '@/constan
 import { convertKmToMiles } from '@/utils/converter'
 
 //Db
-import { addRecommendedMaintenance } from '@/idb/db'
+import { getRecommendedMaintenanceByVehicleId, addRecommendedMaintenance } from '@/idb/db'
+
+const route = useRoute()
+const router = useRouter()
+const toast = useToast()
+
+const vehicleId = ref(Number(route.params.id))
+const visible = ref(false)
+const hasRecommendedMaintenance = ref(false)
 
 /*
  * Lifecycle
@@ -74,25 +78,22 @@ onUnmounted(() => {
   subscription.unsubscribe()
 })
 
-// onMounted(() => {})
+onMounted(async () => {
+  const recommendedList = await getRecommendedMaintenanceByVehicleId(vehicleId.value)
+  if (Array.isArray(recommendedList) && recommendedList.length > 0) {
+    hasRecommendedMaintenance.value = true
+  }
+})
 
 /*
  * Observable
  */
 
-const route = useRoute()
-const router = useRouter()
-const toast = useToast()
-
-const vehicleId = Number(route.params.id)
-const visible = ref(false)
-const hasRecommendedMaintenance = ref(false)
-
 const vehicle: Ref<IVehicle | undefined> = ref(undefined)
 
 const vehicleObservable = liveQuery(() => {
-  console.log(db.vehicle.where('id').equals(vehicleId).first())
-  const response = db.vehicle.where('id').equals(vehicleId).first()
+  console.log(db.vehicle.where('id').equals(vehicleId.value).first())
+  const response = db.vehicle.where('id').equals(vehicleId.value).first()
   if (!response) throw Error('Vehicle do not exist')
   return response
 })
@@ -128,9 +129,8 @@ const handleDeleteClicked = async (id: number) => {
 const handleGenerateRecommended = () => {
   RECOMMENDED_MAINTENANCES_AUTO_GENERATED.forEach(async (maintenance) => {
     const { name, interval, unit } = maintenance
-    const id = route.params.id
 
-    await addRecommendedMaintenance(name, interval, unit, Number(id))
+    await addRecommendedMaintenance(name, interval, unit, vehicleId.value)
     hasRecommendedMaintenance.value = true
   })
 }
