@@ -13,14 +13,14 @@
   margin: 0;
   padding: 0;
   min-width: 400px;
-  height: 98vh;
+  height: 100vh;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
 }
 
 .main {
-  height: 100vh;
+  flex-grow: 2;
 }
 
 .footer {

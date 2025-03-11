@@ -4,7 +4,8 @@
       <div class="list">
         <ul>
           <li>{{ item.name }}</li>
-          <li>{{ item.interval }} {{ item.unit.toLowerCase() }}</li>
+          <li>Every {{ item.interval }} {{ item.unit.toLowerCase() }}</li>
+          <li>Remaining 1000 {{ item.unit.toLocaleLowerCase() }}</li>
         </ul>
       </div>
 
@@ -55,6 +56,10 @@
         />
       </div>
     </div>
+    <v-divider />
+    <div>
+      <MaintenanceProgressBar />
+    </div>
 
     <div v-if="maintenanceList && Boolean(maintenanceList.length)"><v-divider /></div>
     <div v-else class="empty-list">
@@ -80,16 +85,18 @@
   margin: 0;
   justify-content: space-between;
 }
+
 .list {
   width: '50%';
   margin-right: 10px;
-  /* height: 100px; */
 }
+
 .buttons {
   display: flex;
   justify-content: flex-end;
   flex-direction: column;
 }
+
 .empty-list {
   padding: 1rem;
 }
@@ -104,14 +111,21 @@ import type { Ref } from 'vue'
 import { db, deleteRecommendedMaintenance } from '@/idb/db'
 import type { IRecommended } from '@/idb/db'
 import { liveQuery } from 'dexie'
-import { useObservable } from '@vueuse/rxjs'
 
 //Component
 import UpdateRecommendedModal from './UpdateRecommendedModal.vue'
 import DoneRecommendedModal from './DoneRecommendedModal.vue'
+import MaintenanceProgressBar from './MaintenanceProgressBar.vue'
+
+//Constant
 import { MaintenanceUnit } from '@/constants/constants'
+
+//Function
 import { convertKmToMiles } from '@/utils/converter'
 
+/*
+ * Types
+ */
 interface IProps {
   id: number
 }
@@ -146,6 +160,7 @@ const handleDeleteItem = async (id: number) => {
 const toggleDoneVisible = () => {
   doneVisible.value = !doneVisible.value
 }
+
 const toggleUpdateVisible = () => {
   updateVisible.value = !updateVisible.value
 }
