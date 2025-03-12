@@ -1,64 +1,66 @@
 <template>
   <span>
-    <div class="main" v-for="item in maintenanceList" :key="item.id">
-      <div class="list">
-        <ul>
-          <li>{{ item.name }}</li>
-          <li>Every {{ item.interval }} {{ item.unit.toLowerCase() }}</li>
-          <li>Remaining 1000 {{ item.unit.toLocaleLowerCase() }}</li>
-        </ul>
+    <div v-for="item in maintenanceList" :key="item.id">
+      <div class="main">
+        <div class="list">
+          <ul>
+            <li>{{ item.name }}</li>
+            <li>Every {{ item.interval }} {{ item.unit.toLowerCase() }}</li>
+            <li>Last Maintenance Done: 80000 km</li>
+            <li>Remaining 1000 {{ item.unit.toLocaleLowerCase() }}</li>
+            <li>Status: OK</li>
+          </ul>
+        </div>
+
+        <div class="buttons">
+          <v-button
+            @click="toggleDoneVisible()"
+            label="Done"
+            icon="pi pi-check-circle"
+            severity="primary"
+            text
+          />
+
+          <v-button
+            class="button-update"
+            @click="toggleUpdateVisible()"
+            label="Update"
+            icon="pi pi-user-edit"
+            severity="secondary"
+            text
+          />
+
+          <v-button
+            v-if="item.id"
+            class="button-delete"
+            @click="handleDeleteItem(item.id)"
+            label="Delete"
+            icon="pi pi-times"
+            severity="danger"
+            text
+          />
+          <UpdateRecommendedModal
+            v-if="item.id"
+            :id="item.id"
+            :name="item.name"
+            :interval="item.interval"
+            :unit="item.unit"
+            :visible="updateVisible"
+            @toggleVisible="toggleUpdateVisible()"
+          />
+          <DoneRecommendedModal
+            v-if="item.id"
+            :id="item.id"
+            :name="item.name"
+            :interval="item.interval"
+            :unit="item.unit"
+            :visible="doneVisible"
+            @toggleVisible="toggleDoneVisible()"
+          />
+        </div>
       </div>
-
-      <div>
-        <v-button
-          @click="toggleDoneVisible()"
-          label="Done"
-          icon="pi pi-check-circle"
-          severity="primary"
-          text
-        />
-
-        <v-button
-          class="button-update"
-          @click="toggleUpdateVisible()"
-          label="Update"
-          icon="pi pi-user-edit"
-          severity="secondary"
-          text
-        />
-
-        <v-button
-          v-if="item.id"
-          class="button-delete"
-          @click="handleDeleteItem(item.id)"
-          label="Delete"
-          icon="pi pi-times"
-          severity="danger"
-          text
-        />
-        <UpdateRecommendedModal
-          v-if="item.id"
-          :id="item.id"
-          :name="item.name"
-          :interval="item.interval"
-          :unit="item.unit"
-          :visible="updateVisible"
-          @toggleVisible="toggleUpdateVisible()"
-        />
-        <DoneRecommendedModal
-          v-if="item.id"
-          :id="item.id"
-          :name="item.name"
-          :interval="item.interval"
-          :unit="item.unit"
-          :visible="doneVisible"
-          @toggleVisible="toggleDoneVisible()"
-        />
-      </div>
-    </div>
-    <v-divider />
-    <div>
       <MaintenanceProgressBar />
+      <v-divider />
     </div>
 
     <div v-if="maintenanceList && Boolean(maintenanceList.length)"><v-divider /></div>
@@ -81,8 +83,9 @@
 <style scoped>
 .main {
   width: '100%';
-  display: flex;
   margin: 0;
+  display: flex;
+
   justify-content: space-between;
 }
 
@@ -93,8 +96,8 @@
 
 .buttons {
   display: flex;
-  justify-content: flex-end;
-  flex-direction: column;
+  flex-wrap: wrap;
+  align-self: center;
 }
 
 .empty-list {
