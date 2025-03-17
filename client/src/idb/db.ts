@@ -1,15 +1,20 @@
 import Dexie, { type EntityTable } from 'dexie'
 
+//Change name MaintenanceUnit to IntervalUnit
 import { MaintenanceUnit, DistanceUnit } from '@/constants/constants'
 import { convertKmToMiles, convertMilesToKm } from '@/utils/converter'
 
+/*
+ * distanceUnit: miles or kms
+ * intervalUnit: miles | kms | years | months
+ */
 interface IDone {
   id?: number
   recommendedMaintenanceId: number
   name: string
-  currentKms: number
-  intervalKms: number
-  unit: string
+  kmsWhenCreated: number
+  interval: number
+  intervalUnit: string
   dateOfMaintenanceDone: Date
 }
 
@@ -18,7 +23,7 @@ interface IRecommended {
   vehicleId: number
   name: string
   interval: number
-  unit: string
+  intervalUnit: string
 }
 
 interface IVehicle {
@@ -26,16 +31,11 @@ interface IVehicle {
   brand: string
   model: string
   year: string
+  kmsWhenCreated: number
   currentKms: number
   selectedUnit: string
-}
-
-interface IVehicleData {
-  id?: number
-  vehicleId: number
-  selectedUnit: string
-  updatedKms: number
-  lastUpdatedKmsDate: Date
+  lastUpdateCurrentKms: Date
+  dateCreated: Date
 }
 
 const db = new Dexie('MaintenanceDB') as Dexie & {
@@ -51,7 +51,6 @@ const db = new Dexie('MaintenanceDB') as Dexie & {
     IVehicle,
     'id' // primary key "id" (for the typings only)
   >
-  vehicleData: EntityTable<IVehicleData, 'id'>
 }
 
 /**/
@@ -61,7 +60,7 @@ const db = new Dexie('MaintenanceDB') as Dexie & {
 // Schema declaration:
 db.version(1).stores({
   doneMaintenance:
-    '++id, recommendedMaintenanceId, name, currentKms, intervalKms, unit, dateOfMaintenanceDone' // primary key "id" (for the runtime!)
+    '++id, recommendedMaintenanceId, name, kms, interval, unit, dateOfMaintenanceDone' // primary key "id" (for the runtime!)
 })
 
 db.version(2).stores({
@@ -69,11 +68,7 @@ db.version(2).stores({
 })
 
 db.version(3).stores({
-  vehicle: '++id, brand, model, year, kms, selectedUnit'
-})
-
-db.version(4).stores({
-  vehicleData: '++id, vehicleId, selectedUnit, updatedKms'
+  vehicle: '++id, brand, model, year, kmsWhenCreated, currentKms, selectedUnit'
 })
 
 /**/
@@ -125,6 +120,8 @@ async function addVehicle(
 ) {
   try {
     let convertedIfNeededKms = 0
+    const date = new Date()
+    const today = date
     if (selectedUnit === DistanceUnit.MILES) convertedIfNeededKms = convertMilesToKm(currentKms)
     else convertedIfNeededKms = currentKms
 
@@ -132,8 +129,11 @@ async function addVehicle(
       brand,
       model,
       year,
+      kmsWhenCreated: convertedIfNeededKms,
       currentKms: convertedIfNeededKms,
-      selectedUnit
+      selectedUnit,
+      lastUpdateCurrentKms: new Date(),
+      dateCreated: new Date()
     })
 
     return { success: true, id }
@@ -142,6 +142,10 @@ async function addVehicle(
     return { error: err.message }
   }
 }
+
+/* add update currentkms to vehicle
+   is updatevehicle needed - selectedUnit change ??
+*/
 
 //Vehcile update
 async function updateVehicle(
@@ -198,8 +202,8 @@ async function getDoneMaintenance() {
   if (collection) {
     formattedCollection = collection.map((maintenance) => {
       console.log(maintenance)
-      if (maintenance.unit === DistanceUnit.MILES) {
-        return { ...maintenance, currentKms: convertKmToMiles(maintenance.currentKms) }
+      if (maintenance.intervalUnit === DistanceUnit.MILES) {
+        return { ...maintenance, currentKms: convertKmToMiles(maintenance.interval) }
       } else return maintenance
     })
   }
@@ -211,22 +215,24 @@ async function getDoneMaintenance() {
 async function addDoneMaintenance({
   recommendedMaintenanceId,
   name,
-  currentKms,
-  intervalKms,
-  unit,
+  kmsWhenCreated,
+  interval,
+  intervalUnit,
   dateOfMaintenanceDone
 }: IDone) {
   try {
+    //what if interval is yaer or months
+    //Function for **kmsWhenCreated**
     let convertedIfNeededKms = 0
-    if (unit === DistanceUnit.MILES) convertedIfNeededKms = convertMilesToKm(currentKms)
-    else convertedIfNeededKms = currentKms
+    if (intervalUnit === DistanceUnit.MILES) convertedIfNeededKms = convertMilesToKm(kmsWhenCreated)
+    else convertedIfNeededKms = kmsWhenCreated
 
     await db.doneMaintenance.add({
       recommendedMaintenanceId,
       name,
-      currentKms: convertedIfNeededKms,
-      intervalKms,
-      unit,
+      kmsWhenCreated: convertedIfNeededKms,
+      interval,
+      intervalUnit,
       dateOfMaintenanceDone
     })
   } catch (err: any) {
@@ -253,11 +259,11 @@ async function getRecommendedMaintenanceByVehicleId(id: number) {
 async function addRecommendedMaintenance(
   name: string,
   interval: number,
-  unit: string,
+  intervalUnit: string,
   vehicleId: number
 ) {
   try {
-    await db.recommendedMaintenance.add({ name, interval, unit, vehicleId })
+    await db.recommendedMaintenance.add({ name, interval, intervalUnit, vehicleId })
     return { success: true }
   } catch (err: any) {
     console.error(err)
@@ -270,10 +276,10 @@ async function updateRecommendedMaintenance(
   id: number,
   name: string,
   interval: number,
-  unit: string
+  intervalUnit: string
 ) {
   try {
-    await db.recommendedMaintenance.update(id, { name, interval, unit })
+    await db.recommendedMaintenance.update(id, { name, interval, intervalUnit })
     return { success: true }
   } catch (err: any) {
     console.log(err)
@@ -293,59 +299,6 @@ async function deleteRecommendedMaintenance(id: number) {
 }
 
 /**/
-/************  VEHICLES DATA  ****************/
-/*  This is the data that will change with time.   */
-/*  The kms will change has the vehicle age.   */
-/*  The kms will be updated every time a maintenance is done on the vehicle */
-/*  The maintenance unit is specific to the vehicle. It will probably not change but give the possibility anyway */
-/**/
-
-// Get
-async function getVehicleDataById(id: number) {
-  const vehicleData = await db.vehicleData.where('id').equals(id).first()
-
-  console.log(vehicleData)
-  if (vehicleData?.selectedUnit === DistanceUnit.MILES) {
-    const miles = convertKmToMiles(vehicleData.updatedKms)
-    return { ...vehicleData, updatedKms: miles }
-  }
-  return vehicleData
-}
-
-async function getAllVehicleData() {
-  const vehicleData = await db.vehicleData.toArray()
-  const formattedData = vehicleData.map((vehicle) => {
-    if (vehicle.selectedUnit === DistanceUnit.MILES) {
-      const miles = convertKmToMiles(vehicle.updatedKms)
-      return { ...vehicle, updatedKms: miles }
-    } else return vehicle
-  })
-
-  return formattedData
-}
-
-// Create
-async function addVehicleData(
-  vehicleId: number,
-  selectedUnit: string,
-  updatedKms: number,
-  lastUpdatedKmsDate: Date
-) {
-  try {
-    if (selectedUnit === DistanceUnit.MILES) {
-      await db.vehicleData.add({
-        vehicleId,
-        selectedUnit,
-        updatedKms: convertMilesToKm(updatedKms),
-        lastUpdatedKmsDate
-      })
-    } else await db.vehicleData.add({ vehicleId, selectedUnit, updatedKms, lastUpdatedKmsDate })
-    return { success: true }
-  } catch (err: any) {
-    console.error(err)
-    return { error: err.message }
-  }
-}
 
 /**/
 /************  EXPORT  ****************/
@@ -363,9 +316,6 @@ export {
   getRecommendedMaintenanceByVehicleId,
   addRecommendedMaintenance,
   updateRecommendedMaintenance,
-  deleteRecommendedMaintenance,
-  getVehicleDataById,
-  getAllVehicleData,
-  addVehicleData
+  deleteRecommendedMaintenance
 }
 export type { IVehicle, IRecommended }
