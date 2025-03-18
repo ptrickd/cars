@@ -6,7 +6,7 @@
       <v-button icon="pi pi-trash" text @click="handleDeleteClicked(vehicleId)"></v-button>
     </header>
 
-    <VehiculeSpecs v-if="vehicle" :vehicle="vehicle" />
+    <VehiculeSpecs v-if="vehicle" :vehicle="vehicle" :is-card-view="false" />
     <v-accordion>
       <v-accordion-panel value="vehicle.id">
         <v-accordion-header class="accordion-header"

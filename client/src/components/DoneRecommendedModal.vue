@@ -147,9 +147,9 @@ const handleClickedDone = async () => {
   const response = await addDoneMaintenance({
     recommendedMaintenanceId: props.id,
     name: props.name,
-    currentKms: 0,
-    intervalKms: props.interval,
-    unit: props.unit,
+    kmsWhenCreated: 0,
+    interval: props.interval,
+    intervalUnit: props.unit,
     dateOfMaintenanceDone: date.value
   })
 

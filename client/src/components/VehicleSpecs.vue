@@ -8,8 +8,25 @@
       <p>{{ props.vehicle.year }}</p>
     </div>
     <div class="grid-item button">
-      <p>{{ props.vehicle.currentKms }} {{ props.vehicle.selectedUnit }}</p>
-      <v-button label="Update" text icon="pi pi-user-edit" />
+      <p v-if="!showUpdateKmsInput">
+        {{ props.vehicle.currentKms }} {{ props.vehicle.selectedUnit }}
+      </p>
+      <v-inputnumber v-if="showUpdateKmsInput" v-model="currentKmsUpdated" inputId="integeronly" />
+      <v-button
+        v-if="!props.isCardView && showUpdateKmsInput"
+        label="Cancel"
+        text
+        icon="pi pi-times-circle"
+        severity="danger"
+        @click="toggleShowUpdateKmsInput()"
+      />
+      <v-button
+        v-if="!props.isCardView"
+        label="Update"
+        text
+        icon="pi pi-user-edit"
+        @click="handleUpdateClicked()"
+      />
     </div>
   </div>
 </template>
@@ -47,8 +64,10 @@
 </style>
 
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
+import { updateCurrentKms } from '@/idb/db'
 
+/** Types **/
 interface IVehicle {
   id?: number
   brand: string | null
@@ -60,10 +79,28 @@ interface IVehicle {
 
 interface IProps {
   vehicle: IVehicle
+  isCardView: boolean
 }
 
 const props = defineProps<IProps>()
+
+const currentKmsUpdated = ref(props.vehicle.currentKms)
+const showUpdateKmsInput = ref(false)
+
 onMounted(() => {
   console.log(props.vehicle)
 })
+
+const handleUpdateClicked = () => {
+  if (!showUpdateKmsInput.value) toggleShowUpdateKmsInput()
+  else {
+    if (props.vehicle.id) {
+      updateCurrentKms(props.vehicle.id, currentKmsUpdated.value)
+      toggleShowUpdateKmsInput()
+    } else console.error('Could not find vehicle id!')
+  }
+}
+const toggleShowUpdateKmsInput = () => {
+  showUpdateKmsInput.value = !showUpdateKmsInput.value
+}
 </script>

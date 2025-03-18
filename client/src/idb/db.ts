@@ -176,6 +176,17 @@ async function updateVehicle(
   }
 }
 
+//Update current kms
+async function updateCurrentKms(id: number, currentKms: number) {
+  try {
+    await db.vehicle.update(id, { currentKms })
+    return { success: true }
+  } catch (err: any) {
+    console.error(err)
+    return { error: err.message }
+  }
+}
+
 //Vehicle Delete
 async function deleteVehicle(id: number) {
   try {
@@ -310,6 +321,7 @@ export {
   getVehicleById,
   addVehicle,
   updateVehicle,
+  updateCurrentKms,
   deleteVehicle,
   addDoneMaintenance,
   getDoneMaintenance,
@@ -318,4 +330,4 @@ export {
   updateRecommendedMaintenance,
   deleteRecommendedMaintenance
 }
-export type { IVehicle, IRecommended }
+export type { IVehicle, IRecommended, IDone }

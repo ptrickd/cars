@@ -24,6 +24,7 @@
                     currentKms: vehicle.currentKms,
                     selectedUnit: vehicle.selectedUnit
                   }"
+                  :is-card-view="true"
                   @click="$router.push(`/vehicle/${vehicle.id}`)"
                 />
               </span>

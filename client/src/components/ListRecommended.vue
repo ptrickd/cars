@@ -5,9 +5,10 @@
         <div class="list">
           <ul>
             <li>{{ item.name }}</li>
-            <li>Every {{ item.interval }} {{ item.unit.toLowerCase() }}</li>
+            <li>Every {{ item.interval }} {{ item.intervalUnit.toLowerCase() }}</li>
             <li>Last Maintenance Done: 80000 km</li>
-            <li>Remaining 1000 {{ item.unit.toLocaleLowerCase() }}</li>
+            <li>Last Maintenance Done: Date</li>
+            <li>Remaining 1000 {{ item.intervalUnit.toLocaleLowerCase() }}</li>
             <li>Status: OK</li>
           </ul>
         </div>
@@ -44,7 +45,7 @@
             :id="item.id"
             :name="item.name"
             :interval="item.interval"
-            :unit="item.unit"
+            :unit="item.intervalUnit"
             :visible="updateVisible"
             @toggleVisible="toggleUpdateVisible()"
           />
@@ -53,7 +54,7 @@
             :id="item.id"
             :name="item.name"
             :interval="item.interval"
-            :unit="item.unit"
+            :unit="item.intervalUnit"
             :visible="doneVisible"
             @toggleVisible="toggleDoneVisible()"
           />
@@ -107,12 +108,12 @@
 
 <script setup lang="ts">
 //Vue
-import { onUnmounted, ref } from 'vue'
+import { onUnmounted, ref, computed, onMounted } from 'vue'
 import type { Ref } from 'vue'
 
 //Idb
 import { db, deleteRecommendedMaintenance } from '@/idb/db'
-import type { IRecommended } from '@/idb/db'
+import type { IRecommended, IDone } from '@/idb/db'
 import { liveQuery } from 'dexie'
 
 //Component
@@ -133,6 +134,14 @@ interface IProps {
   id: number
 }
 
+interface ISortedDone {
+  lastMaintenanceDone: number
+  intervalUnit: string
+  lastMaintenanceDoneOn: Date
+  remaining: number
+  status: 'Ok' | 'Overdue'
+}
+
 /*
  * Lifecycle
  *
@@ -140,7 +149,13 @@ interface IProps {
 
 onUnmounted(() => {
   subscription.unsubscribe()
+  subscriptionDone.unsubscribe()
 })
+
+// onMounted(() => {
+//   console.log(formattedMaintenanceList)
+//   console.log(maintenanceDoneObservable)
+// })
 
 /*
  * Observable
@@ -148,10 +163,22 @@ onUnmounted(() => {
 const maintenanceObservable = liveQuery(() => {
   return db.recommendedMaintenance.where({ vehicleId: props.id }).toArray()
 })
+const maintenanceDoneObservable = liveQuery(() => {
+  return db.doneMaintenance.toArray()
+})
+//Reactivity
+const listDone = () => {}
+const sortDoneMaintenance = () => {}
+
+// recommendedMaintenanceId
+// const doneMaintenanceObservable = liveQuery(() => {
+//   return db.doneMaintenance.where({ veh })
+// })
 
 let doneVisible = ref(false)
 let updateVisible = ref(false)
 const maintenanceList: Ref<IRecommended[] | []> = ref([])
+const doneMaintenanceList: Ref<IDone[] | []> = ref([])
 
 const props = defineProps<IProps>()
 
@@ -170,7 +197,7 @@ const toggleUpdateVisible = () => {
 
 const formattedMaintenanceList = (maintenances: IRecommended[] | []) => {
   const newMaintenances = maintenances.map((maintenance) => {
-    if (maintenance.unit === MaintenanceUnit.MILES) {
+    if (maintenance.intervalUnit === MaintenanceUnit.MILES) {
       return { ...maintenance, intervalKms: convertKmToMiles(maintenance.interval) }
     } else return maintenance
   })
@@ -181,4 +208,9 @@ const subscription = maintenanceObservable.subscribe({
   next: (maintenances) => (maintenanceList.value = formattedMaintenanceList(maintenances)),
   error: (error) => console.error(error)
 })
+const subscriptionDone = maintenanceDoneObservable.subscribe({
+  next: (maintenance) => console.log(maintenance),
+  error: (error) => console.error(error)
+})
+// const subscriptionDone = doneMaintenanceObservable.subscribe({})
 </script>
