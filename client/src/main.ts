@@ -37,6 +37,8 @@ import Panel from 'primevue/panel'
 
 import Select from 'primevue/select'
 
+import Tag from 'primevue/tag'
+
 //Import Router
 import { RouterLink } from 'vue-router'
 
@@ -103,6 +105,8 @@ app.component('v-metergroup', MeterGroup)
 app.component('v-panel', Panel)
 
 app.component('v-select', Select)
+
+app.component('v-tag', Tag)
 
 //Add Router
 app.component('router-link', RouterLink)

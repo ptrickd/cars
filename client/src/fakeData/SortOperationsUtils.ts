@@ -1,6 +1,6 @@
 import { MaintenanceUnit } from '@/constants/constants'
 
-export const PAST_MAINTENANCE_EMPTY = []
+export const PAST_MAINTENANCE_DONE_EMPTY = []
 export const CAR_STATS = {
   brand: 'Toyota',
   model: 'Rav4',
@@ -10,7 +10,7 @@ export const CAR_STATS = {
 }
 
 export const RECOMMENDED_MAINTENANCE_KMS_ONLY = [
-  { id: 0, name: 'Oil Change', maintenanceId: 0, interval: 5000, unit: MaintenanceUnit.KMS }
+  { id: 0, vehicleId: 0, name: 'Oil Change', interval: 5000, intervalUnit: MaintenanceUnit.KMS }
 ]
 
 export const RECOMMENDED_MAINTENANCE_KMS_MONTHS_YEARS = [

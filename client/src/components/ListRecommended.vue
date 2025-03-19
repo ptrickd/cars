@@ -6,10 +6,58 @@
           <ul>
             <li>{{ item.name }}</li>
             <li>Every {{ item.interval }} {{ item.intervalUnit.toLowerCase() }}</li>
-            <li>Last Maintenance Done: 80000 km</li>
-            <li>Last Maintenance Done: Date</li>
-            <li>Remaining 1000 {{ item.intervalUnit.toLocaleLowerCase() }}</li>
-            <li>Status: OK</li>
+            <li v-if="!doneSortedMaintenanceList.get(`${item.name}`)">
+              <span class="text-warning">No Previous Maintenance Recorded</span>
+            </li>
+            <span v-if="doneSortedMaintenanceList.get(`${item.name}`)">
+              <li>
+                Last Maintenance Done Km:<v-tag
+                  >{{ doneSortedMaintenanceList.get(`${item.name}`).lastMaintenanceDoneKms }} kms
+                </v-tag>
+              </li>
+              <li>
+                Last Maintenance Done On:<v-tag>{{
+                  doneSortedMaintenanceList.get(`${item.name}`).lastMaintenanceDoneOn
+                }}</v-tag>
+              </li>
+              <li v-if="doneSortedMaintenanceList.get(`${item.name}`).status === 'Ok'">
+                Remaining:
+                <v-tag
+                  >{{ doneSortedMaintenanceList.get(`${item.name}`).remaining }}
+                  {{ item.intervalUnit.toLocaleLowerCase() }}</v-tag
+                >
+              </li>
+              <li v-if="doneSortedMaintenanceList.get(`${item.name}`).status === 'Overdue'">
+                Overdue:
+                <v-tag severity="danger"
+                  >{{ Math.abs(doneSortedMaintenanceList.get(`${item.name}`).remaining) }}
+                  {{ item.intervalUnit.toLocaleLowerCase() }}</v-tag
+                >
+              </li>
+            </span>
+            <li
+              v-if="
+                doneSortedMaintenanceList.get(`${item.name}`) &&
+                doneSortedMaintenanceList.get(`${item.name}`).status === 'Ok'
+              "
+            >
+              Status: <v-tag>{{ doneSortedMaintenanceList.get(`${item.name}`).status }}</v-tag>
+            </li>
+            <li
+              v-if="
+                doneSortedMaintenanceList.get(`${item.name}`) &&
+                doneSortedMaintenanceList.get(`${item.name}`).status === 'Overdue'
+              "
+            >
+              Status:
+              <v-tag severity="danger">{{
+                doneSortedMaintenanceList.get(`${item.name}`).status
+              }}</v-tag>
+            </li>
+            <li v-if="!doneSortedMaintenanceList.get(`${item.name}`)">
+              Status:
+              <v-tag severity="warn" value="Undefined"></v-tag>
+            </li>
           </ul>
         </div>
 
@@ -101,6 +149,10 @@
   align-self: center;
 }
 
+.text-warning {
+  color: var(--p-amber-500);
+}
+
 .empty-list {
   padding: 1rem;
 }
@@ -108,7 +160,7 @@
 
 <script setup lang="ts">
 //Vue
-import { onUnmounted, ref, computed, onMounted } from 'vue'
+import { onUnmounted, ref, onMounted } from 'vue'
 import type { Ref } from 'vue'
 
 //Idb
@@ -122,7 +174,7 @@ import DoneRecommendedModal from './DoneRecommendedModal.vue'
 import MaintenanceProgressBar from './MaintenanceProgressBar.vue'
 
 //Constant
-import { MaintenanceUnit } from '@/constants/constants'
+import { DistanceUnit, MaintenanceUnit } from '@/constants/constants'
 
 //Function
 import { convertKmToMiles } from '@/utils/converter'
@@ -134,8 +186,8 @@ interface IProps {
   id: number
 }
 
-interface ISortedDone {
-  lastMaintenanceDone: number
+export interface ISortedDone {
+  lastMaintenanceDoneKms: number
   intervalUnit: string
   lastMaintenanceDoneOn: Date
   remaining: number
@@ -152,10 +204,29 @@ onUnmounted(() => {
   subscriptionDone.unsubscribe()
 })
 
-// onMounted(() => {
-//   console.log(formattedMaintenanceList)
-//   console.log(maintenanceDoneObservable)
-// })
+onMounted(() => {
+  console.log('isMounted')
+  console.log(formattedMaintenanceList)
+  console.log(maintenanceDoneObservable)
+
+  const sixMonthAgo = new Date('2024-08-01')
+  doneSortedMaintenanceList.value.set('Oil Change', {
+    lastMaintenanceDoneKms: 85000,
+    DistanceUnit: 'kms',
+    intervalUnit: 'kms',
+    lastMaintenanceDoneOn: `${sixMonthAgo.getFullYear()}-${sixMonthAgo.getMonth()}-${sixMonthAgo.getDay()}`,
+    remaining: 101,
+    status: 'Ok'
+  })
+  doneSortedMaintenanceList.value.set('Air Filter', {
+    lastMaintenanceDoneKms: 50000,
+    DistanceUnit: 'kms',
+    intervalUnit: 'years',
+    lastMaintenanceDoneOn: `${sixMonthAgo.getFullYear()}-${sixMonthAgo.getMonth()}-${sixMonthAgo.getDay()}`,
+    remaining: 0,
+    status: 'Overdue'
+  })
+})
 
 /*
  * Observable
@@ -175,6 +246,7 @@ const sortDoneMaintenance = () => {}
 //   return db.doneMaintenance.where({ veh })
 // })
 
+const doneSortedMaintenanceList = ref(new Map())
 let doneVisible = ref(false)
 let updateVisible = ref(false)
 const maintenanceList: Ref<IRecommended[] | []> = ref([])

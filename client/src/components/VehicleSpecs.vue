@@ -64,7 +64,7 @@
 </style>
 
 <script setup lang="ts">
-import { ref, onMounted } from 'vue'
+import { ref } from 'vue'
 import { updateCurrentKms } from '@/idb/db'
 
 /** Types **/
@@ -86,10 +86,6 @@ const props = defineProps<IProps>()
 
 const currentKmsUpdated = ref(props.vehicle.currentKms)
 const showUpdateKmsInput = ref(false)
-
-onMounted(() => {
-  console.log(props.vehicle)
-})
 
 const handleUpdateClicked = () => {
   if (!showUpdateKmsInput.value) toggleShowUpdateKmsInput()
