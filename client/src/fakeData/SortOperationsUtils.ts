@@ -14,19 +14,26 @@ export const RECOMMENDED_MAINTENANCE_KMS_ONLY = [
 ]
 
 export const RECOMMENDED_MAINTENANCE_KMS_MONTHS_YEARS = [
-  { id: 0, name: 'Oil Change', interval: 5000, unit: MaintenanceUnit.KMS },
-  { id: 1, name: 'Tire Rotation', interval: 6, unit: MaintenanceUnit.MONTHS },
-  { id: 2, name: 'Replace Cabin Air Filter', interval: 2, unit: MaintenanceUnit.YEARS },
-  { id: 3, name: 'Replace Air Filter', interval: 2, unit: MaintenanceUnit.YEARS }
+  { id: 0, vehicleId: 0, name: 'Oil Change', interval: 5000, unit: MaintenanceUnit.KMS },
+  { id: 1, vehicleId: 0, name: 'Tire Rotation', interval: 6, unit: MaintenanceUnit.MONTHS },
+  {
+    id: 2,
+    vehicleId: 0,
+    name: 'Replace Cabin Air Filter',
+    interval: 2,
+    unit: MaintenanceUnit.YEARS
+  },
+  { id: 3, vehicleId: 0, name: 'Replace Air Filter', interval: 2, unit: MaintenanceUnit.YEARS }
 ]
 
-export const PAST_MAINTENANCE_ONE_KMS = [
+export const PAST_MAINTENANCE_DONE_ONE_KMS = [
   {
-    maintenanceId: 0,
+    recommendedMaintenanceId: 0,
     name: 'Oil Change',
-    maintenanceKms: 40000,
-    maintenanceDate: new Date('2017'),
-    unit: MaintenanceUnit.KMS
+    kmsWhenCreated: 159000,
+    interval: 5000,
+    intervalUnit: MaintenanceUnit.KMS,
+    dateOfMaintenanceDone: new Date('2024-12-01')
   }
 ]
 
