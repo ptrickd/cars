@@ -28,21 +28,21 @@ export const sortDoneMaintenanceList = (
   doneMaintenances: IDone[] | [],
   recommendedMaintenances: IRecommended[] | []
 ) => {
-  console.log(doneMaintenances)
+  // console.log(doneMaintenances)
   //   console.log(recommendedMaintenances)
   const sortedDoneMaintenance = new Map()
 
   doneMaintenances.map((maintenance) => {
-    console.log('*current kms*')
-    console.log(currentKms)
-    console.log('****************')
-    console.log('*maintenance done*')
-    console.log(maintenance)
-    console.log('****************')
-    console.log('*recommended maintenance*')
+    // console.log('*current kms*')
+    // console.log(currentKms)
+    // console.log('****************')
+    // console.log('*maintenance done*')
+    // console.log(maintenance)
+    // console.log('****************')
+    // console.log('*recommended maintenance*')
 
-    console.log(recommendedMaintenances)
-    console.log('****************')
+    // console.log(recommendedMaintenances)
+    // console.log('****************')
 
     const recommendedMaintenance = recommendedMaintenances.find(
       (recommended) => recommended.name === maintenance.name
@@ -68,7 +68,7 @@ export const sortDoneMaintenanceList = (
     }
   })
 
-  console.log(sortedDoneMaintenance)
+  // console.log(sortedDoneMaintenance)
 
   return sortedDoneMaintenance
 }

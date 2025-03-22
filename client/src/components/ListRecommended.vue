@@ -158,12 +158,12 @@
 
 <script setup lang="ts">
 //Vue
-import { onUnmounted, ref, onMounted, onUpdated } from 'vue'
+import { onUnmounted, ref } from 'vue'
 import type { Ref } from 'vue'
 
 //Idb
 import { db, deleteRecommendedMaintenance } from '@/idb/db'
-import type { IRecommended, IDone } from '@/idb/db'
+import type { IRecommended, IDone, IVehicle } from '@/idb/db'
 import { liveQuery } from 'dexie'
 
 //Component
@@ -172,7 +172,7 @@ import DoneRecommendedModal from './DoneRecommendedModal.vue'
 import MaintenanceProgressBar from './MaintenanceProgressBar.vue'
 
 //Constant
-import { DistanceUnit, MaintenanceUnit } from '@/constants/constants'
+import { MaintenanceUnit } from '@/constants/constants'
 
 //Function
 import { convertKmToMiles } from '@/utils/converter'
@@ -182,6 +182,7 @@ import { displayDate } from '@/utils/DateUtils'
 /*
  * Types
  */
+//Vehicle Id
 interface IProps {
   id: number
 }
@@ -195,6 +196,25 @@ export interface ISortedDone {
 }
 
 /*
+ *  Reactivity
+ *
+ */
+
+// Object
+let vehicle: Ref<IVehicle | null> = ref(null)
+
+// Map()
+let doneSortedMaintenanceList = ref(new Map())
+
+// Boolean
+let doneVisible = ref(false)
+let updateVisible = ref(false)
+
+// Array
+const maintenanceList: Ref<IRecommended[] | []> = ref([])
+// const doneMaintenanceList: Ref<IDone[] | []> = ref([])
+
+/*
  * Lifecycle
  *
  */
@@ -202,87 +222,46 @@ export interface ISortedDone {
 onUnmounted(() => {
   subscription.unsubscribe()
   subscriptionDone.unsubscribe()
-})
-
-onUpdated(() => {
-  console.log('isMounted')
-  console.log(formattedMaintenanceList)
-  console.log(maintenanceDoneObservable)
-  const pastMaintenancesList = [
-    {
-      recommendedMaintenanceId: 0,
-      name: 'Oil Change',
-      kmsWhenCreated: 159000,
-      interval: 5000,
-      intervalUnit: MaintenanceUnit.KMS,
-      dateOfMaintenanceDone: new Date('2024-12-01')
-    }
-  ]
-  // const sixMonthAgo = new Date('2024-08-01')
-  // doneSortedMaintenanceList.value.set('Oil Change', {
-  //   lastMaintenanceDoneKms: 85000,
-  //   DistanceUnit: 'kms',
-  //   intervalUnit: 'kms',
-  //   lastMaintenanceDoneOn: `${sixMonthAgo.getFullYear()}-${sixMonthAgo.getMonth()}-${sixMonthAgo.getDay()}`,
-  //   remaining: 101,
-  //   status: 'Ok'
-  // })
-  // doneSortedMaintenanceList.value.set('Air Filter', {
-  //   lastMaintenanceDoneKms: 50000,
-  //   DistanceUnit: 'kms',
-  //   intervalUnit: 'years',
-  //   lastMaintenanceDoneOn: `${sixMonthAgo.getFullYear()}-${sixMonthAgo.getMonth()}-${sixMonthAgo.getDay()}`,
-  //   remaining: 0,
-  //   status: 'Overdue'
-  // })
-
-  //map trhough map and set values
-  doneSortedMaintenanceList.value.clear()
-  console.log(doneSortedMaintenanceList.value)
-  const temp = sortDoneMaintenanceList(165000, pastMaintenancesList, maintenanceList.value)
-  temp.forEach((values, key) => {
-    doneSortedMaintenanceList.value.set(key, values)
-    console.log(key)
-    console.log(values)
-  })
-  console.log(temp)
-  // consonle.log(doneSortedMaintenanceList.value)
-  console.log(doneSortedMaintenanceList.value.get('Oil Change'))
+  subscriptionVehicle.unsubscribe()
 })
 
 /*
- * Observable
+ * Props
  */
-const maintenanceObservable = liveQuery(() => {
-  return db.recommendedMaintenance.where({ vehicleId: props.id }).toArray()
-})
-const maintenanceDoneObservable = liveQuery(() => {
-  return db.doneMaintenance.toArray()
-})
-//Reactivity
-const listDone = () => {}
-const sortDoneMaintenance = () => {}
-
-// recommendedMaintenanceId
-// const doneMaintenanceObservable = liveQuery(() => {
-//   return db.doneMaintenance.where({ veh })
-// })
-
-let doneSortedMaintenanceList = ref(new Map())
-
-let doneVisible = ref(false)
-let updateVisible = ref(false)
-const subscriptionComplete = ref(false)
-const subscriptionDoneComplete = ref(false)
-
-// const maintenanceListTemp: [] | IRecommended[] = []
-
-const maintenanceList: Ref<IRecommended[] | []> = ref([])
-const doneMaintenanceList: Ref<IDone[] | []> = ref([])
-
 const props = defineProps<IProps>()
+/***************************/
 
-//Function
+doneSortedMaintenanceList.value.clear()
+
+const pastMaintenancesList = [
+  {
+    recommendedMaintenanceId: 0,
+    name: 'Oil Change',
+    kmsWhenCreated: 159000,
+    interval: 5000,
+    intervalUnit: MaintenanceUnit.KMS,
+    dateOfMaintenanceDone: new Date('2024-12-01')
+  }
+]
+
+const copySortedMaintenanceList = () => {
+  if (vehicle.value) {
+    sortDoneMaintenanceList(
+      vehicle.value.currentKms,
+      pastMaintenancesList,
+      maintenanceList.value
+    ).forEach((values, key) => {
+      doneSortedMaintenanceList.value.set(key, values)
+      console.log(key)
+      console.log(values)
+    })
+  }
+}
+/***************************/
+
+/*
+ * Functions
+ */
 const handleDeleteItem = async (id: number) => {
   await deleteRecommendedMaintenance(id)
 }
@@ -304,19 +283,41 @@ const formattedMaintenanceList = (maintenances: IRecommended[] | []) => {
   return newMaintenances
 }
 
-const subscription = maintenanceObservable.subscribe({
-  // next: (maintenances) => (maintenanceList.value = formattedMaintenanceList(maintenances)),
-  next: (maintenances) => (maintenanceList.value = formattedMaintenanceList(maintenances)),
-  error: (error) => console.error(error),
-  complete: () => {
-    subscriptionComplete.value = true
-  }
+/*
+ * Observable Live Query
+ */
+const maintenanceObservable = liveQuery(() => {
+  return db.recommendedMaintenance.where({ vehicleId: props.id }).toArray()
 })
+
+const maintenanceDoneObservable = liveQuery(() => {
+  return db.doneMaintenance.toArray()
+})
+
+const vehicleObservable = liveQuery(() => {
+  return db.vehicle.where('id').equals(props.id).first()
+})
+
+/*
+ * Observable Subscription
+ */
+
+const subscription = maintenanceObservable.subscribe({
+  next: (maintenances) => (maintenanceList.value = formattedMaintenanceList(maintenances)),
+  error: (error) => console.error(error)
+})
+
 const subscriptionDone = maintenanceDoneObservable.subscribe({
-  next: (maintenance) => console.log(maintenance),
-  error: (error) => console.error(error),
-  complete: () => {
-    subscriptionDoneComplete.value = true
-  }
+  next: (maintenance) => {
+    console.log(maintenance)
+    copySortedMaintenanceList()
+  },
+
+  error: (error) => console.error(error)
+})
+
+const subscriptionVehicle = vehicleObservable.subscribe({
+  next: (vehicleObs) => (vehicle.value = vehicleObs ? vehicleObs : null),
+  error: (error) => console.error(error)
 })
 </script>
