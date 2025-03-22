@@ -17,17 +17,17 @@
               </li>
               <li>
                 Last Maintenance Done On:<v-tag>{{
-                  doneSortedMaintenanceList.get(`${item.name}`).lastMaintenanceDoneOn
+                  displayDate(doneSortedMaintenanceList.get(`${item.name}`).dateOfMaintenanceDone)
                 }}</v-tag>
               </li>
-              <li v-if="doneSortedMaintenanceList.get(`${item.name}`).status === 'Ok'">
+              <li v-if="doneSortedMaintenanceList.get(`${item.name}`).isOverdue === false">
                 Remaining:
                 <v-tag
                   >{{ doneSortedMaintenanceList.get(`${item.name}`).remaining }}
                   {{ item.intervalUnit.toLocaleLowerCase() }}</v-tag
                 >
               </li>
-              <li v-if="doneSortedMaintenanceList.get(`${item.name}`).status === 'Overdue'">
+              <li v-if="doneSortedMaintenanceList.get(`${item.name}`).isOverdue">
                 Overdue:
                 <v-tag severity="danger"
                   >{{ Math.abs(doneSortedMaintenanceList.get(`${item.name}`).remaining) }}
@@ -38,21 +38,19 @@
             <li
               v-if="
                 doneSortedMaintenanceList.get(`${item.name}`) &&
-                doneSortedMaintenanceList.get(`${item.name}`).status === 'Ok'
+                doneSortedMaintenanceList.get(`${item.name}`).isOverdue === false
               "
             >
-              Status: <v-tag>{{ doneSortedMaintenanceList.get(`${item.name}`).status }}</v-tag>
+              Status: <v-tag>Ok</v-tag>
             </li>
             <li
               v-if="
                 doneSortedMaintenanceList.get(`${item.name}`) &&
-                doneSortedMaintenanceList.get(`${item.name}`).status === 'Overdue'
+                doneSortedMaintenanceList.get(`${item.name}`).isOverdue
               "
             >
               Status:
-              <v-tag severity="danger">{{
-                doneSortedMaintenanceList.get(`${item.name}`).status
-              }}</v-tag>
+              <v-tag severity="danger">Overdue</v-tag>
             </li>
             <li v-if="!doneSortedMaintenanceList.get(`${item.name}`)">
               Status:
@@ -160,7 +158,7 @@
 
 <script setup lang="ts">
 //Vue
-import { onUnmounted, ref, onMounted } from 'vue'
+import { onUnmounted, ref, onMounted, onUpdated } from 'vue'
 import type { Ref } from 'vue'
 
 //Idb
@@ -178,6 +176,8 @@ import { DistanceUnit, MaintenanceUnit } from '@/constants/constants'
 
 //Function
 import { convertKmToMiles } from '@/utils/converter'
+import { sortDoneMaintenanceList } from '@/utils/SortOperationsUtils'
+import { displayDate } from '@/utils/DateUtils'
 
 /*
  * Types
@@ -189,9 +189,9 @@ interface IProps {
 export interface ISortedDone {
   lastMaintenanceDoneKms: number
   intervalUnit: string
-  lastMaintenanceDoneOn: Date
+  lastMaintenanceDate: Date
   remaining: number
-  status: 'Ok' | 'Overdue'
+  isOverdue: boolean
 }
 
 /*
@@ -204,28 +204,50 @@ onUnmounted(() => {
   subscriptionDone.unsubscribe()
 })
 
-onMounted(() => {
+onUpdated(() => {
   console.log('isMounted')
   console.log(formattedMaintenanceList)
   console.log(maintenanceDoneObservable)
+  const pastMaintenancesList = [
+    {
+      recommendedMaintenanceId: 0,
+      name: 'Oil Change',
+      kmsWhenCreated: 159000,
+      interval: 5000,
+      intervalUnit: MaintenanceUnit.KMS,
+      dateOfMaintenanceDone: new Date('2024-12-01')
+    }
+  ]
+  // const sixMonthAgo = new Date('2024-08-01')
+  // doneSortedMaintenanceList.value.set('Oil Change', {
+  //   lastMaintenanceDoneKms: 85000,
+  //   DistanceUnit: 'kms',
+  //   intervalUnit: 'kms',
+  //   lastMaintenanceDoneOn: `${sixMonthAgo.getFullYear()}-${sixMonthAgo.getMonth()}-${sixMonthAgo.getDay()}`,
+  //   remaining: 101,
+  //   status: 'Ok'
+  // })
+  // doneSortedMaintenanceList.value.set('Air Filter', {
+  //   lastMaintenanceDoneKms: 50000,
+  //   DistanceUnit: 'kms',
+  //   intervalUnit: 'years',
+  //   lastMaintenanceDoneOn: `${sixMonthAgo.getFullYear()}-${sixMonthAgo.getMonth()}-${sixMonthAgo.getDay()}`,
+  //   remaining: 0,
+  //   status: 'Overdue'
+  // })
 
-  const sixMonthAgo = new Date('2024-08-01')
-  doneSortedMaintenanceList.value.set('Oil Change', {
-    lastMaintenanceDoneKms: 85000,
-    DistanceUnit: 'kms',
-    intervalUnit: 'kms',
-    lastMaintenanceDoneOn: `${sixMonthAgo.getFullYear()}-${sixMonthAgo.getMonth()}-${sixMonthAgo.getDay()}`,
-    remaining: 101,
-    status: 'Ok'
+  //map trhough map and set values
+  doneSortedMaintenanceList.value.clear()
+  console.log(doneSortedMaintenanceList.value)
+  const temp = sortDoneMaintenanceList(165000, pastMaintenancesList, maintenanceList.value)
+  temp.forEach((values, key) => {
+    doneSortedMaintenanceList.value.set(key, values)
+    console.log(key)
+    console.log(values)
   })
-  doneSortedMaintenanceList.value.set('Air Filter', {
-    lastMaintenanceDoneKms: 50000,
-    DistanceUnit: 'kms',
-    intervalUnit: 'years',
-    lastMaintenanceDoneOn: `${sixMonthAgo.getFullYear()}-${sixMonthAgo.getMonth()}-${sixMonthAgo.getDay()}`,
-    remaining: 0,
-    status: 'Overdue'
-  })
+  console.log(temp)
+  // consonle.log(doneSortedMaintenanceList.value)
+  console.log(doneSortedMaintenanceList.value.get('Oil Change'))
 })
 
 /*
@@ -246,9 +268,15 @@ const sortDoneMaintenance = () => {}
 //   return db.doneMaintenance.where({ veh })
 // })
 
-const doneSortedMaintenanceList = ref(new Map())
+let doneSortedMaintenanceList = ref(new Map())
+
 let doneVisible = ref(false)
 let updateVisible = ref(false)
+const subscriptionComplete = ref(false)
+const subscriptionDoneComplete = ref(false)
+
+// const maintenanceListTemp: [] | IRecommended[] = []
+
 const maintenanceList: Ref<IRecommended[] | []> = ref([])
 const doneMaintenanceList: Ref<IDone[] | []> = ref([])
 
@@ -277,12 +305,18 @@ const formattedMaintenanceList = (maintenances: IRecommended[] | []) => {
 }
 
 const subscription = maintenanceObservable.subscribe({
+  // next: (maintenances) => (maintenanceList.value = formattedMaintenanceList(maintenances)),
   next: (maintenances) => (maintenanceList.value = formattedMaintenanceList(maintenances)),
-  error: (error) => console.error(error)
+  error: (error) => console.error(error),
+  complete: () => {
+    subscriptionComplete.value = true
+  }
 })
 const subscriptionDone = maintenanceDoneObservable.subscribe({
   next: (maintenance) => console.log(maintenance),
-  error: (error) => console.error(error)
+  error: (error) => console.error(error),
+  complete: () => {
+    subscriptionDoneComplete.value = true
+  }
 })
-// const subscriptionDone = doneMaintenanceObservable.subscribe({})
 </script>

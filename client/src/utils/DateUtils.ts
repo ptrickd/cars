@@ -1,3 +1,5 @@
+const MONTHS = ['Jan', '', '', '', '', '', '']
+
 export const diffMonths = (todayDate: Date, lastMaintenanceDate: Date) => {
   const day1 = todayDate.getDate()
   const month1 = todayDate.getMonth()
@@ -14,4 +16,8 @@ export const diffMonths = (todayDate: Date, lastMaintenanceDate: Date) => {
   const totalDiffMonths = Math.floor(Math.abs(12 * diffYear + diffMonth + diffDay / 32))
 
   return totalDiffMonths
+}
+
+export const displayDate = (date: Date) => {
+  return `${date.toDateString()}`
 }

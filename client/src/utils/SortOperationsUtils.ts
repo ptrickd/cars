@@ -14,7 +14,7 @@ import type { ISortedDone } from '@/components/ListRecommended.vue'
 //     recommendedMaintenanceId: number
 //     lastMaintenanceDoneKms: number
 //     intervalUnit: string
-//     lastMaintenanceDoneOn: Date
+//     lastMaintenanceDate: Date
 //     remaining: number
 //     isOverdue: boolean
 //   }
@@ -25,8 +25,8 @@ import type { ISortedDone } from '@/components/ListRecommended.vue'
 
 export const sortDoneMaintenanceList = (
   currentKms: number,
-  doneMaintenances: IDone[],
-  recommendedMaintenances: IRecommended[]
+  doneMaintenances: IDone[] | [],
+  recommendedMaintenances: IRecommended[] | []
 ) => {
   console.log(doneMaintenances)
   //   console.log(recommendedMaintenances)
@@ -36,7 +36,7 @@ export const sortDoneMaintenanceList = (
     console.log('*current kms*')
     console.log(currentKms)
     console.log('****************')
-    console.log('*maintenance*')
+    console.log('*maintenance done*')
     console.log(maintenance)
     console.log('****************')
     console.log('*recommended maintenance*')
@@ -61,7 +61,7 @@ export const sortDoneMaintenanceList = (
         recommendedMaintenanceId: recommendedMaintenance.id,
         lastMaintenanceDoneKms: maintenance.kmsWhenCreated,
         intervalUnit: recommendedMaintenance.intervalUnit,
-        lastMaintenanceDate: maintenance.dateOfMaintenanceDone,
+        dateOfMaintenanceDone: maintenance.dateOfMaintenanceDone,
         remaining: remaining,
         isOverdue: isOverdue
       })
