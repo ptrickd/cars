@@ -26,6 +26,15 @@ interface IRecommended {
   intervalUnit: string
 }
 
+interface IResponseRecommended {
+  id?: number
+  vehicleId?: number
+  name?: string
+  interval?: number
+  intervalUnit?: string
+  error?: any
+}
+
 interface IVehicle {
   id?: number
   brand: string
@@ -255,7 +264,18 @@ async function addDoneMaintenance({
 /************  RECOMMENDED MAINTENANCE  ****************/
 /**/
 
-//Get By Id
+//Get Recommended Maintenance Id
+async function getRecommendedMaintenanceById(id: number) {
+  try {
+    const response = await db.recommendedMaintenance.where('id').equals(id).first()
+    return response
+  } catch (err: any) {
+    console.log(err)
+    return { error: err.message }
+  }
+}
+
+//Get By VehicleId
 async function getRecommendedMaintenanceByVehicleId(id: number) {
   try {
     const response = await db.recommendedMaintenance.where('vehicleId').equals(id).toArray()
@@ -325,9 +345,10 @@ export {
   deleteVehicle,
   addDoneMaintenance,
   getDoneMaintenance,
+  getRecommendedMaintenanceById,
   getRecommendedMaintenanceByVehicleId,
   addRecommendedMaintenance,
   updateRecommendedMaintenance,
   deleteRecommendedMaintenance
 }
-export type { IVehicle, IRecommended, IDone }
+export type { IVehicle, IRecommended, IResponseRecommended, IDone }

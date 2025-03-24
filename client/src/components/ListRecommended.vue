@@ -61,7 +61,7 @@
 
         <div class="buttons">
           <v-button
-            @click="toggleDoneVisible()"
+            @click="handleDoneClicked(item.id || -1)"
             label="Done"
             icon="pi pi-check-circle"
             severity="primary"
@@ -96,12 +96,10 @@
             @toggleVisible="toggleUpdateVisible()"
           />
           <DoneRecommendedModal
-            v-if="item.id"
-            :id="item.id"
-            :name="item.name"
-            :interval="item.interval"
-            :unit="item.intervalUnit"
+            v-if="currentRecommendedId >= 0"
+            :id="currentRecommendedId"
             :visible="doneVisible"
+            :currentKms="vehicle?.currentKms || 0"
             @toggleVisible="toggleDoneVisible()"
           />
         </div>
@@ -132,7 +130,6 @@
   width: '100%';
   margin: 0;
   display: flex;
-
   justify-content: space-between;
 }
 
@@ -195,6 +192,8 @@ export interface ISortedDone {
   isOverdue: boolean
 }
 
+const currentRecommendedId = ref(-1)
+
 /*
  *  Reactivity
  *
@@ -202,6 +201,7 @@ export interface ISortedDone {
 
 // Object
 let vehicle: Ref<IVehicle | null> = ref(null)
+let currentRecommendedMaintenanceForModals: Ref<IRecommended | null> = ref(null)
 
 // Map()
 let doneSortedMaintenanceList = ref(new Map())
@@ -212,7 +212,10 @@ let updateVisible = ref(false)
 
 // Array
 const maintenanceList: Ref<IRecommended[] | []> = ref([])
-// const doneMaintenanceList: Ref<IDone[] | []> = ref([])
+const doneMaintenanceList: Ref<IDone[] | []> = ref([])
+
+//Number
+// const currentKms = ref(vehicle.value?.currentKms || 0)
 
 /*
  * Lifecycle
@@ -248,12 +251,10 @@ const copySortedMaintenanceList = () => {
   if (vehicle.value) {
     sortDoneMaintenanceList(
       vehicle.value.currentKms,
-      pastMaintenancesList,
+      doneMaintenanceList.value,
       maintenanceList.value
     ).forEach((values, key) => {
       doneSortedMaintenanceList.value.set(key, values)
-      console.log(key)
-      console.log(values)
     })
   }
 }
@@ -264,6 +265,17 @@ const copySortedMaintenanceList = () => {
  */
 const handleDeleteItem = async (id: number) => {
   await deleteRecommendedMaintenance(id)
+}
+
+const handleDoneClicked = (id: number) => {
+  console.log(id)
+  if (id === -1) {
+    //-1 is an invalid id
+    return
+  }
+  /**/
+  currentRecommendedId.value = id
+  toggleDoneVisible()
 }
 
 const toggleDoneVisible = () => {
@@ -310,6 +322,7 @@ const subscription = maintenanceObservable.subscribe({
 const subscriptionDone = maintenanceDoneObservable.subscribe({
   next: (maintenance) => {
     console.log(maintenance)
+    doneMaintenanceList.value = maintenance
     copySortedMaintenanceList()
   },
 

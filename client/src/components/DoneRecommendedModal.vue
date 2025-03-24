@@ -13,22 +13,21 @@
     }"
   >
     <div class="container">
-      <span class="title"
+      <span class="title" v-if="recommendedMaintenance"
         ><h2>
           <b
-            >Mark <u>{{ name }}</u> as done</b
+            >Mark <u>{{ recommendedMaintenance.name }}</u> as done</b
           >
         </h2></span
       >
       <div class="group-info">
         <div class="info">
-          <label>Current mileage({{ unitKms }}):</label>&emsp;
+          <label>Mileage When Maintenance Occured({{ unitKms }}):</label>&emsp;
           <v-inputnumber v-model="currentKms" />
           <span v-if="isIconWarningShow" class="pi pi-times-circle icon-warning"></span>
         </div>
-
         <div class="info">
-          <label>Date:</label>&emsp;
+          <label>Date Of Maintenance:</label>&emsp;
           <v-datepicker v-model="date" dateFormat="M dd yy" />
           <span v-if="isIconWarningShow" class="pi pi-times-circle icon-warning"></span>
         </div>
@@ -73,6 +72,10 @@ label {
   align-items: baseline;
 }
 
+/* .label {
+  width: 100%;
+} */
+
 .buttons {
   padding: 1.1rem;
   display: flex;
@@ -85,73 +88,95 @@ label {
 </style>
 <script setup lang="ts">
 //Vue
-import { ref } from 'vue'
+import { onMounted, ref } from 'vue'
+import type { Ref } from 'vue'
 
 //Db
-import { addDoneMaintenance } from '@/idb/db'
+import { addDoneMaintenance, getRecommendedMaintenanceById } from '@/idb/db'
+import type { IRecommended, IResponseRecommended } from '@/idb/db'
 
-import type { MaintenanceUnit } from '@/constants/constants'
+// Types
+interface IProps {
+  id: number
+  visible: boolean
+  currentKms: number
+}
 
-//Constants
+/*
+ *  Declaration
+ */
+
+//Props
+const props = defineProps<IProps>()
+const emit = defineEmits(['toggleVisible'])
+
+// Date
 const dateObj = new Date()
 
 // The format of the date of the datepicker as no hours, mins, sec, ms
 dateObj.setHours(0, 0, 0, 0)
-
 const date = ref(dateObj)
 
-const currentKms = ref(100000)
+const currentKms = ref(props.currentKms)
 const dateInvalidMessage = ref('')
 const currentKmsInvalidMessage = ref('')
+const unitKms = ref('kms')
+const isIconWarningShow = ref(false)
+
+const recommendedMaintenance: Ref<IRecommended | null> = ref(null)
+
 /*
  * Use to hide the header from the modal.
  * Too big, do not fit the modal well.
  */
 const showHeader = ref(false)
 
-const unitKms = ref('kms')
-const isIconWarningShow = ref(false)
+/*
+ * Lifecycle
+ */
+onMounted(async () => {
+  const response: IResponseRecommended | undefined = await getRecommendedMaintenanceById(props.id)
 
-// Types
-interface IProps {
-  id: number
-  name: string
-  interval: number
-  unit: string
-  visible: boolean
-}
-
-//Declaration
-const props = defineProps<IProps>()
-const emit = defineEmits(['toggleVisible'])
+  if (response !== undefined && response.error) {
+    console.error(response.error)
+  } else if (response !== undefined) {
+    console.log(response.name)
+    const { id, vehicleId, name, interval, intervalUnit } = response
+    if (vehicleId && name && interval && intervalUnit) {
+      recommendedMaintenance.value = { id, vehicleId, name, interval, intervalUnit }
+    }
+  }
+})
 
 const handleClickedDone = async () => {
   /*
-  add timestamp/date when creating a maintenance done 
-  
+  add timestamp/date when creating a maintenance done
+
   */
-  dateInvalidMessage.value = ''
-  currentKmsInvalidMessage.value = ''
-  console.log('done clicked')
-  if (!date.value) {
-    dateInvalidMessage.value = 'Mandatory!'
-  }
+  if (recommendedMaintenance.value) {
+    dateInvalidMessage.value = ''
+    currentKmsInvalidMessage.value = ''
+    console.log('done clicked')
+    if (!date.value) {
+      dateInvalidMessage.value = 'Mandatory!'
+    }
 
-  if (!currentKms) {
-    currentKmsInvalidMessage.value = 'Mandatory!'
-  }
-  console.log(dateInvalidMessage.value)
-  console.log(date)
-  console.log(currentKms)
+    if (!currentKms) {
+      currentKmsInvalidMessage.value = 'Mandatory!'
+    }
+    console.log(dateInvalidMessage.value)
+    console.log(date)
+    console.log(currentKms)
 
-  const response = await addDoneMaintenance({
-    recommendedMaintenanceId: props.id,
-    name: props.name,
-    kmsWhenCreated: 0,
-    interval: props.interval,
-    intervalUnit: props.unit,
-    dateOfMaintenanceDone: date.value
-  })
+    const response = await addDoneMaintenance({
+      recommendedMaintenanceId: props.id,
+      name: recommendedMaintenance.value.name,
+      kmsWhenCreated: currentKms.value,
+      interval: recommendedMaintenance.value.interval,
+      intervalUnit: recommendedMaintenance.value.intervalUnit,
+      dateOfMaintenanceDone: date.value
+    })
+  }
 
   emit('toggleVisible')
 }
