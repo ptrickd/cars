@@ -88,7 +88,7 @@ label {
 </style>
 <script setup lang="ts">
 //Vue
-import { onMounted, ref } from 'vue'
+import { onMounted, onUpdated, ref } from 'vue'
 import type { Ref } from 'vue'
 
 //Db
@@ -134,9 +134,9 @@ const showHeader = ref(false)
 /*
  * Lifecycle
  */
-onMounted(async () => {
+onUpdated(async () => {
   const response: IResponseRecommended | undefined = await getRecommendedMaintenanceById(props.id)
-
+  console.log(`props.id: ${props.id}`)
   if (response !== undefined && response.error) {
     console.error(response.error)
   } else if (response !== undefined) {
@@ -171,7 +171,7 @@ const handleClickedDone = async () => {
     const response = await addDoneMaintenance({
       recommendedMaintenanceId: props.id,
       name: recommendedMaintenance.value.name,
-      kmsWhenCreated: currentKms.value,
+      kmsWhenDone: currentKms.value,
       interval: recommendedMaintenance.value.interval,
       intervalUnit: recommendedMaintenance.value.intervalUnit,
       dateOfMaintenanceDone: date.value

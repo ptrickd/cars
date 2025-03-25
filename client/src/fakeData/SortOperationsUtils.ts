@@ -30,7 +30,7 @@ export const PAST_MAINTENANCE_DONE_ONE_KMS = [
   {
     recommendedMaintenanceId: 0,
     name: 'Oil Change',
-    kmsWhenCreated: 159000,
+    kmsWhenDone: 159000,
     interval: 5000,
     intervalUnit: MaintenanceUnit.KMS,
     dateOfMaintenanceDone: new Date('2024-12-01')

@@ -12,7 +12,7 @@ interface IDone {
   id?: number
   recommendedMaintenanceId: number
   name: string
-  kmsWhenCreated: number
+  kmsWhenDone: number
   interval: number
   intervalUnit: string
   dateOfMaintenanceDone: Date
@@ -235,7 +235,7 @@ async function getDoneMaintenance() {
 async function addDoneMaintenance({
   recommendedMaintenanceId,
   name,
-  kmsWhenCreated,
+  kmsWhenDone,
   interval,
   intervalUnit,
   dateOfMaintenanceDone
@@ -244,13 +244,13 @@ async function addDoneMaintenance({
     //what if interval is yaer or months
     //Function for **kmsWhenCreated**
     let convertedIfNeededKms = 0
-    if (intervalUnit === DistanceUnit.MILES) convertedIfNeededKms = convertMilesToKm(kmsWhenCreated)
-    else convertedIfNeededKms = kmsWhenCreated
+    if (intervalUnit === DistanceUnit.MILES) convertedIfNeededKms = convertMilesToKm(kmsWhenDone)
+    else convertedIfNeededKms = kmsWhenDone
 
     await db.doneMaintenance.add({
       recommendedMaintenanceId,
       name,
-      kmsWhenCreated: convertedIfNeededKms,
+      kmsWhenDone: convertedIfNeededKms,
       interval,
       intervalUnit,
       dateOfMaintenanceDone

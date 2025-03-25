@@ -1,13 +1,25 @@
 import { expect, test, describe } from 'vitest'
-import { sortDoneMaintenanceList } from './SortOperationsUtils'
+import {
+  sortDoneMaintenanceList,
+  computeMaintenanceResultByOperationType
+} from './SortOperationsUtils'
 import { MaintenanceUnit } from '@/constants/constants'
-
+// @ts-ignore
+import {
+  PAST_MAINTENANCE_DONE_EMPTY,
+  PAST_MAINTENANCE_DONE_ONE_KMS,
+  PAST_MAINTENANCE_KMS_MONTHS_YEARS_OVERDUE,
+  PAST_MAINTENANCE_KMS_MONTHS_YEARS_1_OVERDUE,
+  CAR_STATS,
+  RECOMMENDED_MAINTENANCE_KMS_ONLY,
+  RECOMMENDED_MAINTENANCE_KMS_MONTHS_YEARS
+} from '../fakeData/SortOperationsUtils'
 /*
 nterface IDone {
   id?: number
   recommendedMaintenanceId: number
   name: string
-  kmsWhenCreated: number
+  kmsWhenDone: number
   interval: number
   intervalUnit: string
   dateOfMaintenanceDone: Date
@@ -35,18 +47,66 @@ interface IVehicle {
 
 */
 
-// @ts-ignore
-import {
-  PAST_MAINTENANCE_DONE_EMPTY,
-  PAST_MAINTENANCE_DONE_ONE_KMS,
-  PAST_MAINTENANCE_KMS_MONTHS_YEARS_OVERDUE,
-  PAST_MAINTENANCE_KMS_MONTHS_YEARS_1_OVERDUE,
-  CAR_STATS,
-  RECOMMENDED_MAINTENANCE_KMS_ONLY,
-  RECOMMENDED_MAINTENANCE_KMS_MONTHS_YEARS
-} from '../fakeData/SortOperationsUtils'
+/*
+ * Test for computeMaintenanceResultByOperationType() function
+ *
+ * */
 
-describe('Sort Function Unit Testing', () => {
+describe('computeMaintenanceResultByOperationType().', () => {
+  test('operationTime === distance, doneMaintenance is null.', () => {
+    const computed1 = computeMaintenanceResultByOperationType(80000, null, {
+      id: 1,
+      vehicleId: 1,
+      name: 'Oil Change',
+      interval: 5000,
+      intervalUnit: MaintenanceUnit.KMS
+    })
+
+    expect(computed1).toStrictEqual({
+      lastMaintenanceDoneKms: 0,
+      intervalUnit: MaintenanceUnit.KMS,
+      dateOfMaintenanceDone: new Date(),
+      remaining: -75000,
+      isOverdue: true
+    })
+  })
+  test('operationTime === distance, doneMaintenance is null.', () => {
+    const date = new Date('2024-08-01')
+    const computed2 = computeMaintenanceResultByOperationType(
+      80000,
+      {
+        id: 1,
+        recommendedMaintenanceId: 1,
+        name: 'Oil Change',
+        kmsWhenDone: 74000,
+        interval: 5000,
+        intervalUnit: MaintenanceUnit.KMS,
+        dateOfMaintenanceDone: date
+      },
+      {
+        id: 1,
+        vehicleId: 1,
+        name: 'Oil Change',
+        interval: 5000,
+        intervalUnit: MaintenanceUnit.KMS
+      }
+    )
+    expect(computed2).toStrictEqual({
+      lastMaintenanceDoneKms: 74000,
+      intervalUnit: MaintenanceUnit.KMS,
+      dateOfMaintenanceDone: date,
+      remaining: -1000,
+      isOverdue: true
+    })
+  })
+})
+
+/*
+ * Test for sortDoneMaintenanceList() function
+ *
+ * */
+
+describe('sortDoneMaintenanceList()', () => {
   test('pastMaintenance array is empty', () => {
     const EXPECTED_CURRENT_MAINTENANCE_EMPTY = new Map()
     const CURRENT_KMS = 165000
@@ -66,7 +126,7 @@ describe('Sort Function Unit Testing', () => {
       recommendedMaintenanceId: 0,
       lastMaintenanceDoneKms: 159000,
       intervalUnit: MaintenanceUnit.KMS,
-      lastMaintenanceDate: new Date('2024-12-01'),
+      dateOfMaintenanceDone: new Date('2024-12-01'),
       remaining: 1000,
       isOverdue: true
     })

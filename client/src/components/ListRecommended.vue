@@ -23,7 +23,7 @@
               <li v-if="doneSortedMaintenanceList.get(`${item.name}`).isOverdue === false">
                 Remaining:
                 <v-tag
-                  >{{ doneSortedMaintenanceList.get(`${item.name}`).remaining }}
+                  >{{ Math.abs(doneSortedMaintenanceList.get(`${item.name}`).remaining) }}
                   {{ item.intervalUnit.toLocaleLowerCase() }}</v-tag
                 >
               </li>
@@ -182,14 +182,6 @@ import { displayDate } from '@/utils/DateUtils'
 //Vehicle Id
 interface IProps {
   id: number
-}
-
-export interface ISortedDone {
-  lastMaintenanceDoneKms: number
-  intervalUnit: string
-  lastMaintenanceDate: Date
-  remaining: number
-  isOverdue: boolean
 }
 
 const currentRecommendedId = ref(-1)
