@@ -134,13 +134,12 @@ const showHeader = ref(false)
 /*
  * Lifecycle
  */
-onUpdated(async () => {
+onMounted(async () => {
   const response: IResponseRecommended | undefined = await getRecommendedMaintenanceById(props.id)
-  console.log(`props.id: ${props.id}`)
+
   if (response !== undefined && response.error) {
     console.error(response.error)
   } else if (response !== undefined) {
-    console.log(response.name)
     const { id, vehicleId, name, interval, intervalUnit } = response
     if (vehicleId && name && interval && intervalUnit) {
       recommendedMaintenance.value = { id, vehicleId, name, interval, intervalUnit }
@@ -148,11 +147,14 @@ onUpdated(async () => {
   }
 })
 
+// const convertProxyToObject = (proxy:) => {}
+
 const handleClickedDone = async () => {
   /*
   add timestamp/date when creating a maintenance done
 
   */
+  console.log(recommendedMaintenance.value)
   if (recommendedMaintenance.value) {
     dateInvalidMessage.value = ''
     currentKmsInvalidMessage.value = ''

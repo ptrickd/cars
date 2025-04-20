@@ -16,7 +16,7 @@ describe('DateUtils.ts Function Unit Testing', () => {
   })
   test('Return difference in months between 2 dates: 1months Different date', () => {
     const date1 = new Date('04/16/2024')
-    const date2 = new Date('02/24/2024')
+    const date2 = new Date('03/24/2024')
     const expected = 1 //months
     expect(diffMonths(date1, date2)).toBe(expected)
   })

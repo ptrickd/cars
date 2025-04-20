@@ -1,4 +1,6 @@
-import { expect, test, describe } from 'vitest'
+import { expect, test, describe, vi } from 'vitest'
+import { diffMonths } from './DateUtils'
+import { DateTime } from 'luxon'
 import {
   sortDoneMaintenanceList,
   computeMaintenanceResultByOperationType
@@ -53,8 +55,8 @@ interface IVehicle {
  * */
 
 describe('computeMaintenanceResultByOperationType().', () => {
-  test('operationTime === distance, doneMaintenance is null.', () => {
-    const computed1 = computeMaintenanceResultByOperationType(80000, null, {
+  test('operationType === distance, doneMaintenance is null.', () => {
+    const computed1 = computeMaintenanceResultByOperationType(80000, 2020, null, {
       id: 1,
       vehicleId: 1,
       name: 'Oil Change',
@@ -65,15 +67,17 @@ describe('computeMaintenanceResultByOperationType().', () => {
     expect(computed1).toStrictEqual({
       lastMaintenanceDoneKms: 0,
       intervalUnit: MaintenanceUnit.KMS,
-      dateOfMaintenanceDone: new Date(),
+      dateOfLastMaintenanceDone: new Date(),
       remaining: -75000,
       isOverdue: true
     })
   })
-  test('operationTime === distance, doneMaintenance is null.', () => {
+  test('operationType === distance, doneMaintenance is present.', () => {
     const date = new Date('2024-08-01')
+    // const mockDate = vi.setSystemTime(date)
     const computed2 = computeMaintenanceResultByOperationType(
       80000,
+      2020,
       {
         id: 1,
         recommendedMaintenanceId: 1,
@@ -94,8 +98,61 @@ describe('computeMaintenanceResultByOperationType().', () => {
     expect(computed2).toStrictEqual({
       lastMaintenanceDoneKms: 74000,
       intervalUnit: MaintenanceUnit.KMS,
-      dateOfMaintenanceDone: date,
+      dateOfLastMaintenanceDone: date,
       remaining: -1000,
+      isOverdue: true
+    })
+  })
+
+  test('operationType === time, time in years, doneMaintenance is null.', () => {
+    const mockedPastDate = new Date('2020-01-01')
+    const todayDate = new Date()
+    const expectedRemaining = -(diffMonths(mockedPastDate, todayDate) / 12 - 2).toFixed(2)
+    const computed3 = computeMaintenanceResultByOperationType(80000, 2020, null, {
+      id: 2,
+      vehicleId: 1,
+      name: 'Replace Air Filter',
+      interval: 2,
+      intervalUnit: MaintenanceUnit.YEARS
+    })
+
+    expect(computed3).toStrictEqual({
+      lastMaintenanceDoneKms: 0,
+      intervalUnit: MaintenanceUnit.YEARS,
+      dateOfLastMaintenanceDone: 2020,
+      remaining: expectedRemaining,
+      isOverdue: true
+    })
+  })
+  test('operationType === time, time in years, doneMaintenance is present.', () => {
+    const mockedPastDate = new Date('2022-08-01')
+    const todayDate = new Date()
+    const expectedRemaining = -(diffMonths(mockedPastDate, todayDate) / 12 - 2)
+    const computed4 = computeMaintenanceResultByOperationType(
+      80000,
+      2020,
+      {
+        id: 2,
+        recommendedMaintenanceId: 2,
+        name: 'Replace Air Filter',
+        kmsWhenDone: 74000,
+        interval: 2,
+        intervalUnit: MaintenanceUnit.YEARS,
+        dateOfMaintenanceDone: mockedPastDate
+      },
+      {
+        id: 2,
+        vehicleId: 1,
+        name: 'Replace Air Filter',
+        interval: 2,
+        intervalUnit: MaintenanceUnit.YEARS
+      }
+    )
+    expect(computed4).toStrictEqual({
+      lastMaintenanceDoneKms: 74000,
+      intervalUnit: MaintenanceUnit.YEARS,
+      dateOfLastMaintenanceDone: mockedPastDate,
+      remaining: expectedRemaining,
       isOverdue: true
     })
   })
@@ -112,6 +169,7 @@ describe('sortDoneMaintenanceList()', () => {
     const CURRENT_KMS = 165000
     const sorted1 = sortDoneMaintenanceList(
       CURRENT_KMS,
+      2020,
       PAST_MAINTENANCE_DONE_EMPTY,
       RECOMMENDED_MAINTENANCE_KMS_ONLY
     )
@@ -126,7 +184,7 @@ describe('sortDoneMaintenanceList()', () => {
       recommendedMaintenanceId: 0,
       lastMaintenanceDoneKms: 159000,
       intervalUnit: MaintenanceUnit.KMS,
-      dateOfMaintenanceDone: new Date('2024-12-01'),
+      dateOfLastMaintenanceDone: new Date('2024-12-01'),
       remaining: 1000,
       isOverdue: true
     })
@@ -134,6 +192,7 @@ describe('sortDoneMaintenanceList()', () => {
     const CURRENT_KMS = 165000
     const sorted2 = sortDoneMaintenanceList(
       CURRENT_KMS,
+      2020,
       PAST_MAINTENANCE_DONE_ONE_KMS,
       RECOMMENDED_MAINTENANCE_KMS_ONLY
     )

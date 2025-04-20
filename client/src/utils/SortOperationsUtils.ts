@@ -1,5 +1,6 @@
 import type { IDone, IRecommended, IVehicle } from '@/idb/db'
 import { MaintenanceUnit } from '@/constants/constants'
+import { diffMonths } from './DateUtils'
 /*
  * computeMaintenanceResult()
  * sortDoneMaintenanceList()
@@ -8,7 +9,7 @@ import { MaintenanceUnit } from '@/constants/constants'
 export interface ISortedDone {
   lastMaintenanceDoneKms: number
   intervalUnit: string
-  dateOfMaintenanceDone: Date
+  dateOfLastMaintenanceDone: Date
   remaining: number
   isOverdue: boolean
 }
@@ -26,17 +27,18 @@ interface IError {
 
 const computeDistanceNoLastMaintenance = (
   currentKms: number,
+  vehicleYear: number,
   recommendedMaintenance: IRecommended
 ) => {
   const lastMaintenanceDoneKms = 0
-  const dateOfMaintenanceDone = new Date()
+  const dateOfLastMaintenanceDone = new Date()
   const { intervalUnit, interval } = recommendedMaintenance
   const remaining = interval + lastMaintenanceDoneKms - currentKms
   const isOverdue = remaining <= 0
   return {
     lastMaintenanceDoneKms,
     intervalUnit,
-    dateOfMaintenanceDone,
+    dateOfLastMaintenanceDone,
     remaining,
     isOverdue
   }
@@ -52,27 +54,102 @@ const computeDistanceWithLastMaintenance = (
 ) => {
   const lastMaintenanceDoneKms = doneMaintenance.kmsWhenDone
   const { intervalUnit, interval } = recommendedMaintenance
-  const dateOfMaintenanceDone = doneMaintenance.dateOfMaintenanceDone
+  const dateOfLastMaintenanceDone = doneMaintenance.dateOfMaintenanceDone
   const remaining = interval + lastMaintenanceDoneKms - currentKms
   const isOverdue = remaining <= 0
 
-  return { lastMaintenanceDoneKms, intervalUnit, dateOfMaintenanceDone, remaining, isOverdue }
+  return { lastMaintenanceDoneKms, intervalUnit, dateOfLastMaintenanceDone, remaining, isOverdue }
 }
 
 /*
  */
 
-const computeTimeNoLastMaintenance = () => {}
-const computeTimeWithLastMaintenance = () => {}
+const computeTimeNoLastMaintenance = (
+  vehicleYear: number,
+  recommendedMaintenance: IRecommended
+) => {
+  const lastMaintenanceDoneKms = 0
+  const { intervalUnit, interval } = recommendedMaintenance
+  const dateOfLastMaintenanceDone = vehicleYear
+  let intervalAdjusted = interval
+
+  if (intervalUnit === MaintenanceUnit.YEARS) {
+    intervalAdjusted = interval * 12 //months
+  }
+
+  const today = new Date()
+
+  //In case of no previous maintenance done, use January as month
+  const startYear = vehicleYear
+  const startMonth = 0
+
+  const endYear = today.getFullYear()
+  const endMonth = today.getMonth()
+  //
+  const diffYear = (endYear - startYear - 1) * 12
+  const diffMonth = 12 - startMonth + endMonth + 1
+
+  const diffBetweenMaintenanceAndLastOne = Math.floor(Math.abs(diffYear + diffMonth))
+
+  let remaining = intervalAdjusted - diffBetweenMaintenanceAndLastOne
+  const isOverdue = remaining <= 0
+  console.log(`endMonth: ${endMonth}`)
+  console.log(`startMonth: ${startMonth}`)
+  console.log(`remaining: ${remaining}`)
+  console.log(`startYear: ${startYear}`)
+  console.log(`endYear: ${endYear}`)
+  console.log(`diffYear: ${diffYear}`)
+  console.log(`diffMonth: ${diffMonth}`)
+  console.log(`diffMonth + diffYear: ${diffMonth + diffYear}`)
+  if (intervalUnit === MaintenanceUnit.YEARS) remaining = Number((remaining / 12).toFixed(2))
+
+  return { lastMaintenanceDoneKms, intervalUnit, dateOfLastMaintenanceDone, remaining, isOverdue }
+}
+
+/*
+ */
+
+const computeTimeWithLastMaintenance = (
+  doneMaintenance: IDone,
+  recommendedMaintenance: IRecommended
+) => {
+  const lastMaintenanceDoneKms = doneMaintenance.kmsWhenDone
+  const { intervalUnit, interval } = recommendedMaintenance
+  const dateOfLastMaintenanceDone = doneMaintenance.dateOfMaintenanceDone
+
+  let intervalAdjusted = interval
+
+  if (intervalUnit === MaintenanceUnit.YEARS) intervalAdjusted = interval * 12 //months
+
+  const today = new Date()
+
+  //In case of no previous maintenance done, use January as month
+  const startYear = doneMaintenance.dateOfMaintenanceDone.getFullYear()
+  const startMonth = doneMaintenance.dateOfMaintenanceDone.getMonth()
+
+  const endYear = today.getFullYear()
+  const endMonth = today.getMonth()
+
+  const diffBetweenMaintenanceAndLastOne = (endYear - startYear) * 12 - startMonth + endMonth
+
+  let remaining = intervalAdjusted - diffBetweenMaintenanceAndLastOne
+
+  if (intervalUnit === MaintenanceUnit.YEARS) remaining = Number((remaining / 12).toFixed(2))
+
+  const isOverdue = remaining <= 0
+
+  return { lastMaintenanceDoneKms, intervalUnit, dateOfLastMaintenanceDone, remaining, isOverdue }
+}
 
 export const computeMaintenanceResultByOperationType = (
   currentKms: number,
+  vehicleYear: number,
   doneMaintenance: IDone | null,
   recommendedMaintenance: IRecommended
 ) => {
   let operationType: 'distance' | 'time' = 'distance'
 
-  const { intervalUnit, interval } = recommendedMaintenance
+  const { intervalUnit } = recommendedMaintenance
 
   /*
    * Determine the type of operartion between compute time and distance
@@ -88,7 +165,7 @@ export const computeMaintenanceResultByOperationType = (
     case 'distance': //Type is distance(kms or miles)
       console.log('distance')
       if (!doneMaintenance)
-        return computeDistanceNoLastMaintenance(currentKms, recommendedMaintenance)
+        return computeDistanceNoLastMaintenance(currentKms, vehicleYear, recommendedMaintenance)
       else
         return computeDistanceWithLastMaintenance(
           currentKms,
@@ -98,10 +175,27 @@ export const computeMaintenanceResultByOperationType = (
       break
     case 'time': // Type is months or year
       console.log('time')
-      if (!doneMaintenance) return computeTimeNoLastMaintenance()
-      else return computeTimeWithLastMaintenance()
+      if (!doneMaintenance) return computeTimeNoLastMaintenance(vehicleYear, recommendedMaintenance)
+      else return computeTimeWithLastMaintenance(doneMaintenance, recommendedMaintenance)
       break
   }
+}
+
+export const sortingLastestDoneMaintenance = (doneMaintenances: IDone[] | []) => {
+  const sortedDoneMaintenance: IDone[] | [] = []
+  console.log(doneMaintenances)
+  doneMaintenances.forEach((maintenance) => {
+    if (maintenance.id) {
+      console.log(maintenance)
+    }
+  })
+  // const test = computeMaintenanceResultByOperationType(
+  //   currentKms,
+  //   vehicleYear,
+  //   null,
+  //   recommendedMaintenance
+  // )
+  // console.log(test)
 }
 /*
  *   What we do when there is not previous mainteance; Send back empty array
@@ -109,6 +203,7 @@ export const computeMaintenanceResultByOperationType = (
 
 export const sortDoneMaintenanceList = (
   currentKms: number,
+  vehicleYear: number,
   doneMaintenances: IDone[] | [],
   recommendedMaintenances: IRecommended[] | []
 ) => {
@@ -116,7 +211,10 @@ export const sortDoneMaintenanceList = (
   //   console.log(recommendedMaintenances)
   const sortedDoneMaintenance = new Map()
 
+  sortingLastestDoneMaintenance(doneMaintenances)
+
   doneMaintenances.map((maintenance) => {
+    //need to inverse loop recommended the find last doen
     console.log('*current kms*')
     console.log(currentKms)
     console.log('****************')
@@ -131,6 +229,7 @@ export const sortDoneMaintenanceList = (
     const recommendedMaintenance = recommendedMaintenances.find(
       (recommended) => recommended.name === maintenance.name
     )
+
     if (recommendedMaintenance) {
       /*
        * Remaining is positive when it is overdue.
@@ -145,14 +244,12 @@ export const sortDoneMaintenanceList = (
         recommendedMaintenanceId: recommendedMaintenance.id,
         lastMaintenanceDoneKms: maintenance.kmsWhenDone,
         intervalUnit: recommendedMaintenance.intervalUnit,
-        dateOfMaintenanceDone: maintenance.dateOfMaintenanceDone,
+        dateOfLastMaintenanceDone: maintenance.dateOfMaintenanceDone,
         remaining: remaining,
         isOverdue: isOverdue
       })
     }
   })
-
-  // console.log(sortedDoneMaintenance)
 
   return sortedDoneMaintenance
 }

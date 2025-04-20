@@ -17,7 +17,9 @@
               </li>
               <li>
                 Last Maintenance Done On:<v-tag>{{
-                  displayDate(doneSortedMaintenanceList.get(`${item.name}`).dateOfMaintenanceDone)
+                  displayDate(
+                    doneSortedMaintenanceList.get(`${item.name}`).dateOfLastMaintenanceDone
+                  )
                 }}</v-tag>
               </li>
               <li v-if="doneSortedMaintenanceList.get(`${item.name}`).isOverdue === false">
@@ -239,11 +241,12 @@ const pastMaintenancesList = [
   }
 ]
 
-const copySortedMaintenanceList = () => {
+const copySortedMaintenanceList = (doneMaintenances: IDone[] | []) => {
   if (vehicle.value) {
     sortDoneMaintenanceList(
       vehicle.value.currentKms,
-      doneMaintenanceList.value,
+      Number(vehicle.value.year),
+      doneMaintenances,
       maintenanceList.value
     ).forEach((values, key) => {
       doneSortedMaintenanceList.value.set(key, values)
@@ -315,7 +318,7 @@ const subscriptionDone = maintenanceDoneObservable.subscribe({
   next: (maintenance) => {
     console.log(maintenance)
     doneMaintenanceList.value = maintenance
-    copySortedMaintenanceList()
+    copySortedMaintenanceList(maintenance)
   },
 
   error: (error) => console.error(error)
