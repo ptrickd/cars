@@ -55,6 +55,14 @@ interface IVehicle {
  * */
 
 describe('computeMaintenanceResultByOperationType().', () => {
+  beforeEach(() => {
+    const date = new Date()
+    const mockedDate = vi.setSystemTime(date)
+  })
+
+  afterEach(() => {
+    vi.useRealTimers()
+  })
   test('operationType === distance, doneMaintenance is null.', () => {
     const computed1 = computeMaintenanceResultByOperationType(80000, 2020, null, {
       id: 1,
@@ -74,7 +82,7 @@ describe('computeMaintenanceResultByOperationType().', () => {
   })
   test('operationType === distance, doneMaintenance is present.', () => {
     const date = new Date('2024-08-01')
-    // const mockDate = vi.setSystemTime(date)
+    // const mockedDate = vi.setSystemTime(date)
     const computed2 = computeMaintenanceResultByOperationType(
       80000,
       2020,
